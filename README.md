@@ -2,7 +2,7 @@
 
 This is the official code repository for the paper **"Maximum Likelihood Reinforcement Learning"**.
 
-📄 [Paper](#) | 🌐 [Project Page](https://maxrl.github.io)
+📄 [Paper](#) | 🌐 [Project Page]([https://maxrl.github.io](https://zanette-labs.github.io/MaxRL/))
 
 ---
 
