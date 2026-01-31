@@ -1,3 +1,11 @@
+# Maximum Likelihood Reinforcement Learning (MaxRL)
+
+This is the official code repository for the paper **"Maximum Likelihood Reinforcement Learning"**.
+
+📄 [Paper](#) | 🌐 [Project Page](https://maxrl.github.io)
+
+---
+
 # How to Run
 
 ## Setup Environment
