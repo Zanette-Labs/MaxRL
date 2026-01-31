@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Maximum Likelihood Reinforcement Learning - A framework that bridges RL and maximum likelihood for correctness-based tasks">
+  <meta name="keywords" content="LLM, Reasoning, Reinforcement Learning, Maximum Likelihood, Policy Gradient">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MaxRL: Maximum Likelihood Reinforcement Learning</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro|JetBrains+Mono"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --bg-white: #ffffff;
+      --bg-gray: #f9fafb;
+      --border-light: #e5e7eb;
+    }
+    
+    body { color: var(--text-dark); }
+    
+    .hero { background: #1f2937; }
+    .hero .title.is-1 { color: #fff; font-weight: 700; }
+    .hero .publication-authors a { color: #93c5fd; }
+    .hero .publication-authors a:hover { color: #bfdbfe; }
+    .hero .publication-authors span { color: #e5e7eb; }
+    
+    .publication-links .button {
+      margin: 0.25rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+    }
+    .publication-links .button:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.6);
+      color: #fff;
+    }
+
+    /* Section titles */
+    h2.section-title,
+    h3.section-title,
+    h4.subsection-title,
+    .title.section-title {
+      color: var(--primary) !important;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    
+    h4.subsection-title {
+      font-size: 1.25rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .section-white { background: var(--bg-white); }
+    .section-gray { background: var(--bg-gray); }
+    
+    .insight-box {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem 2rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    
+    .math-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 768px) { .math-comparison { grid-template-columns: 1fr; } }
+    
+    .math-box {
+      background: #fff;
+      border-radius: 6px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-light);
+    }
+    .math-box.rl { border-top: 3px solid #dc2626; }
+    .math-box.ml { border-top: 3px solid var(--primary); }
+    .math-box h4 { font-weight: 600; margin-bottom: 1rem; color: var(--text-dark); }
+    
+    .figure-container {
+      background: transparent;
+      border-radius: 0;
+      padding: 1rem 0;
+      border: none;
+      margin: 1.5rem 0;
+    }
+    .figure-container img { border-radius: 4px; }
+    .figure-caption { font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem; text-align: center; }
+    
+    /* Equal height for analysis figures */
+    .analysis-columns {
+      display: flex;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    .analysis-columns .analysis-col {
+      flex: 1;
+      display: flex;
+    }
+    .analysis-columns .figure-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    .analysis-columns .figure-container .img-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .analysis-columns .figure-container img {
+      max-width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+    }
+    @media (max-width: 768px) {
+      .analysis-columns { flex-direction: column; }
+    }
+    
+    .result-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-light);
+    }
+    .result-card h4 { color: var(--text-dark); font-weight: 600; margin-bottom: 1rem; }
+    
+    .highlight-stat {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .algorithm-box {
+      background: #1f2937;
+      color: #e5e7eb;
+      border-radius: 6px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+    }
+    .algorithm-box .comment { color: #9ca3af; }
+    .algorithm-box .keyword { color: #f472b6; }
+    .algorithm-box .function { color: #60a5fa; }
+    
+    table.comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    table.comparison-table th {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      text-align: left;
+    }
+    table.comparison-table th * { color: #fff !important; }
+    table.comparison-table th .katex, table.comparison-table th .katex * { color: #fff !important; }
+    table.comparison-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-light); }
+    table.comparison-table tr:last-child td { border-bottom: none; }
+    table.comparison-table tr:hover td { background: var(--bg-gray); }
+    
+    pre code { display: block; padding: 1rem; background: #1f2937; color: #e5e7eb; border-radius: 6px; overflow-x: auto; }
+    .bibtex-box { background: #fff; border: 1px solid var(--border-light); border-radius: 6px; padding: 1rem; }
+    
+    footer.footer { background: #1f2937; color: #9ca3af; padding: 2rem; }
+    footer a { color: #93c5fd; }
+    footer a:hover { color: #bfdbfe; }
+    
+    .emoji-icon { margin-right: 0.5rem; }
+    .section { padding: 3rem 1.5rem; }
+    
+    .formula-box {
+      background: transparent;
+      border: none;
+      padding: 1rem 0;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    
+    
+    .conclusion-box {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    .conclusion-box p {
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    .conclusion-box p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Maximum Likelihood Reinforcement Learning</h1>
+          
+          <!-- Authors Section (commented out) -->
+          <!--
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://tajwarfahim.github.io/">Fahim Tajwar</a><sup>1*</sup>,</span>
+            <span class="author-block"><a href="#">Guanning Zeng</a><sup>2*</sup>,</span>
+            <span class="author-block"><a href="#">Yueer Zhou</a><sup>3</sup>,</span>
+            <span class="author-block"><a href="#">Yuda Song</a><sup>1</sup>,</span><br>
+            <span class="author-block"><a href="#">Daman Arora</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Yiding Jiang</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cmu.edu/~schneide/">Jeff Schneider</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cmu.edu/~rsalakhu/">Ruslan Salakhutdinov</a><sup>1</sup>,</span><br>
+            <span class="author-block"><a href="#">Haiwen Feng</a><sup>4,5</sup>,</span>
+            <span class="author-block"><a href="https://azanette.com">Andrea Zanette</a><sup>1</sup></span>
+          </div>
+          <div class="is-size-6 publication-authors" style="margin-top: 1rem;">
+            <span class="author-block"><sup>1</sup> Carnegie Mellon University</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>2</sup> Tsinghua University</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>3</sup> Zhejiang University</span><br>
+            <span class="author-block"><sup>4</sup> UC Berkeley</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>5</sup> Impossible, Inc</span>
+          </div>
+          -->
+
+          <div class="column has-text-centered" style="margin-top: 1.5rem;">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TWO PERSPECTIVES ==================== -->
+<section class="section section-white">
+  <div class="container is-max-desktop">
+    <div class="content has-text-justified">
+      
+      <h2 class="title is-3 section-title">Introduction: Two Perspectives on Learning</h2>
+      
+      <p>
+        <strong>Maximum likelihood</strong> training is the foundational optimization principle behind modern machine learning. 
+        In fully differentiable settings, optimizing log-likelihood objectives—most commonly via cross-entropy—has reliably 
+        translated increases in model capacity, data, and compute into consistent performance improvements.
+      </p>
+      
+      <p>
+        <strong>Reinforcement learning</strong>, by contrast, originated in optimal control and sequential decision-making 
+        where the end-to-end process is non-differentiable. The learning process is framed as interaction with an environment 
+        and the goal is to maximize expected return.
+      </p>
+      
+      <p>
+        Many modern learning problems—navigation, program synthesis, structured prediction, and <em>multi-step reasoning in LLMs</em>—are 
+        non-differentiable but admit a <strong>binary notion of correctness</strong>. They involve generating sequences of stochastic decisions, 
+        with success determined at the end by an external verifier. Because this generation process is non-differentiable end-to-end, 
+        reinforcement learning is typically used to maximize expected reward.
+      </p>
+      
+      <div class="insight-box">
+        <p style="margin: 0;">
+          <strong>But is maximizing expected correctness the right optimization target?</strong>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROBABILISTIC MODELING LENS ==================== -->
+<section class="section section-gray">
+  <div class="container is-max-desktop">
+    <div class="content has-text-justified">
+      
+      <h2 class="title is-3 section-title">Core Insight: Correctness Formulates a Likelihood</h2>
+      
+      <p>
+        For these correctness-based tasks, a <em>probabilistic modeling</em> lens exposes a viewpoint that is absent in the standard RL formulation. 
+        For each input, the model induces a distribution over stochastic outputs, together with a binary random variable indicating correctness. 
+        The resulting probability of success is a function of the model parameters and therefore defines a <strong>likelihood over correct outcomes</strong>—even 
+        if intermediate computations are non-differentiable.
+      </p>
+      
+      <p>
+        These two perspectives induce <strong>different optimization objectives</strong>. Let $p_\theta(x)$ denote the probability that 
+        a model with parameters $\theta$ produces a correct output for input $x$:
+      </p>
+      
+      <div class="math-comparison">
+        <div class="math-box rl">
+          <h4>🎮 Control Formulation (RL)</h4>
+          <p style="text-align: center; font-size: 1.1rem;">
+            $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            Maximize expected correctness. Each input contributes in proportion to how changes affect its success probability.
+            <br><br>
+            <strong>→ Optimization dominated by easy examples</strong>
+          </p>
+        </div>
+        <div class="math-box ml">
+          <h4>📊 Modeling Formulation (ML)</h4>
+          <p style="text-align: center; font-size: 1.1rem;">
+            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            Maximize likelihood of correct outcomes. Gradient reweighted by inverse success probability.
+            <br><br>
+            <strong>→ Concentrated effort on hard, uncertain inputs</strong>
+          </p>
+        </div>
+      </div>
+      
+      <p>
+        Historically, this distinction was inconsequential in classical RL settings where agents interacted with a single environment. 
+        <strong>Modern applications</strong> operate in a fundamentally different regime: models are trained and evaluated across 
+        large, heterogeneous input distributions, where <em>generalization</em> and <em>coverage</em> are central concerns. 
+        In this regime, objectives that differ in how they allocate learning signal can induce markedly different behavior.
+      </p>
+      
+      <p>
+        This raises a natural question: <em>what objective function should reinforcement learning maximize in correctness-based tasks?</em>
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MAXRL METHOD ==================== -->
+<section class="section section-white">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">Maximum Likelihood Reinforcement Learning (MaxRL)</h2>
+    
+    <div class="content has-text-justified">
+      
+      <p>
+        Maximum likelihood emerges as a principled objective, but it is statistically challenging to estimate when the success probability 
+        $p_\theta(x)$ is small. We show that this challenge admits a principled resolution that <strong>scales with compute</strong>.
+      </p>
+      
+      <!-- Subsection: Maclaurin Expansion -->
+      <h4 class="subsection-title">Maclaurin Expansion of Maximum Likelihood</h4>
+      
+      <p>
+        Standard reinforcement learning optimizes the expected pass@1:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1.1rem; margin: 0;">
+          $\nabla_\theta J_{\mathrm{RL}}(x) = \nabla_\theta \mathrm{pass@}1(x)$
+        </p>
+      </div>
+      
+      <p>
+        What about maximum likelihood? The log-likelihood admits a <strong>Maclaurin (failure-series) expansion</strong>:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1.1rem; margin: 0;">
+          $\log p = -\sum_{k=1}^{\infty}\frac{(1-p)^k}{k} = -\sum_{k=1}^{\infty}\frac{\mathrm{fail@}k}{k}$
+        </p>
+      </div>
+      
+      <p>
+        Differentiating yields the population-level gradient identity:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1.2rem; margin: 0; font-weight: 500;">
+          $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
+        </p>
+      </div>
+      
+      <p>
+        This is a key identity: <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
+        Higher-order terms encode learning signal from increasingly rare success patterns, which become essential when the model's pass rate is small.
+      </p>
+      
+      <p>
+        Comparing the two objectives, the RL gradient corresponds to retaining solely the <strong>first-order term</strong>. From this perspective, 
+        <em>reinforcement learning is a first-order approximation of maximum likelihood in correctness space</em>.
+      </p>
+      
+      <!-- Subsection: Truncated Objectives -->
+      <h4 class="subsection-title">Truncated Objectives</h4>
+      
+      <p>
+        Optimizing the full infinite mixture is infeasible under finite compute. We define the <strong>truncated maximum likelihood objective</strong> 
+        at level $T$:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1.1rem; margin: 0;">
+          $\nabla_\theta J_{\mathrm{MaxRL}}^{(T)}(x) = \sum_{k=1}^{T}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
+        </p>
+      </div>
+      
+      <!-- Number line / Spectrum visualization (SVG) -->
+      <div style="margin: 2rem 0; text-align: center;">
+        <svg viewBox="0 0 600 100" style="max-width: 100%; height: auto;">
+          <!-- Main axis line -->
+          <line x1="50" y1="50" x2="550" y2="50" stroke="#e5e7eb" stroke-width="3" stroke-linecap="round"/>
+          
+          <!-- Arrow at end -->
+          <polygon points="545,45 555,50 545,55" fill="#e5e7eb"/>
+          
+          <!-- RL point (T=1) -->
+          <circle cx="80" cy="50" r="8" fill="#dc2626"/>
+          <text x="80" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#dc2626">Standard RL</text>
+          <text x="80" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = 1</text>
+          
+          <!-- MaxRL point (T=N) -->
+          <circle cx="300" cy="50" r="10" fill="#1e40af" stroke="#fff" stroke-width="2"/>
+          <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">MaxRL</text>
+          <text x="300" y="78" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = N</text>
+          
+          <!-- ML point (T→∞) -->
+          <circle cx="520" cy="50" r="8" fill="#16a34a"/>
+          <text x="520" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#16a34a">Max. Likelihood</text>
+          <text x="520" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T → ∞</text>
+          
+          <!-- Gradient arc connecting RL to ML (decorative) -->
+          <path d="M 95 50 Q 300 20 505 50" stroke="url(#gradientArc)" stroke-width="2" fill="none" stroke-dasharray="4,4" opacity="0.5"/>
+          
+          <defs>
+            <linearGradient id="gradientArc" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#dc2626"/>
+              <stop offset="50%" stop-color="#1e40af"/>
+              <stop offset="100%" stop-color="#16a34a"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      
+      <p>
+        This defines a <strong>compute-indexed hierarchy</strong>: increasing $T$ provides progressively better approximations to maximum likelihood. 
+        In practice, we set $T = N$ where $N$ is the number of rollouts per prompt.
+      </p>
+      
+      <!-- Subsection: Empirical Gradient Estimator -->
+      <h4 class="subsection-title">Empirical Gradient Estimator</h4>
+      
+      <p>
+        The maximum likelihood gradient admits a simple <strong>conditional expectation representation</strong>:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1.1rem; margin: 0;">
+          $\nabla_\theta J_{\mathrm{ML}}(x) = \mathbb{E}\left[\nabla_\theta \log \pi_\theta(z \mid x) \;\middle|\; \text{success}\right]$
+        </p>
+      </div>
+      
+      <p>
+        This leads to a remarkably simple estimator. Given $N$ rollouts with $K$ successes, the <strong>conditional estimator</strong> averages 
+        score functions over successful trajectories only:
+      </p>
+      
+      <div class="algorithm-box">
+        <span class="keyword">for</span> each prompt $x$ <span class="keyword">in</span> batch:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Sample $N$ rollouts from $\pi_\theta(\cdot|x)$<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;$K$ ← number of successful rollouts<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;$\hat{\mu}$ ← $K / N$ &nbsp;&nbsp;<span class="comment"># empirical pass rate</span><br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> $K > 0$:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A(y) = \frac{r(y) - \hat{\mu}}{\hat{\mu}}$ &nbsp;&nbsp;<span class="comment"># MaxRL advantage</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A(y) = 0$<br><br>
+        <span class="function">PolicyGradientUpdate</span>(advantages)
+      </div>
+      
+      <p style="margin-top: 1.5rem;">
+        The key difference from REINFORCE is simple: <strong>normalize by $K$ (successful samples) instead of $N$ (total samples)</strong>.
+      </p>
+      
+      <p>
+        <strong>Crucially:</strong> This estimator is unbiased for the truncated objective $J_{\mathrm{MaxRL}}^{(N)}$. 
+        Increasing samples $N$ in REINFORCE only reduces variance of a fixed pass@1 objective. 
+        In MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
+      </p>
+      
+      <!-- Subsection: Weight Function View -->
+      <h4 class="subsection-title">A Unifying Weight-Function View</h4>
+      
+      <p>
+        All objectives can be unified through a weighting function $w(p)$ that determines how learning signal is allocated:
+      </p>
+      
+      <div class="figure-container">
+        <center>
+          <img src="./static/images/weight_functions.png" alt="Weight functions comparison" style="max-width: 60%;">
+        </center>
+        <p class="figure-caption">
+          <strong>Population-level weighting functions.</strong> As $T$ increases, MaxRL approaches ML weighting, 
+          emphasizing hard inputs while remaining bounded at moderate pass rates.
+        </p>
+      </div>
+      
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="color: #fff;">Method</th>
+            <th style="color: #fff;">Weight Function $w(p)$</th>
+            <th style="color: #fff;">Behavior on Hard Inputs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>RL (REINFORCE)</strong></td><td>$1$</td><td>No reweighting</td></tr>
+          <tr><td><strong>GRPO</strong></td><td>$\frac{1}{\sqrt{p(1-p)}}$</td><td>Moderate upweighting</td></tr>
+          <tr><td><strong>MaxRL (T)</strong></td><td>$\frac{1-(1-p)^T}{p}$</td><td>Compute-controlled</td></tr>
+          <tr><td><strong>Maximum Likelihood</strong></td><td>$\frac{1}{p}$</td><td>Full inverse weighting</td></tr>
+        </tbody>
+      </table>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXPERIMENTS ==================== -->
+<section class="section section-gray">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">Experiments</h2>
+    
+    <div class="content has-text-justified" style="margin-bottom: 2rem;">
+      <p>
+        We evaluate MaxRL across four experimental settings spanning different data regimes, task complexities, and model scales. 
+        First, we validate on ImageNet where exact maximum likelihood is computable. 
+        Then we study maze navigation with infinite fresh data, GSM8K math reasoning in a data-scarce regime, 
+        and finally scale to training Qwen3 models on challenging math benchmarks.
+      </p>
+    </div>
+    
+    <div class="result-card">
+      <h4>ImageNet: Comparison with Exact Likelihood</h4>
+      <p>
+        We first validate MaxRL where exact maximum likelihood (cross-entropy) is computable. 
+        Image classification provides a clean testbed: reward is 1 if predicted class matches ground truth, 0 otherwise.
+      </p>
+      <div class="figure-container">
+        <center><img src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>ImageNet training dynamics.</strong> With sufficient rollouts, MaxRL closely matches cross-entropy training, 
+          while REINFORCE fails to make progress from low initial pass rates.
+        </p>
+      </div>
+    </div>
+    
+    <div class="result-card">
+      <h4>Maze Navigation: Infinite Data Regime</h4>
+      <p>
+        We study training with continually fresh data using procedurally generated mazes. 
+        Each training input is newly generated, and the model never encounters the same maze twice.
+      </p>
+      <div class="figure-container">
+        <center><img src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>Scaling behavior with increasing rollouts per prompt.</strong> MaxRL consistently outperforms GRPO, which outperforms RLOO.
+        </p>
+      </div>
+      <center>
+        <img src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 1rem;">
+        <p class="figure-caption" style="margin-top: 0.5rem;">Example maze: successful navigation (left) vs. failure case (right).</p>
+      </center>
+    </div>
+    
+    <div class="result-card">
+      <h4>GSM8K: Data-Scarce Regime</h4>
+      <p>
+        In the data-scarce regime, models train for many epochs over a fixed dataset. 
+        This exposes differences in how objectives allocate learning signal under repeated training.
+      </p>
+      <div class="figure-container">
+        <center><img src="./static/images/smollm_training_step.png" alt="GSM8K training dynamics" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>Training dynamics on GSM8K.</strong> MaxRL shows slower initial gains but sustained improvement, 
+          with substantially less pass@k degradation.
+        </p>
+      </div>
+    </div>
+    
+    <div class="result-card">
+      <h4>Large-Scale LLM Training</h4>
+      <p>
+        We train <strong>Qwen3-1.7B-Base</strong> and <strong>Qwen3-4B-Base</strong> models on POLARIS-53K (~50K math reasoning prompts), 
+        and evaluate on AIME 2025, BeyondAIME, MATH-500, and Minerva.
+      </p>
+      <div class="figure-container">
+        <center><img src="./static/images/large_scale_experiments_summary.png" alt="Large scale LLM results" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>Evaluation on math benchmarks.</strong> MaxRL consistently Pareto dominates GRPO: 
+          higher pass@1 <em>and</em> improved pass@k. Improved coverage means achieving the same pass@k 
+          requires <strong>2.3× – 19.2×</strong> fewer samples than GRPO.
+        </p>
+      </div>
+    </div>
+    
+    <div class="result-card">
+      <h4>Analysis</h4>
+      <p>
+        We analyze MaxRL's behavior by examining gradient norms and training coverage across different methods.
+      </p>
+      <div class="figure-container">
+        <center><img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient analysis" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>Gradient norm vs pass rate.</strong> MaxRL generates larger gradient norms on difficult prompts (low pass rate), 
+          consistent with its inverse-probability weighting.
+        </p>
+      </div>
+      <div class="figure-container">
+        <center><img src="./static/images/fraction_solved_problems_during_training.png" alt="Training coverage" style="max-width: 100%;"></center>
+        <p class="figure-caption">
+          <strong>Training coverage.</strong> Fraction of prompts with at least one correct rollout during training. 
+          MaxRL maintains higher coverage throughout training.
+        </p>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ==================== CONCLUSION ==================== -->
+<section class="section section-white">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">Conclusion</h2>
+    
+    <div class="conclusion-box content has-text-justified">
+      <p>
+        We have introduced <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a framework that bridges 
+        the gap between reinforcement learning and maximum likelihood for correctness-based tasks. Through a Maclaurin expansion 
+        of the log-likelihood, we showed that standard RL optimizes only the first-order term (pass@1), while maximum likelihood 
+        corresponds to an infinite harmonic mixture of pass@k objectives.
+      </p>
+      <p>
+        MaxRL provides a practical middle ground: by truncating the expansion at level $T = N$ (the number of rollouts), 
+        we obtain a compute-indexed family of objectives that progressively approaches maximum likelihood as compute increases. 
+        The resulting gradient estimator is remarkably simple—normalizing by the number of successes rather than total samples—yet 
+        yields consistent improvements across diverse domains.
+      </p>
+      <p>
+        Empirically, MaxRL demonstrates superior performance in image classification, maze navigation, math reasoning, and 
+        large-scale LLM training. Most notably, MaxRL maintains high pass@k while improving pass@1, translating to 
+        <strong>2–20× inference efficiency gains</strong>: achieving the same success rate with far fewer samples at deployment time.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ==================== BIBTEX ==================== -->
+<section class="section section-gray" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 section-title">BibTeX</h2>
+    <div class="bibtex-box">
+      <pre><code>@article{tajwar2025maxrl,
+  title={Maximum Likelihood Reinforcement Learning},
+  author={Tajwar, Fahim and Zeng, Guanning and Zhou, Yueer and Song, Yuda and 
+          Arora, Daman and Jiang, Yiding and Schneider, Jeff and 
+          Salakhutdinov, Ruslan and Feng, Haiwen and Zanette, Andrea},
+  journal={arXiv preprint},
+  year={2025}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="#"><i class="fas fa-file-pdf"></i></a>
+      <a class="icon-link" href="#" class="external-link"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="columns is-centered">
+      <p>
+        Corresponding Authors: <a href="mailto:ftajwar@andrew.cmu.edu">Fahim Tajwar</a>, <a href="mailto:azanette@andrew.cmu.edu">Andrea Zanette</a><br>
+        Template adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
