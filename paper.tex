@@ -1,0 +1,1534 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+\usepackage[most]{tcolorbox}
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2026}
+\usepackage{bm}
+% For preprint, use
+\usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\usepackage{tcolorbox}
+\usepackage{caption}
+\usepackage{courier}
+
+\usepackage[dvipsnames]{xcolor}
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\include{macro}
+
+%%% Andrea's colorful comments
+% \newcommand{\critical}[1]{{\color{red} [AZ: #1]}}
+% \newcommand{\warn}[1]{{\color{orange} [AZ: #1]}}
+% \newcommand{\info}[1]{{\color{blue} [AZ: #1]}}
+% \newcommand{\ft}[1]{{\color{red} [Fahim: #1]}}
+% \newcommand{\da}[1]{{\color{olive} [DA: #1]}}
+% \newcommand{\ysc}[1]{{\color{ForestGreen}[YS: #1]}}
+% \newcommand{\yj}[1]{{\color{Purple}[YJ: #1]}}
+% \newcommand{\gn}[1]{\textcolor{cyan!50!blue!70!black}{\textbf{Guanning:} #1}}
+
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Maximum Likelihood Reinforcement Learning}
+
+
+\begin{document}
+
+\twocolumn[
+  \icmltitle{Maximum Likelihood Reinforcement Learning}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Fahim Tajwar}{equal,cmu}
+    \icmlauthor{Guanning Zeng}{equal,tsignhua}
+    \icmlauthor{Yueer Zhou}{zhejiang}
+    \icmlauthor{Yuda Song}{cmu}
+    \icmlauthor{Daman Arora}{cmu}
+    \icmlauthor{Yiding Jiang}{cmu}
+    \icmlauthor{Jeff Schneider}{cmu}
+    \icmlauthor{Ruslan Salakhutdinov}{cmu}
+    \icmlauthor{Haiwen Feng}{berkeley,impossible}
+    \icmlauthor{Andrea Zanette}{cmu}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{cmu}{Carnegie Mellon University}
+  \icmlaffiliation{tsignhua}{Tsinghua University}
+  \icmlaffiliation{zhejiang}{Zhejiang University}
+  \icmlaffiliation{berkeley}{UC Berkeley}
+  % \icmlaffiliation{mpi}{Max Planck Institute for Intelligent Systems}
+  \icmlaffiliation{impossible}{Impossible, Inc}
+  
+
+  \icmlcorrespondingauthor{Fahim Tajwar}{ftajwar@andrew.cmu.edu}
+  \icmlcorrespondingauthor{Andrea Zanette}{azanette@andrew.cmu.edu}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Reinforcement Learning, Maximum Likelihood, Large Language Models, Reasoning}
+
+  \vskip 0.3in
+]
+
+% \onecolumn   
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+
+\begin{abstract}
+Many modern machine learning tasks, such as navigation, code generation, and mathematical problem solving, admit a binary notion of success. Because solutions are generated through non-differentiable sampling processes, reinforcement learning is typically used to maximize the probability of success. We observe that, when viewed end-to-end, this setting is induces an implicit supervised learning problem over correctness. When these problems are differentiable, maximum likelihood is often the method of choice, but direct likelihood optimization is infeasible when generating the solution involves non-differentiable sampling. Motivated by this observation, we introduce \textbf{Maximum Likelihood Reinforcement Learning (MaxRL)}, a sample-based framework that approximates maximum likelihood using reinforcement learning techniques. MaxRL defines a compute-indexed family of sampling-based objectives that interpolate between standard reinforcement learning and exact maximum likelihood as additional compute is allocated to increased rollouts. The resulting objective admits a simple, unbiased policy-gradient estimator and converges to maximum likelihood optimization in the infinite-compute limit.
+\end{abstract}
+
+\section{Introduction}
+
+Broadly speaking, modern machine learning has been shaped by two highly successful optimization paradigms: maximum likelihood and reinforcement learning. Maximum likelihood training is a foundational principle behind modern generative and predictive models~\citep{bishop2006prml,murphy2012mlpp}; in fully differentiable settings, optimizing log-likelihood objectives has reliably translated increases in model capacity, data, and compute into consistent performance improvements~\citep{alexnet,radford2018improving}. Reinforcement learning, by contrast, originated in optimal control and sequential decision-making~\citep{sutton1998reinforcement,bertsekas1995dynamic}, where learning proceeds through interaction with an environment and the objective is to maximize expected return. The generality of this formulation enables reinforcement learning to address problems involving \emph{non-differentiable} intermediate sampling, and has led to models capable of superhuman performance in complex domains~\citep{mnih2015humanlevel,silver2016mastering}.
+
+
+Many modern learning problems lie precisely at the intersection of these two paradigms: they are non-differentiable, yet admit a clear notion of correctness. Examples include navigation~\citep{probabilistic_robotics,anderson2018visionandlanguagenavigationinterpretingvisuallygrounded}, program synthesis~\citep{chen2018synthesizingcomplexprogramsinputoutput,bunel2018leveraginggrammarreinforcementlearning}, structured prediction~\citep{linguistic_structure_prediction,mensch2018differentiabledynamicprogrammingstructured}, and multi-step reasoning in large language models~\citep{wei2023chainofthoughtpromptingelicitsreasoning}. The generation of the output involves model sampling and success is determined at the end of the generation by an external verifier. Because this generation process is non-differentiable end-to-end, reinforcement learning and not maximum likelihood is  used as optimization paradigm. Following a classical reinforcement learning formulation, learning is framed as maximizing expected reward, which is the probability of success in these case.
+
+From an end-to-end perspective, these tasks define a binary observation, i.e., success or failure, generated by a model-induced stochastic process. For each input, the model induces a probability of success as a function of its parameters, defining a likelihood over correctness. In supervised learning, maximizing this likelihood is the canonical objective. Here, this corresponds to maximizing the probability that the model produces a correct outcome, marginalizing over all latent generation paths. Reinforcement learning enters not because it defines a preferable objective, but because this likelihood is implicit and cannot be optimized directly due to non-differentiable intermediate sampling.
+
+Suppose that both maximum likelihood and reinforcement learning could be applied to a given task, regardless of differentiability. The two objectives induce markedly different optimization behavior once \emph{generalization} is involved.
+To make this distinction precise, we compare the population-level objectives implied by each perspective. Let \(p_\theta(x)\) denote the probability that a model with parameters \(\theta\) produces a correct output for input \(x\). The corresponding gradients of maximum likelihood $\nabla_\theta J_{\mathrm{ML}}$ and of reinforcement learning $\nabla_\theta J_{\mathrm{RL}}$ take the form
+\begin{align*}
+    \nabla_\theta J_{\mathrm{RL}}
+    &= \mathbb{E}_x\!\left[\nabla_\theta p_\theta(x)\right], \\
+    \nabla_\theta J_{\mathrm{ML}}
+    &= \mathbb{E}_x\!\left[\nabla_\theta \log p_\theta(x)\right]
+     = \mathbb{E}_x\!\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right].
+\end{align*}
+When learning is confined to a single environment \(x\), as in classical reinforcement learning~\citep{sutton1998reinforcement,todorov,mnih2013playingatarideepreinforcement,mnih2015humanlevel}, the two gradients are aligned up to a scalar factor, rendering the objectives effectively equivalent in practice. This equivalence breaks when learning and evaluation occur over a distribution of inputs, as in modern applications of reinforcement learning to generative models~\citep{guo2025deepseek}. In this regime, the inverse-probability reweighting induced by maximum likelihood places greater emphasis on hard, low-success inputs, leading to very different optimization dynamics, as we empirically demonstrate in this paper.
+
+When viewed end-to-end, maximum likelihood therefore emerges as the principled objective, for the very same reasons it is the method of choice in differentiable supervised learning with binary correctness.
+The only challenge is computational, namely estimating the likelihood gradient,
+when the success probability \(p_\theta(x)\) is small.
+
+We show that this challenge admits a principled resolution that scales with compute, leading to a framework we call \textbf{Maximum Likelihood Reinforcement Learning (MaxRL)}. MaxRL defines a compute-controlled family of objectives that interpolate between standard reinforcement learning and exact maximum likelihood training. The key observation is that the maximum likelihood objective over correct outcomes admits a Maclaurin expansion, of which the standard reinforcement learning objective, namely expected correctness, is exactly the first-order truncation. By allocating additional compute to sampling, MaxRL estimates higher-order terms of this expansion using simple REINFORCE-style estimators, yielding increasingly accurate approximations to maximum likelihood and converging to it in the infinite-compute limit.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
+
+In this work, we consider reinforcement learning settings that involve
+\emph{generalization}, where models learn from a set of tasks and are evaluated
+on a heldout task distribution. We focus on correctness-based problems that can
+be abstracted as a \emph{binary success or failure} outcome for each input. 
+Formally, let $\mathcal{X}$ and $\mathcal{Y}$ denote the input and output spaces,
+and let $x \sim \rho$ be the distribution over tasks. For each input $x$, we
+denote $y^\ast(x) \in \mathcal{Y}$ as the correct label or answer.
+Equality between outputs is defined up to a task-dependent equivalence relation,
+so that $y = y^\ast(x)$ denotes semantic correctness rather than exact output
+equality.
+Finally, we let the learner be parameterized by $\theta$ and denote the
+predictive distribution induced by the model as $p_\theta(y \mid x)$, where
+$p_\theta(\cdot \mid x) \in \Delta(\mathcal{Y})$ is a conditional probability
+distribution over outputs for a fixed input $x$. In mathematical reasoning, $x$ is the prompt and $y$ is the final solution produced by the model. All logarithms use base $e$
+unless stated otherwise.
+
+\paragraph{Latent generation models.}
+In many modern settings, the model does not sample outputs directly from
+$\mathcal{Y}$, but instead generates a latent variable
+$z \in \mathcal{Z}$ according to a conditional distribution
+$m_\theta(z \mid x)$. The final output $y \in \mathcal{Y}$ is then obtained via a
+deterministic decoding function $y = f(z)$, such as parsing a generated program
+or extracting a boxed answer from a chain of thought. Correctness is evaluated
+only on the decoded output, i.e., a trajectory $z$ is successful if
+$f(z) = y^\ast(x)$, regardless of the intermediate steps that led to the final answer. Throughout the paper, expectations with respect to model
+outputs should be understood as expectations over latent samples $z \sim
+m_\theta(\cdot \mid x)$ followed by deterministic decoding.
+
+\paragraph{Pass rate.}
+We define the \emph{pass rate} as the probability that the model produces the
+correct answer for a fixed input $x$:
+\begin{align*}
+    \passrate(x)
+    := p_\theta(y^\ast(x)\mid x)
+    = \mathbb{E}_{y \sim p_{\theta}(\cdot \mid x)}
+    \!\left[\mathbb{I}\{y = y^\ast(x)\}\right].
+\end{align*}
+Similarly, let $y_1,\ldots,y_k \overset{\text{i.i.d.}}{\sim} p_\theta(\cdot\mid x)$.
+We define $\text{pass@}k$ as the probability of at least one correct sample:
+\begin{align*}
+\text{pass@}k(x)
+:= \mathbb{P}\!\left(\exists\, i \in [k]\ \text{s.t.}\ y_i = y^\ast(x)\right).
+\end{align*}
+
+Next, we consider two optimization frameworks for training our models: \textit{maximum likelihood} and \textit{reinforcement learning}.
+
+\paragraph{Maximum likelihood (ML).}
+Maximum likelihood selects parameters that maximize the log-probability of the
+observed data under the model; in our binary correctness setting, this yields the
+following objective, which implicitly marginalizes over any unobserved variables:
+\begin{align}\label{eq:maximum_likelihood}
+    J_{\mathrm{ML}}(\theta)
+    := \En_{x \sim \rho}\left[\log p_\theta(y^\ast(x) \mid x) \right]
+    = \En_{x \sim \rho} \brk*{\log \prn*{\passrate(x)}}.
+\end{align}
+
+% Note that the maximum likelihood objective can be recovered using the pass rate formulation: it penalizes the model on low-pass rate inputs more heavily. 
+    
+\paragraph{Reinforcement learning (RL).} 
+For correctness based tasks, we also define a binary reward function $r(x, y) = \mathbb{I}\{y = y^*(x)\}$, and similarly under the latent variable case define $r(x,z) = \bbI\crl*{f(z) = y^\ast(x)}$. In this binary reward setting, the RL objective becomes (using the latent version without loss of generality):
+\begin{equation}\label{eq:rl_passrate}
+    J_{\RL}(\theta) := \mathbb{E}_{x \sim \rho} \left[ \mathbb{E}_{z \sim m_\theta(\cdot|x)} \left[ r(x,z) \right] \right] = \mathbb{E}_{x \sim \rho} \left[ \passrate(x) \right].
+\end{equation}
+This gives an objective equivalent to maximizing the expected population pass rate directly.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Gradient analysis.}
+The relationship between RL and maximum likelihood is best understood through their gradients. Looking at the gradient of the objectives $J_{\RL}$ and $J_{\mathrm{ML}}$ reveals that they differ only by a scalar weighting factor dependent on the instance difficulty:
+\begin{align}
+    \nabla_\theta J_{\RL} &= \mathbb{E}_{x \sim \rho} \left[ \nabla_\theta \passrate(x) \right], \\
+    \nabla_\theta J_{\CE} &= \mathbb{E}_{x \sim \rho} \left[ \nabla_\theta  \log(\passrate(x)) \right]\\ &= \mathbb{E}_{x \sim \rho} \left[ \frac{1}{\passrate(x)} \nabla_\theta \passrate(x) \right]
+\end{align}
+The factor $1/\passrate(x)$ in the maximum likelihood gradient aggressively upweights ``hard'' examples (where the model rarely succeeds) and downweights ``easy'' examples. This also reveals why the two objectives differ primarily in settings that involve generalization: if we only want to train and test on a single task (typical in many RL scenarios), the weighting factor $1/\passrate{x}$ becomes a simple learning rate multiplier, and it only makes a difference when taking the (weighted) average over gradients from multiple tasks with different pass rates.
+
+\section{Maximum Likelihood Reinforcement Learning (\ours{})} \label{sec:methods}
+
+% In this section, we show that reinforcement learning on expected reward optimizes
+% only a low-order approximation of the likelihood objective. We formalize this
+% intuition by showing that the maximum likelihood objective admits a
+% population-level expansion in terms of pass@k events, and that standard
+% reinforcement learning optimizes only the first-order term of this expansion.
+% This structure suggests that more faithful approximations to maximum likelihood
+% can be obtained by incorporating higher-order terms. In settings where increased
+% compute enables additional sampling, these higher-order terms can be estimated
+% unbiasedly, yielding a compute-indexed family of objectives that converges to the
+% maximum likelihood objective as more compute is allocated.
+
+In this section, we show that reinforcement learning on expected reward optimizes
+only a low-order approximation of the ML objective. Specifically, the maximum likelihood objective admits a population-level expansion in terms of pass@k events, with standard RL optimizing only the first-order term. This suggests a compute-indexed family 
+of objectives that incorporate higher-order terms, converging to ML as more 
+compute is allocated.
+
+
+
+\subsection{Maclaurin Expansion of Maximum Likelihood}
+\label{sec:population_passk}
+For simplicity, let us consider a single task $x$ in the following calculation, the final objective and gradients can be obtained by taking an expectation over $x \sim \rho$. Moreover, we write $p := \passrate(x)$ to simplify our notation. Here, the maximum likelihood objective admits the Maclaurin (failure-series) expansion:
+% Our starting point is the Maclaurin (failure-series) expansion of the maximum likelihood objective, which allows us to rewrite the maximum likelihood objective as an infinite sum of terms. 
+\begin{equation}
+J_{\mathrm{ML}}(x)
+=
+\log p
+=
+-\sum_{k=1}^{\infty}\frac{(1-p)^k}{k}
+=
+-\sum_{k=1}^{\infty}\frac{\mathrm{fail@}k(x)}{k},
+\label{eq:log-maclaurin}
+\end{equation}
+where $\mathrm{fail@}k(x)=1-\mathrm{pass@}k(x)$ denotes the probability that all
+$k$ i.i.d.\ samples from the model fail.
+Differentiating~\eqref{eq:log-maclaurin} yields the population-level gradient
+identity
+\begin{equation}
+\boxed{
+\nabla_\theta J_{\mathrm{ML}}(x)
+=
+\sum_{k=1}^{\infty}\frac{1}{k}\,
+\nabla_\theta \mathrm{pass@}k(x)
+}
+\label{eq:ml-passk-mixture}
+\end{equation}
+
+% Equation~\eqref{eq:ml-passk-mixture} is a key identity: it shows that the maximum likelihood optimizes
+% an infinite harmonic mixture of gradients associated with
+% correctness events of increasing order. Higher-order terms encode learning
+% signal from increasingly rare success patterns, which become essential when the
+% model’s pass rate is small.
+
+Thus, maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients, with higher-order terms encoding rare success patterns critical when $p$ is small. In contrast, standard reinforcement learning optimizes only the expected
+pass@1 objective,
+\[
+\nabla_\theta J_{\mathrm{RL}}(x)
+=
+\nabla_\theta \mathrm{pass@}1(x),
+\]
+corresponding to retaining solely the leading term of
+\eqref{eq:ml-passk-mixture}. From this perspective, reinforcement learning is
+best understood as a \emph{first-order approximation} of the maximum likelihood 
+objective in correctness space.
+%, discarding all higher-order correctness
+% information. MaxRL arises by systematically increasing the order of this
+% approximation.
+
+\subsection{\ours{} Objective Function}
+\label{sec:truncated_objectives}
+Optimizing the full infinite mixture in \eqref{eq:ml-passk-mixture} is infeasible under finite compute, suggesting that maximum likelihood cannot be optimized exactly. In particular, estimating
+pass@k gradients for large $k$ requires an increasing number of samples,
+especially when the pass rate $p$ is small. This motivates approximation of the
+maximum likelihood objective by truncating the expansion \eqref{eq:ml-passk-mixture} to a finite order and then estimating this objective instead.
+
+For a truncation level $T \in \mathbb{N}$, we define the truncated maximum
+likelihood objective for a fixed input $x$ as
+% Optimizing the full infinite mixture in \eqref{eq:ml-passk-mixture} is infeasible under finite compute. In particular, estimating pass@k gradients for large $k$ requires increasing samples, 
+% particularly when $p$ is small. For a truncation level $T \in \mathbb{N}$, we define the truncated maximum likelihood objective for a fixed input $x$ as
+
+\begin{equation}
+J_{\ours{}}^{(T)}(x)
+:=
+-\sum_{k=1}^{T}\frac{(1-p)^k}{k}.
+\label{eq:logT-def}
+\end{equation}
+Differentiating~\eqref{eq:logT-def} yields the truncated population gradient
+\begin{equation}
+\nabla_\theta J_{\ours{}}^{(T)}(x)
+=
+\sum_{k=1}^{T}\frac{1}{k}\,
+\nabla_\theta \mathrm{pass@}k(x).
+\label{eq:logT-passk-mixture}
+\end{equation}
+% The family $\{J_{\ours{}}^{(T)}\}_{T \ge 1}$ forms an order-indexed hierarchy of
+% objectives: 
+% \begin{itemize}
+%     \item $T=1$ recovers the standard RL objective;
+%     \item $T \to \infty$ recovers exact maximum likelihood.
+% \end{itemize}
+
+This defines a compute-indexed hierarchy: {\bf{$\mathbf{T=1}$ recovers RL, $\mathbf{T \to \infty}$ 
+recovers maximum likelihood}}, and intermediate $T$ values interpolate between them. 
+
+Thus, the truncation level $T$ directly controls the order of correctness events
+that contribute to learning, providing a principled mechanism for trading
+additional compute for higher-fidelity approximations to the maximum likelihood
+objective. The remaining question is whether these truncated objectives admit simple,
+unbiased estimators under finite sampling, a question that we answer affirmatively in the next section.
+
+\section{Gradient Estimators for \ours{}}
+\label{sec:estimators}
+
+\cref{eq:logT-passk-mixture} already provides a viable approach for
+constructing an unbiased estimator: approximate \emph{each} term in the finite
+series using a pass@k gradient estimator, as provided in prior work~\citep{walder2025passkpolicyoptimizationsolving,chen2025passktrainingadaptivelybalancing}. %We discuss this approach and its relationship to existing estimators
+%in Appendix~\az{appendix}. 
+Under this strategy, improvements in pass@k
+estimators directly translate into improved estimators for the truncated maximum
+likelihood objective in \cref{eq:logT-passk-mixture}. 
+
+% In this paper, however, we adopt a \emph{conditional} sampling perspective that leads to
+% a much simpler unbiased estimator. Specifically, we consider the model
+% distribution conditioned on producing a correct output, i.e., the
+% success-conditioned distribution $m_\theta(z \mid x, f(z)=y^\ast(x))$. This
+% perspective provides a useful lens for understanding the structure of the
+% maximum likelihood gradient and for deriving a practical unbiased estimator for
+% the truncated expansion in \cref{eq:logT-passk-mixture}.
+% The connection is made precise in the following theorem, which is proved in \az{appendix}. 
+In this work, we take an alternate approach: instead of using the pass@k objectives directly, we derive a simpler estimator from a conditional sampling perspective. 
+The key insight is that the maximum likelihood gradient can be expressed as an 
+expectation under the \emph{success-conditioned} distribution:
+
+\begin{theorem}[Conditional Form of the Maximum Likelihood Gradient]
+\label{prop:ml-conditional}
+The gradient of the maximum likelihood objective admits the following conditional
+expectation representation:
+\[
+\nabla_\theta J_{\mathrm{ML}}(x)
+=
+\mathbb{E}\!\left[
+\nabla_\theta \log m_\theta(z \mid x)
+\;\middle|\;
+f(z)=y^\ast(x)
+\right].
+\]
+\end{theorem}
+% This reformulation leads directly to a practical estimator by averaging score 
+% functions over successful samples. With this  we show is unbiased for the truncated 
+% objective $J_{\text{MaxRL}}^{(T)}$.
+We refer the reader to Appendix~\ref{app:proofs} for the proof of this result. Next, we show how to leverage this result to construct a practical
+gradient estimator for the truncated expansion in \cref{eq:logT-passk-mixture}.
+
+\subsection{Empirical Gradient Estimator}
+\label{sec:estimator_objective_equivalence}
+% We now operationalize \cref{prop:ml-conditional} by constructing a practical
+% gradient estimator.
+Fix an input $x$ and draw $N$ latent trajectories
+$z_1,\ldots,z_N \sim m_\theta(\cdot \mid x)$. Let
+$r_i := \mathbb{I}\{f(z_i)=y^\ast(x)\}$ indicate success based reward,
+$S_i := \nabla_\theta \log m_\theta(z_i \mid x)$ denote the score function, and
+$K := \sum_{i=1}^N r_i$ be the number of successful samples.
+
+% Motivated by \cref{prop:ml-conditional}, we approximate the maximum likelihood
+% gradient by averaging score functions over \emph{successful} trajectories only.
+% Specifically, we define the estimator
+Following the conditional expectation form, we average score functions over 
+successful trajectories:
+\begin{equation}
+\widehat{g}_N(x)
+:=
+\begin{cases}
+\displaystyle
+\frac{1}{K}\sum_{i=1}^N r_i S_i, & K \ge 1, \\[0.8em]
+0, & K = 0.
+\end{cases}
+\label{eq:cond-est}
+\end{equation}
+
+We show that this \textbf{conditional estimator} is unbiased for the gradient of the
+truncated maximum likelihood objective in
+\cref{eq:logT-passk-mixture}, $\nabla_\theta J_{\mathrm{\ours{}}}^{(T)}(x)$, with truncation level $T = N$:
+\begin{theorem}[Estimator--objective equivalence]
+\label{prop:logT_equivalence}
+The estimator $\widehat{g}_N(x)$ is an unbiased estimator for the \ours{} gradient of order $T = N$, i.e.,
+\[
+\mathbb{E}\!\left[\widehat{g}_N(x)\right]
+=
+\nabla_\theta J_{\ours{}}^{(N)}(x).
+\]
+\end{theorem}
+
+
+
+We present the proof of this result in Appendix~\ref{app:proofs}.~\cref{prop:logT_equivalence} reveals an elegant alignment between the conditional estimator in \cref{eq:cond-est} and the truncated Maclaurin estimator in \cref{eq:logT-passk-mixture}. Increasing compute ($N$) for our objective therefore improves the
+\emph{objective being optimized itself} by better approximating maximum likelihood. Concretely,~\cref{tab:reinforce-vs-conditional} compares our estimator with the REINFORCE\footnote{
+Modern policy-gradient methods such as PPO \citep{schulman2017proximalpolicyoptimizationalgorithms} introduce additional mechanisms
+(importance weight truncation via clipping) that trade bias for robustness. In the 
+fully on-policy setting, these reduce to REINFORCE, our canonical baseline. GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical} is a notable exception due to its division by standard deviation in the advantage calculation, which we
+discuss further in~\cref{sec:weight_function_view}.
+} estimator, which underlies most RL algorithms. At the estimator level, the difference is simple: both average score functions over sampled trajectories, 
+but REINFORCE normalizes by total samples $N$ while MaxRL normalizes by successful 
+samples $K$. This difference in normalization determines the objective each estimator is unbiased for.
+
+
+\begin{table}[t]
+\centering
+\caption{Side-by-side comparison of the REINFORCE estimator ($\nabla_\theta J_{\mathrm{RL}}(x)$) and the conditional
+estimator ($\nabla_\theta J_{\mathrm{\ours{}}}^{(T)}(x)$). While the two estimators differ only in their normalization ($N$
+versus $K$), they are unbiased for fundamentally different objectives.}
+\label{tab:reinforce-vs-conditional}
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{REINFORCE} & \textbf{Conditional Estimator} \\
+\midrule
+Estimator &
+$\displaystyle
+\frac{1}{N}\sum_{i=1}^N r_i S_i
+$ &
+$\displaystyle
+\frac{1}{K}\sum_{i=1}^N r_i S_i
+$ \\[0.6em]
+Unbiased for &
+$\nabla_\theta\,\mathrm{pass@}1(x)$ &
+$\displaystyle
+\sum_{k=1}^{N}\frac{1}{k}\,
+\nabla_\theta \mathrm{pass@}k(x)
+$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Consequently, increasing number of samples, $N$, for the two estimators has different effects: REINFORCE reduces 
+variance of a fixed objective (pass@1), while MaxRL increases the approximation 
+order to maximum likelihood. Additional compute thus improves the \emph{objective itself} for 
+\ours{}, not just estimation quality.
+
+
+\subsection{Variance Reduction via Control Variates}
+\label{sec:variance_reduction}
+
+Like REINFORCE, the estimator~\eqref{eq:cond-est} can exhibit high variance when 
+successful samples $K$ is small. 
+Policy-gradient baselines are typically introduced to reduce variance without
+changing the expected gradient~\citep{sutton1988learning}. However, standard arguments for policy-gradient
+baselines are not directly applicable in this setting, as the estimator
+normalizes by the random variable $K$ (which depends on all samples) rather than
+a fixed sampling budget.
+
+We instead start from first principles and use a simple zero-mean control variate, the unconditional average score:
+\[
+V_N := \frac{1}{N}\sum_{i=1}^N \nabla_\theta \log m_\theta(z_i \mid x),
+\]
+which satisfies $\mathbb{E}[V_N]=0$. Subtracting $V_N$ preserves unbiasedness while 
+reducing variance:
+\begin{equation}
+\widetilde g_N(x)
+=
+\frac{1}{K}\sum_{i=1}^N r_i S_i
+-
+\frac{1}{N}\sum_{i=1}^N S_i
+=
+\sum_{i=1}^N\!\left(\frac{r_i}{K}-\frac{1}{N}\right)S_i,
+\label{eq:final-estimator}
+\end{equation}
+with the convention that the first term, $\left(\sum_{i = 1}^N r_iS_i\right)/K$, is zero when $K=0$. In practice, we drop both terms when $K=0$, as this variant is
+simpler, follows the standard convention in policy-gradient algorithms where no gradient is computed on tasks with no successful rollouts, and performs better empirically. 
+
+
+\subsection{Practical \ours{} Implementation}
+
+Our theoretical construction in the preceding sections admits a simple practical implementation requiring only a single line change in the advantage calculation for GRPO-style~\citep{shao2024deepseekmathpushinglimitsmathematical} policy gradient implementations.~\cref{alg:maxRL} illustrates our pseudocode: the main difference is that we divide by the per-task mean reward obtained via Monte-Carlo sampling to obtain the advantage, instead of no division (RLOO~\citep{ahmadian2024basicsrevisitingreinforcestyle}) or division by reward standard deviation (GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical}). This change allows us to estimate the gradient of the truncated maximum likelihood objective of order $N$ (the number of rollouts), whose behavior we will analyze in the following sections.
+ 
+
+\section{A Unifying Weight-Function View}
+\label{sec:weight_function_view}
+In this section, we provide a unified view of all objectives, including Maximum likelihood, \ours{}, classical reinforcement learning, and GRPO. Specifically, their population-level gradients admit
+a weighted representation
+\begin{equation}
+\nabla_\theta J
+=
+\mathbb{E}_{x \sim \rho}
+\!\left[
+w\!\left(p_\theta(x)\right)
+\,\nabla_\theta p_\theta(x)
+\right],
+\label{eq:weight_function_form}
+\end{equation}
+where $p_\theta(x)=\passrate(x)$ and the weighting function $w(p)$ determines how
+learning signal is allocated across inputs of different difficulty. Figure~\ref{fig:weight_functions_for_grad_p} shows $w(p)$ for each objective (proof in Appendix~\ref{app:proofs}).
+
+\begin{algorithm}[t]
+\label{alg:maxRL}
+\caption{Practical Implementation of \ours{}}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Batch of training tasks $B$, number of rollouts $N$, latent generation model $m_\theta$
+% \STATE \textbf{Initialize:} $s_k=0$, $n_k=0$, \texttt{Buffer}
+\FOR{each training example $(x_i, y^\ast(x_i)) \in B$}
+    \STATE Sample $N$ rollouts $z^1, \ldots, z^N \overset{\text{i.i.d.}}{\sim} m_\theta(\cdot|x_i)$
+    \STATE Calculate binary reward $r_j = \mathbb{I}\left[f(z^j) = y^\ast(x_i)\right]$
+    \STATE Calculate mean reward $\hat{\mu} = \frac{1}{N} \sum_{j = 1}^N r_j$
+    \STATE Set advantage for each rollout $z_j$ \begin{align*}
+        A_j = \begin{cases}
+            0, & \text{if } \hat{\mu} = 0\\
+            \frac{r_j - \hat{\mu}}{\hat{\mu}}, & \text{otherwise}
+        \end{cases}
+    \end{align*}
+\ENDFOR
+\STATE Take a GRPO-style policy gradient step
+\end{algorithmic}
+\end{algorithm}
+
+This weight perspective also provides a useful reinterpretation of GRPO
+\citep{shao2024deepseekmathpushinglimitsmathematical}. Although GRPO is
+heuristically motivated by Z-normalization using the empirical standard
+deviation, such normalization induces a fundamentally different population-level
+objective than REINFORCE, a conclusion also reached by recent work~\citep{davis2025objectivereasoningreinforcementlearning,liu2025understandingr1zeroliketrainingcritical,xiong2025reinforceadaadaptivesamplingframework}. Relative to standard expected-reward
+optimization, GRPO upweights low-pass-rate inputs approximately as
+$1/\sqrt{p}$ when $p$ is small, placing it between classical reinforcement
+learning and maximum likelihood. However, increasing compute via additional
+sampling under GRPO does not yield a better approximation to the maximum
+likelihood objective, as the induced population loss is fundamentally distinct.
+Moreover, as shown in Figure~\ref{fig:weight_functions_for_grad_p}, the GRPO weighting function \emph{inverts} for
+sufficiently large pass rates, increasing as $p \to 1$, unlike likelihood-based
+objectives. Consequently, GRPO assigns increased weight to very easy inputs when
+they are present, in contrast to the other formulations.\footnote{We conjecture
+that this inversion may contribute to distribution sharpening when datasets
+contain a substantial fraction of overly easy inputs, and leave a detailed
+analysis to future work.}
+
+\begin{table}[h]
+\centering
+\caption{Population-level weighting functions $w(p)$.}
+\label{tab:weight-functions}
+\begin{tabular}{lcccc}
+\toprule
+ & RL & GRPO & \ours{} ($T$) & ML \\
+\midrule
+$w(p)$
+& $1$
+& $\displaystyle \frac{1}{\sqrt{p(1-p)}}$
+& $\displaystyle \frac{1 - (1-p)^T}{p}$
+& $\displaystyle \frac{1}{p}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/weight_functions.pdf}
+    \caption{\footnotesize Population-level weighting functions  $w(p)$ as a function of pass rate $p$. Truncated objectives $\log_T p_\theta$ interpolate between (REINFORCE) and maximum likelihood as $T$ increases.}
+    \label{fig:weight_functions_for_grad_p}
+    % \vspace{-0.2cm}
+\end{figure}
+
+Figure~\ref{fig:weight_functions_for_grad_p} shows that as $T$ increases, MaxRL 
+approaches ML weighting in the low-pass regime while remaining bounded at moderate $p$. 
+The key distinction among objectives is \emph{how strongly they emphasize hard, low-probability inputs}. 
+MaxRL uniquely recovers ML weighting with increased compute, aligning RL with 
+likelihood-based optimization.
+
+
+\section{Experiments}
+\label{sec:experiments}
+
+In this section, we empirically evaluate \ours{} on non-differentiable correctness-based tasks.
+
+We begin in \cref{sec:imagenet} with a controlled setting where exact maximum likelihood optimization is possible, allowing direct comparison with \ours{} as compute increases. We then study non-differentiable correctness-based tasks in two regimes: (i) an \emph{effectively infinite-data} setting with continually novel tasks (\cref{sec:maze}), and (ii) a \emph{data-scarce} setting with a fixed training dataset (\cref{sec:GSM8K}). Finally, in \cref{sec:large_llms}, we evaluate billion-parameter reasoning models on mathematical problem-solving tasks, testing whether the benefits of \ours{} extend to large-scale LLM training.
+
+Because we compare training objectives rather than algorithms, all methods are trained on-policy. We compare against REINFORCE with a leave-one-out baseline (RLOO) \citep{ahmadian2024basicsrevisitingreinforcestyle} and Group Relative Policy Optimization (GRPO) \citep{shao2024deepseekmathpushinglimitsmathematical}.
+
+
+\subsection{Comparisons with Exact Likelihood}
+\label{sec:imagenet}
+
+As a first step, we evaluate how closely \ours{} approximates \emph{exact} maximum likelihood in a setting where likelihood optimization is directly available. We compare three objectives: (i) reinforcement learning on expected reward, (ii) \ours{}, and (iii) exact maximum likelihood training. We consider a standard image classification task, where maximum likelihood corresponds to minimizing cross-entropy. The reinforcement learning reward is defined as 1 if the predicted class matches the ground-truth label and 0 otherwise.
+
+We instantiate this comparison on ImageNet~\citep{deng2009imagenet} using a ResNet-50 trained under each objective; full experimental details are provided in Appendix~\ref{app:imagenet}. Figure~\ref{fig:imagenet_summary_results} summarizes the results. REINFORCE (with a standard baseline) fails to achieve meaningful improvements in accuracy even as the per-input sampling budget increases, whereas exact maximum likelihood training yields steady gains.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/imagenet_new_main_paper_figure_1.pdf}
+    \caption{\footnotesize \textbf{(ImageNet)} Comparison of training dynamics under exact maximum likelihood, \ours{}, and REINFORCE in a controlled image classification setting. With sufficient rollouts, \ours{} closely matches cross-entropy training, while REINFORCE fails to make progress from low initial pass rates. }
+    \label{fig:imagenet_summary_results}
+    % \vspace{-0.2cm}
+\end{figure}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/maze_scaling_with_number_of_rollouts.pdf}
+\caption{\footnotesize \textbf{(Maze)} Scaling behavior with increasing rollouts per prompt.}
+    \label{fig:maze_scaling_with_additional_compute}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/smollm_training_step.pdf}
+\caption{\footnotesize \textbf{(GMS8K)} Training dynamics on GSM8K with a fixed dataset and increasing training compute. \ours{} shows slower initial gains but sustained improvement and substantially less pass@k degradation compared to GRPO and REINFORCE.}
+
+    \label{fig:smollm_pass_at_k_vs_training_steps}
+    % \vspace{-0.5cm}
+\end{figure*}
+
+
+In contrast, \ours{} is trained on the same samples and observes the same sparse set of successful trajectories as REINFORCE, but makes more effective use of this limited learning signal through likelihood-inspired reweighting. As the compute increases by means of higher rollout counts, \ours{} improves consistently and closely tracks exact maximum likelihood.
+
+\subsection{Infinite Data Regime}
+\label{sec:maze}
+
+
+\begin{table}[h!]
+\centering
+\caption{Performance comparison across methods in maze.}
+\label{tab:maze_baseline_comparisons}
+\resizebox{0.45\textwidth}{!}{%
+    \begin{tabular}{l|ccc}
+    \toprule
+    \textbf{Method} & \textbf{Pass@1} & \textbf{Pass@128} & \textbf{Pass@256} \\
+    \midrule
+    GRPO & 39.6 & 42.4 & 43.0 \\
+    GRPO (with entropy bonus) & 47.2 & 53.4 & 54.0 \\
+    PKPO (T = 16)~\citep{walder2025passkpolicyoptimizationsolving} & 74.5 & 77.6 & 77.9 \\
+    SELF~\citep{nguyen2025reasoningboundaryparadoxreinforcement} & 46.1 & 86.3 & 87.5 \\
+    Differential Smoothing~\citep{gai2025differentialsmoothingmitigatessharpening} & 50.0 & 57.8 & 58.7 \\
+    \midrule
+    \textbf{MaxRL} & \textbf{84.4} & \textbf{92.0} & \textbf{94.3} \\
+    \bottomrule
+    \end{tabular}
+}
+\end{table}
+
+
+To study training with continually fresh data, we construct a procedurally generated maze-navigation environment. Each training input is a newly generated maze, and the model never encounters the same maze twice during training; multiple valid solution paths may exist for a given maze. We reserve a held-out set of 256 mazes for evaluation and apply a brief supervised pretraining phase—uniformly across all methods—to ensure a non-zero initial pass rate. Full task details are provided in Appendix~\ref{app:maze_task_description}.
+
+We train a lightweight transformer model \citep{vaswani2023attentionneed} with approximately 3M parameters and simulate extended training by running 9K RL steps with up to 128 rollouts per prompt, varying the number of rollouts to control compute. We report performance after 9K steps in \cref{fig:maze_scaling_with_additional_compute} as a function of rollouts per prompt.
+
+All three objectives—REINFORCE with a leave-one-out baseline (RLOO), GRPO, and \ours{}—improve upon the base model. However, performance is clearly stratified: \ours{} consistently outperforms GRPO, which in turn outperforms RLOO, indicating progressively more effective use of additional compute.~\cref{tab:maze_baseline_comparisons} and~\cref{fig:maze_baseline_curves} show comparison with additional baselines in this setting.
+
+
+\subsection{Data-Scarce Regime}
+\label{sec:GSM8K}
+
+\begin{table}[h!]
+\centering
+\caption{Performance comparison across methods on GSM8K.}
+\label{tab:gsm8k_comparison_with_baselines}
+\resizebox{0.45\textwidth}{!}{%
+    \begin{tabular}{l|ccc}
+    \toprule
+    \textbf{Method} & \textbf{Pass@1} & \textbf{Pass@128} & \textbf{Pass@1024} \\
+    \midrule
+    GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical} & 29.3 & 45.8 & 48.8 \\
+    RLOO~\citep{ahmadian2024basicsrevisitingreinforcestyle} & 27.5 & 44.6 & 48.5 \\
+    GRPO (with entropy bonus) & 31.1 & 48.1 & 51.6 \\
+    PKPO (T = 16) ~\citep{walder2025passkpolicyoptimizationsolving} & 30.7 & 67.2 & 75.9 \\
+    Differential Smoothing~\citep{gai2025differentialsmoothingmitigatessharpening} & 31.4 & 48.5 & 52.3 \\
+    \midrule
+    \textbf{MaxRL} & \textbf{33.2} & \textbf{75.0} & \textbf{83.4} \\
+    \bottomrule
+    \end{tabular}
+}
+\end{table}
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/large_scale_experiments_summary.pdf}
+    \caption{\footnotesize \textbf{(Qwen3 training results)} Evaluation of final checkpoints from training Qwen3-1.7B-Base and Qwen3-4B-Base models. \ours{} match or ourperform GRPO in all 4 evaluation datasets and shows little to no degradation at coverage (pass@k) for very high k values. We also note the increase in inference efficiency: \ours{} can provide $2.3 \times$ - $19.2\times$ speedup compared to GRPO while generating multiple samples with a perfect verifier and maintains similar or better pass@1 performance.}
+    \label{fig:large_scale_results_summary}
+    % \vspace{-0.3cm}
+\end{figure*}
+
+
+We next consider a data-scarce regime in which models are trained for many epochs over a fixed dataset until they reach peak performance. Unlike the infinite-data setting in \cref{sec:maze}, this regime exposes differences in how objectives allocate learning signal under repeated training.
+
+We train a SmolLM2-360M-Instruct model~\citep{allal2025smollm2smolgoesbig} on GSM8K~\citep{cobbe2021trainingverifierssolvemath}, consisting of 7,473 grade-school math problems, for up to 50 epochs. We report training dynamics in \cref{fig:smollm_pass_at_k_vs_training_steps}; additional details are provided in Appendix~\ref{app:task_description}.
+
+All methods improve upon the base model, with the familiar stratification: \ours{} outperforms GRPO, which in turn outperforms RLOO. However, their training dynamics differ substantially. Both RLOO and GRPO rapidly peak in pass@1 performance—around 10 epochs—and exhibit pronounced pass@k degradation under continued training, consistent with prior observations of distribution sharpening~\citep{yue2025doesreinforcementlearningreally}.
+
+In contrast, \ours{} shows slower initial gains but sustained improvement. Pass@1 overtakes competing methods at approximately 30 epochs and continues to increase through the end of training, while pass@k remains substantially healthier and exceeds the base model for a large portion of training. This behavior suggests that preserving higher-order correctness provides a continued source of learning signal under repeated exposure to the same data. For comparison with additional baselines, refer to~\cref{tab:gsm8k_comparison_with_baselines}.
+
+\subsection{Large Reasoning Model Training}
+\label{sec:large_llms}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/qwen_p_vs_grad_norm_plot.pdf}
+    \caption{\footnotesize \textbf{(Gradient norm analysis)} To compare different objectives qualitatively, we show a scatter plot of gradient $L^2$ norm vs pass rate over individual prompts. We use Qwen2.5-1.5B-Instruct on MATH-500 dataset for this analysis. \ours{} generate larger gradient norms over prompts with close to 0 pass rates.}
+    \label{fig:qwen_p_vs_grad_norm_analysis}
+\end{figure}
+
+We next demonstrate that the benefits of \ours{} extend to large-scale LLM reasoning training. We train Qwen3-1.7B-Base and Qwen3-4B-Base models on POLARIS-53K~\citep{Polaris2025}, a dataset of approximately 50K mathematical reasoning prompts.
+
+We evaluate on four standard math benchmarks: AIME 2025, BeyondAIME~\citep{bytedance_seed_2025_beyondaime}, MATH-500~\citep{hendrycks2021measuringmathematicalproblemsolving,lightman2023letsverifystepstep}, and Minerva~\citep{lewkowycz2022solvingquantitativereasoningproblems}. We compare against GRPO, a widely used baseline for large-scale reasoning. All methods are trained under the same compute budget (256 prompts per batch, 16 rollouts per prompt, and 1000 RL steps); additional details are provided in Appendix~\ref{app:realistic_reasoning_task_description}.
+
+
+Figure~\ref{fig:large_scale_results_summary} summarizes the results. Across both model sizes, \ours{} consistently Pareto dominates GRPO, achieving higher pass@1 while simultaneously improving pass@k. Consistent with prior work~\citep{yue2025doesreinforcementlearningreally,wu2026invisibleleashrlvrescape}, GRPO exhibits pronounced pass@k degradation at larger $k$. In contrast, \ours{} improves pass@k relative to both the pretrained base model and the GRPO-trained checkpoint in 7 out of 8 evaluation settings. Improved pass@k directly translates into inference efficiency under repeated sampling. As shown in Figure~\ref{fig:large_scale_results_summary}, \ours{} achieves comparable or better pass@k using up to \textbf{20}$\bm{\times}$ fewer samples than GRPO, yielding substantial practical savings at inference time.
+
+\paragraph{Analysis of Training Dynamics.}
+As shown in \cref{fig:qwen_p_vs_grad_norm_analysis}, \ours{} assigns larger gradient norms to difficult prompts than GRPO and RLOO, leading to a higher fraction of training prompts with non-zero pass rate over training (\cref{fig:prompts_solved_during_training}). Additional analyses are provided in Appendix~\ref{app:qwen3_4B_base}.
+
+\section{Related Works} 
+\label{sec:relatedWorks}
+
+\paragraph{Supervised training vs reinforcement learning.} Supervised learning and reinforcement learning (RL) are complementary but fundamentally different paradigms. Supervised training is stable, sample-efficient, and well-calibrated within the training distribution~\citep{ngNIPS2001}, but it is limited by the quality and scope of available data and cannot directly optimize non-differentiable objectives such as correctness or preferences. In contrast, RL —typically via policy gradients~\citep{williams1992simple,sutton1999policy,sutton1998reinforcement,schulman2017proximalpolicyoptimizationalgorithms,guo2017calibrationmodernneuralnetworks} — can optimize such objectives directly and improve performance beyond available demonstrations by having access to interactions with an environment and the resulting reward-based feedback. Although recent work has reframed RL objectives as supervised ones~\citep{rafailov2024directpreferenceoptimizationlanguage}, on-policy learning, characteristic of online RL algorithms, appears crucial for optimal performance~\citep{tajwar2024preferencefinetuningllmsleverage,xu2024dposuperiorppollm}. Modern foundation model training often combines supervised learning on human data with subsequent RL~\citep{ouyang2022traininglanguagemodelsfollow}. Unlike these approaches, we assume no access to high-quality demonstrations or a stronger model, and instead study a purely interactive RL setting that nonetheless optimizes an objective that mimics cross-entropy. We discuss additional related works in Appendix~\ref{app:additionalRelatedWorks}.
+
+
+\paragraph{Training LLMs for strong reasoning abilities.} Reinforcement learning from verifiable rewards (RLVR), where LLMs receive reward from a ground truth verifier instead of using a trained reward model, has emerged as the dominant paradigm for instilling strong reasoning capabilities into LLMs~\citep{jaech2024openai,guo2025deepseek,kimiteam2025kimik15scalingreinforcement,lambert2025tulu3pushingfrontiers,yang2025qwen3technicalreport}. Whereas supervised training learns better behavior from fixed static datasets, reinforcement learning uses policy gradient algorithms (e.g., PPO~\citep{schulman2017proximalpolicyoptimizationalgorithms}, GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical}, RLOO~\citep{ahmadian2024basicsrevisitingreinforcestyle}) to learn from self-generated responses and non-differentiable rewards. However, these algorithms and their variants~\citep{zheng2025groupsequencepolicyoptimization,liu2025understandingr1zeroliketrainingcritical,minimax2025minimaxm1scalingtesttimecompute} optimize expected reward or pass rate and only differs in how the advantage or off-policy updates are calculated. In contrast, the goal of our work is to propose a fundamentally different objective for RL training.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/fraction_solved_problems_during_training.pdf}
+    \caption{\footnotesize \textbf{(Training dynamics comparison)} Fraction of prompts where the model generates at least one correct rollout (out of 128, 16, and 16 rollouts for SmolLM-360M-Instruct, Qwen3-1.7B-Base, and Qwen3-4B-Base, respectively) during training. \ours{} consistently produces at least one correct rollout for more prompts across all settings, demonstrating its effectiveness at extracting more learning signal from the training dataset.}
+    % \vspace{-0.5cm}
+    \label{fig:prompts_solved_during_training}
+\end{figure}
+
+
+\paragraph{RL training causes distribution sharpening.} Despite its usefulness, questions remain on whether RLVR teaches LLMs fundamentally new behavior/skills, or simply sharpens existing good behavior from the pretrained model. Prior works~\citep{liu2025understandingr1zeroliketrainingcritical,zhao2025echochamberrlposttraining,ai2025rethinkingreflectionpretraining} demonstrated that certain reasoning skills like reflection already exist in the pretrained model, and~\citet{gandhi2025cognitivebehaviorsenableselfimproving} shows that good reasoning behaviors learned from pretraining is crucial for the success of RLVR in the post-training phase. More recently, studies~\citep{yue2025doesreinforcementlearningreally,dang2025assessing,wu2026invisibleleashrlvrescape} found that RLVR decreases the model's diversity by reducing pass@k. In our paper, we confirm these findings and attribute this to the RL objective itself --- we demonstrate that optimizing expected reward tends to marginalize learning signal from harder prompts, which results in distribution sharpening.
+
+\paragraph{Learning to solve hard problems.} Due to RLVR's shrinking of model coverage, significant attention has been drawn to new RL algorithms mitigating pass@k collapse. Approaches range from directly optimizing for pass@k during training~\citep{walder2025passkpolicyoptimizationsolving,tang2025optimizinglanguagemodelsinference} to employing exploration bonuses in RL~\citep{song2025outcomebasedexplorationllmreasoning,tuyls2025representationbasedexplorationlanguagemodels}. We show in our work that pass@k optimization objectives are a special case of our objective, since it optimizes an infinite harmonic series of pass@k objectives.  On the other hand, the other works carry the fundamental limitation of RLVR of maximizing expected reward or pass rate over a batch of prompts, which we demonstrate to have vanishing gradient for prompts with low pass rate. This issue is also recognized by~\citet{nguyen2025reasoningboundaryparadoxreinforcement}, which introduces selective learning only on prompts where greedy response fails, but unlike us, does not weigh prompts differently based on their pass rate. One exception is the recent work,~\citet{xiong2025reinforceadaadaptivesamplingframework} --- like us, they suggest to investigate non-linear functions of the pass rate. Although our papers have similar motivation, the development of them is different. Our work establishes connections between a cross-entropy-like objective and pass@k optimization, which then motivates our practical objectives. Empirically, our work focuses on an on-policy validation of the theoretical ideas we introduce, and provide didactic experiments where the compute scaling can be thoroughly investigated, whereas~\citet{xiong2025reinforceadaadaptivesamplingframework}'s effort instead focuses on adaptive rollout budget allocation rules, similar to~\citet{yao2025optimizingchainofthoughtreasonersgradient}, and thus offers a complementary investigation. We discuss additional related works in Appendix~\ref{app:additionalRelatedWorks}.
+
+
+\section{Conclusion}
+
+In this work, we introduced \ours{}, a framework for reinforcement learning that models maximum likelihood as the training objective in non-differentiable binary reward settings. We showed that \ours{} approaches maximum likelihood in differentiable settings as compute increases, and that in non-differentiable settings it offers key advantages over traditional RL—scaling more effectively with additional compute while exhibiting substantially less diversity reduction. More broadly, our results suggest that some limitations attributed to reinforcement learning with foundation models arise from objective choice rather than optimization or sampling. Our work currently assumes a binary reward setting and does not directly extend to continuous or arbitrarily valued rewards. Generalizing \ours{} to continuous rewards, multi-turn reinforcement learning, and off-policy settings such as PPO-style training are promising directions for future work.
+
+
+\section*{Acknowledgements}
+
+This work has greatly benefited from the use of Delta's advanced computing and data resource supported by the National Science Foundation (OAC 2005572) and the State of Illinois, as part of ACCESS-approved compute grants~\citep{access_compute}. The authors also appreciate the computing resources of Bridges-2~\citep{psc_computing} at Pittsburgh Supercomputing Center through ACCESS allocation CIS240901 from the Advanced Cyberinfrastructure Coordination Ecosystem: Services \& Support (ACCESS) program, which is supported by National Science Foundation grants \#2138259, \#2138286, \#2138307, \#2137603, and \#2138296. Overall, this project used ACCESS grants  CIS240901, CIS250216, CIS250428, CIS250651, CIS250835, CIS250560, CIS251063, and CIS251385 for its compute resources. The authors also thank the CMU FLAME center and the CMU Babel Compute Cluster for additional compute support during the early phases of this project. 
+
+This work was supported in part by ONR N000142312368 and ONR MURI N00014-25-1-2116. Moreover, Fahim Tajwar was partially supported by the U.S. Army Futures Command under Contract No. W519TC-23-C-0030 during the project. Yiding Jiang gratefully acknowledges the support of the Google PhD Fellowship. Finally, Andrea Zanette was partially supported by the National Science Foundation under Grants CCF-2106778 and DMS-2134080.
+
+The authors thank Brandon Pusateri, Jillian Lehosky, and Greg Bauer from ACCESS Support Staff for their incredible help at approving supplements and renewals for ACCESS compute grants throughout this project. Moreover, the work would not have finished in a timely manner without the help of Brett Bode from NCSA Delta Support Staff, who provided the authors with critical help in properly utilizing the Delta cluster. Fahim Tajwar gratefully acknowledges Qianqian Wang, Samuel Sokota, Yutong He, Lili Chen, Stephan Xie, Haque Ishfaq, and other members of the Zanette, Russ, and Auton lab for feedback and suggestions received on earlier versions of this work.
+
+
+
+\bibliography{example_paper}
+\bibliographystyle{icml2026}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+
+\section{Extended Related Works} \label{app:additionalRelatedWorks}
+
+\paragraph{Cross-entropy objective.} 
+\az{Putting this year for Fahim from the intro, remove if redundant:  Beyond its empirical successes, maximum likelihood enjoys a number of theoretical properties: it defines a strictly proper scoring rule~\citep{good2018,savageproperscoringrule,Gneiting01032007,waghmare2025properscoringrulesestimation}, yields statistically efficient estimators under standard assumptions~\citep{Vaart_1998,casella2002statistical,lehmann2006theory}, and induces gradients that concentrate learning signal on low-probability or uncertain outcomes through logarithmic weighting~\citep{Wang2020ACS}.}
+
+Cross-entropy is a widely used objective in machine learning due to its simplicity and favorable theoretical properties. In particular, cross-entropy is a strictly proper scoring rule, meaning that the expected loss is uniquely minimized by the true probability distribution, which encourages statistically calibrated predictions~\citep{good2018,Gneiting01032007,savageproperscoringrule,waghmare2025properscoringrulesestimation}. As a result, cross-entropy (or log-loss) often yields consistent estimators for classification and tends to generalize well in practice~\citep{ngNIPS2001,tong2004}. However, more recent work has shown that models trained to maximize log-likelihood can still overfit and exhibit miscalibration, motivating post-hoc techniques such as temperature scaling~\citep{mizil2005,guo2017calibrationmodernneuralnetworks}. Moreover, the unbounded nature of cross-entropy and its sensitivity to small perturbations in the predicted distribution suggest that alternative strictly proper scoring rules may be more suitable in certain settings~\citep{kornblith2021demystifying}. Because cross-entropy is extensively studied, we refer interested readers to~\citet{mao2023crossentropylossfunctionstheoretical,crossEntropySurvey,Terven2025LossMetrics} for a comprehensive review.
+
+\paragraph{Supervised training vs reinforcement learning.} Supervised learning has been the go-to training paradigm in machine learning, beginning with early ``learning with a teacher'' neural network based systems such as the perceptron~\citep{Rosenblatt1958ThePA} and later becoming practical with backpropagation-based neural network training~\citep{rumelhart1986learning}. It has been used to tackle a broad range of problems, from financial fraud detection~\citep{AFRIYIE2023100163,Editya_Alamin_Pramana_Kurniati_2025}, to sentiment analysis~\citep{zhang2018deeplearningsentimentanalysis} and spam detection~\citep{smsspamclassification,imagespamdetection}. More recently, supervised training has been used in modern image classification systems~\citep{lenet,alexnet} to achieve strong performance. In modern foundation models, ``pretraining'' is typically done by supervised learning via minimizing cross-entropy over next-token prediction~\citep{radford2018improving,radford2019language} on large corpus of text, followed by additional supervised training on high quality human written demonstrations~\citep{ouyang2022traininglanguagemodelsfollow,zhang2025instructiontuninglargelanguage} to teach models how to respond to prompts, often known as instruction-tuning. In sequential decision making domains, supervised training appears as behavior cloning from expert demonstration, used in early autonomous driving and robotic systems~\citep{alvinn,bojarski2016endendlearningselfdriving,codevilla2018endtoenddrivingconditionalimitation}. However, supervised learning in sequential decision making breaks the i.i.d. assumption since the learned policy's actions affect which states it visits during execution, causing compounding errors over time~\citep{efficientReductionsForImitationLearning,belkhale2023dataqualityimitationlearning}. The classic no-regret reductions line (DAgger) makes this explicit and addresses drift by iteratively querying the expert on states visited by the learner, turning the sequential problem into an online supervised learning loop with improved guarantees~\citep{ross2011reductionimitationlearningstructured}.
+
+In such scenarios, reinforcement learning is an attractive alternative paradigm that formalizes learning under delayed, sparse, and evaluative feedback in Markov decision processes (MDPs), with foundational roots in dynamic programming and MDP theory~\citep{mdp}. Mechanistically, the key contrast with supervised learning / behavior cloning is that supervised learning assumes (or benefits strongly from) an i.i.d. dataset of correct targets under a fixed data distribution, whereas RL’s data distribution is policy-induced and nonstationary, and gradients arise from credit assignment through rewards rather than direct target labels. This mismatch shows up starkly in sequential prediction/imitation: naive behavior cloning trains on expert state distributions but at test time visits states induced by its own errors, causing compounding error (a form of distribution shift / “state drift”). Classical RL algorithms include temporal-difference learning~\citep{sutton1988learning,sutton1998reinforcement} and value-based control such as Q-learning~\citep{watkins1992qlearning}, while policy-gradient methods~\citep{williams1992simple,sutton1999policy} directly optimize expected return via likelihood-ratio gradients (REINFORCE) and later stabilized large-scale learning through variants like trust-region policy optimization (TRPO)~\citep{schulman2017trustregionpolicyoptimization} and off-policy actor–critic methods for continuous control (e.g., DDPG~\citep{lillicrap2019continuouscontroldeepreinforcement}) and maximum-entropy actor–critic (e.g., SAC~\citep{haarnoja2018softactorcriticoffpolicymaximum}). Empirically, deep RL’s modern resurgence is often associated with representation learning + RL on high-dimensional inputs (e.g., DQN~\citep{mnih2013playingatarideepreinforcement}).
+
+A large body of work blends supervised and RL to get the best of both: (i) Imitation + online correction methods like DAgger~\citep{ross2011reductionimitationlearningstructured} explicitly combine supervised learning with interactive data collection to mitigate distribution shift ; (ii) Inverse RL / MaxEnt IRL reframes imitation as learning a reward/cost model that explains expert behavior, with maximum-entropy formulations giving a principled probabilistic objective~\citep{maximum_entropy_inverse_reinforcement_learning}; (iii) Adversarial imitation (GAIL)~\citep{ho2016generativeadversarialimitationlearning} avoids explicit reward learning by matching occupancy measures via a GAN-like discriminator, typically trained with policy optimization; (iv) Learning from demonstrations in deep RL injects supervised losses and/or demonstration replay into RL to improve exploration and sample efficiency—e.g., DQfD~\citep{hester2017deepqlearningdemonstrations} combines TD learning with supervised large-margin imitation terms, and demonstration-augmented continuous-control methods address sparse-reward exploration failures~\citep{nair2018overcomingexplorationreinforcementlearning}; and (v) Trajectory-optimization–guided policy learning (guided policy search~\citep{guided_policy_search}) explicitly produces supervised targets for a policy network from trajectory optimization / local controllers, bridging optimal control, RL, and supervised regression. In modern LLM alignment, the same hybrid template appears as ``Supervised fine-tuning + preference-based RL”: InstructGPT~\citep{ouyang2022traininglanguagemodelsfollow} first performs supervised fine-tuning on demonstrations and then applies RL from human feedback (RLHF), while more recent approaches like Direct Preference Optimization (DPO)~\citep{rafailov2024directpreferenceoptimizationlanguage} recast parts of RLHF into a supervised-style classification objective --- illustrating an active trend of recovering supervised-like training signals even when the underlying goal is preference/reward optimization.
+
+Finally, control as inference is also a closely related topic~\citep{millidge2020relationshipactiveinferencecontrol,odonoghue2020makingsensereinforcementlearning,stochastic_optimal_control,ito2024risksensitive,tarbouriech2023probabilisticinferencereinforcementlearning}, and we point the reader to~\citet{levine2018reinforcementlearningcontrolprobabilistic} for more details.
+
+\paragraph{Training LLMs for strong reasoning abilities.} A few different approaches for post-training have demonstrated success, including supervised fine-tuning on human-crafted high quality demonstrations~\citep{wang2023farcamelsgoexploring}, iterative supervised training on self-generated good quality responses~\citep{zelikman2022starbootstrappingreasoningreasoning,gulcehre2023reinforcedselftrainingrestlanguage}, reinforcement learning from a learned reward model on human preferences~\citep{ouyang2022traininglanguagemodelsfollow}, and more recently preference-based contrastive learning~\citep{rafailov2024directpreferenceoptimizationlanguage,pang2024iterativereasoningpreferenceoptimization}. In our work, we focus on recovering the cross-entropy based classification objective in an RL training pipeline, fundamentally differing from the prior works. Since the recent advent of RLVR, multiple followup works have studied the RLVR pipeline~\citep{zeng2025simplerlzooinvestigatingtamingzero,liu2025understandingr1zeroliketrainingcritical,khatri2025artscalingreinforcementlearning} and proposed alternative algorithms such as Dr.GRPO~\citep{liu2025understandingr1zeroliketrainingcritical}, DAPO~\citep{yu2025dapoopensourcellmreinforcement}, GSPO~\citep{zheng2025groupsequencepolicyoptimization} and CISPO~\citep{minimax2025minimaxm1scalingtesttimecompute}, RAFT~\citep{xiong2025minimalistapproachllmreasoning}. The idea of normalizing advantages by mean reward, similar to ours, has been explored in~\citep{huang2025mapomixedadvantagepolicy}, but whereas we normalize advantage by group mean reward (mean reward over the rollouts associated with a particular prompt), ~\citet{huang2025mapomixedadvantagepolicy} normalizes by the batch mean reward (mean reward over all prompts in a batch of policy gradient updates). Finally, recent work such as~\citet{zhang2025interplaypretrainingmidtrainingrl} has also studied how RL training is influenced by pretraining and midtraining in toy didactic settings, establishing the importance of good pretraining/midtraining for the success of RL, similar to~\citet{gandhi2025cognitivebehaviorsenableselfimproving}.
+
+
+\paragraph{On exploration for reinforcement learning for LLMs.} Exploration, or taking actions to discover new information, is a widely studied topic in reinforcement learning. A closely related topic is \textit{curiosity}, where an agent seeks new information about its environment via interactions. \textit{Intrinsic motivation} is a popular notion for curiosity, where the agent is driven by an exploration bonus that is not necessarily related to the task to be achieved~\citep{schmidhuber1991curious,schmidhuber2007godel}. Followup works have built on this notion to mitigate problems of sparse reward (reward is observed at a very belated phase of interactions) or no reward at all~\citep{pathak2017curiosity,pathak2019self,eysenbach2018diversity,burda2018exploration,sharma2019dynamics,yang2024explorationantiexplorationdistributionalrandom,vime}. Count-based bonuses have also been introduced as a way of computing intrinsic motivation~\citep{bellemare2016unifyingcountbasedexplorationintrinsic}. Prompt-level reweighting of gradients has also been studied~\citep{yu2025restrainspuriousvotessignals}, though under a different context (self-training) and a different weighting mechanism. Finally, adding noise to network parameters or optimization has been another line of work to improve exploration during RL training~\citep{fortunato2019noisynetworksexploration,ishfaq2024efficientrandomizedexplorationreinforcement,ishfaq2024provablepracticalefficientexploration,ishfaq2025langevinsoftactorcriticefficient}. Maximum entropy RL, the principle where one attempts to recover an agent that achieves high reward but is as stochastic as possible, can be seen as another attempt at solving exploration for classical RL~\citep{haarnoja2018softactorcriticoffpolicymaximum,boucher2025evidenceregularisationpropertiesmaximumentropy,eysenbach2022maximumentropyrlprovably,dong2025maximumentropyreinforcementlearning}. In summary, exploration-exploitation tradeoff~\citep{sutton1988learning,auer2002finite,thompson1933likelihood} has been a crucial topic for ensuring RL agents' success.
+
+More recently, exploration has emerged as an important topic for building modern LLM based systems. There are two types of exploration to consider. The first is \textit{inference-time exploration}, where an agent has to efficiently gather information during deployment by strategically choosing its interactions with its environment,~\citet{tajwar2025traininggenerallycuriousagent} is an important work in this line of research. More importantly, pass@k degradation (mode collapse) during RLVR~\citep{yue2025doesreinforcementlearningreally,wu2026invisibleleashrlvrescape,gxchen2025klregularizedreinforcementlearningdesigned} has prompted research into \textit{train-time exploration}, where the challenge is to go beyond the pretrained model's capabilities and discover new knowledge. Primary approaches include directly optimizing for pass@k~\citep{walder2025passkpolicyoptimizationsolving,tang2025optimizinglanguagemodelsinference,chen2025passktrainingadaptivelybalancing}, curriculum learning~\citep{tajwar2025traininggenerallycuriousagent,chen2025selfevolvingcurriculumllmreasoning,setlur2025e3learningexploreenables,motwani2025h1bootstrappingllmsreason}, learning from additional hints or abstractions~\citep{qu2025rladtrainingllmsdiscover,chen2025nudgingboundariesllmreasoning,anonymous2025exploratory}, increasing number of rollouts to prevent RL gains from saturating~\citep{hu2025brorlscalingreinforcementlearning}, employing data curation algorithm to redirect effort to problems with low success rate~\citep{nguyen2025reasoningboundaryparadoxreinforcement}, leveraging expert guidance~\citep{chang2024datasetresetpolicyoptimization,qu2025pope}, or differential smoothing by penalizing entropy on low reward trajectories and encouraging entropy on high reward trajectories. Entropy based bonuses to encourage exploration during RL training~\citep{hao2025rethinkingentropyinterventionsrlvr,chen2025explorationvsexploitationrethinking,cheng2025reasoningexplorationentropyperspective,wang2025beyond,anonymous2025entropypreserving,ged2024matryoshkapolicygradiententropyregularized} is another popular line of work for improving exploration. A few modern approaches for exploration bonus utilized for LLM training are~\citet{song2025outcomebasedexplorationllmreasoning,tuyls2025representationbasedexplorationlanguagemodels}. The idea of curiosity-driven exploration from classical RL discussed above has also been adopted for LLMs~\citep{dai2025cdecuriositydrivenexplorationefficient}. Although some works have reported pass@k degradation during RL training, others have found the opposite results. For example, ProRL~\citep{liu2025prorlprolongedreinforcementlearning} has shown that RL training on a mixture of reasoning puzzles~\citep{stojanovski2025reasoninggymreasoningenvironments} can improve pass@k on a heldout reasoning task. Similarly,~\citet{yuan2025fxgxfgxllms} has shown that LLMs can learn new skills via RL by composing old ones, showing the promise of going beyond pre-training knowledge, and~\citet{cheng2025revisitingreinforcementlearningllm} also found pass@k to improve, particularly on tasks less likely to appear during the pre-training stage. Ray interference~\citep{schaul2019rayinterferencesourceplateaus} has been proposed as an explanation for the observed pass@k degradation. Overall, this line of research remains important as focus moves to LLMs discovering new information during RL training and it is therefore an ongoing field of research.
+
+\newpage
+
+\section{Theoretical Results}\label{app:proofs}
+
+Here we present the proofs of theorems mentioned in the main paper. First we restate and prove~\cref{prop:ml-conditional}.
+
+\begin{theorem}[Restatement of Theorem~\ref{prop:ml-conditional}]
+The gradient of the maximum likelihood objective admits the following conditional
+expectation representation:
+\[
+\nabla_\theta J_{\mathrm{ML}}(x)
+=
+\mathbb{E}\!\left[
+\nabla_\theta \log m_\theta(z \mid x)
+\;\middle|\;
+f(z)=y^\ast(x)
+\right].
+\]
+\end{theorem}
+
+\begin{proof}
+Recall the standard REINFORCE identity for the gradient of the pass rate:
+\begin{align*}
+\nabla_\theta \passrate(x) = \nabla_\theta \mathbb{E}_{z \sim m_\theta(\cdot \mid x)}[\mathbb{I}\{f(z) = y^\ast(x)\}] = \mathbb{E}_{z \sim m_\theta(\cdot \mid x)}[\mathbb{I}\{f(z) = y^\ast(x)\} \nabla_\theta \log m_\theta(z \mid x)].
+\end{align*}
+The gradient of the maximum likelihood objective is:
+\begin{align*}
+\nabla_\theta J_{\mathrm{ML}}(x) = \nabla_\theta \log \passrate(x) = \frac{\nabla_\theta \passrate(x)}{\passrate(x)} = \frac{\mathbb{E}_{z \sim m_\theta(\cdot \mid x)}[\mathbb{I}\{f(z) = y^\ast(x)\} \nabla_\theta \log m_\theta(z \mid x)]}{\mathbb{E}_{z \sim m_\theta(\cdot \mid x)}[\mathbb{I}\{f(z) = y^\ast(x)\}]}.
+\end{align*}
+By the definition of conditional expectation for an event $A$ with $\mathbb{P}(A) > 0$:
+\begin{align*}
+\mathbb{E}[X \mid A] = \frac{\mathbb{E}[X \cdot \mathbb{I}_A]}{\mathbb{P}(A)}.
+\end{align*}
+Letting $X = \nabla_\theta \log m_\theta(z \mid x)$ and $A = \{z : f(z) = y^\ast(x)\}$, and noting that $\passrate(x) = \mathbb{P}(A)$, we obtain:
+\begin{align*}
+\nabla_\theta J_{\mathrm{ML}}(x) = \mathbb{E}\!\left[\nabla_\theta \log m_\theta(z \mid x) \;\middle|\; f(z) = y^\ast(x)\right].
+\end{align*}
+\end{proof}
+
+Next, we restate and prove~\cref{prop:logT_equivalence}.
+
+\begin{theorem}[Restatement of Theorem~\ref{prop:logT_equivalence}]
+The estimator $\widehat{g}_N(x)$ is an unbiased estimator for the \ours{} gradient of order $T = N$, i.e.,
+\[
+\mathbb{E}\!\left[\widehat{g}_N(x)\right]
+=
+\nabla_\theta J_{\ours{}}^{(N)}(x).
+\]
+\end{theorem}
+
+\begin{proof}
+Conditioned on $K \geq 1$, the successful samples are i.i.d.\ draws from the success-conditioned distribution, so by Theorem~\ref{prop:ml-conditional}:
+\begin{align*}
+\mathbb{E}[\widehat{g}_N(x) \mid K \geq 1] = \nabla_\theta \log \passrate(x).
+\end{align*}
+Since $\widehat{g}_N(x) = 0$ when $K = 0$:
+\begin{align*}
+\mathbb{E}[\widehat{g}_N(x)] = \nabla_\theta \log \passrate(x) \cdot \mathbb{P}(K \geq 1) = \nabla_\theta \log \passrate(x) \cdot \mathrm{pass@}N(x).
+\end{align*}
+Writing $p = \passrate(x)$ and using $\mathrm{pass@}k(x) = 1 - (1-p)^k$:
+\begin{align*}
+\frac{\nabla_\theta p}{p} \cdot (1 - (1-p)^N) = \nabla_\theta p \sum_{k=1}^{N}(1-p)^{k-1} = \sum_{k=1}^{N} \frac{1}{k} \nabla_\theta \mathrm{pass@}k(x) = \nabla_\theta J_{\ours{}}^{(N)}(x),
+\end{align*}
+where the second equality uses $\nabla_\theta \mathrm{pass@}k(x) = k(1-p)^{k-1}\nabla_\theta p$.
+\end{proof}
+
+\begin{proposition}
+    For \ours{} with order $T$, we can rewrite it as 
+    \begin{align*}
+    \nabla_\theta J^{(T)}_{\ours{}}
+=
+\mathbb{E}_{x \sim \rho}
+\!\left[
+w\!\left(p_\theta(x)\right)
+\,\nabla_\theta p_\theta(x)
+\right],
+    \end{align*}
+where 
+\begin{align*}
+    w_T(p)
+=
+\sum_{k=1}^{T} (1-p)^{k-1} = \frac{1-(1-p)^T}{p}.
+\end{align*}
+
+\begin{proof}
+From Equation~\eqref{eq:logT-passk-mixture}, we have:
+\begin{align*}
+\nabla_\theta J^{(T)}_{\ours{}}(x) = \sum_{k=1}^{T} \frac{1}{k} \nabla_\theta \mathrm{pass@}k(x).
+\end{align*}
+Using $\mathrm{pass@}k(x) = 1 - (1-p)^k$ where $p = \passrate(x)$:
+\begin{align*}
+\nabla_\theta \mathrm{pass@}k(x) = k(1-p)^{k-1} \nabla_\theta p.
+\end{align*}
+Substituting:
+\begin{align*}
+\nabla_\theta J^{(T)}_{\ours{}}(x) = \sum_{k=1}^{T} \frac{1}{k} \cdot k(1-p)^{k-1} \nabla_\theta p = \left(\sum_{k=1}^{T} (1-p)^{k-1}\right) \nabla_\theta p = w_T(p) \nabla_\theta \passrate(x).
+\end{align*}
+Taking the expectation over $x \sim \rho$ completes the proof.
+\end{proof}
+
+\end{proposition}
+
+
+\newpage
+
+\section{More on Unifying Weight-Function View on RL Objectives} \label{app:weight_function_view_supplements}
+
+
+\newpage
+
+\section{Additional Details on ImageNet Experiments} \label{app:imagenet}
+
+\subsection{Training Procedure}
+
+Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space. Let $\pi_\theta$ denote our model: given an input image $x \in \mathcal{X}$, $\pi_\theta(y | x)$ is model's predicted probability of image $x$ belonging to class $y \in \mathcal{Y}$. For an input image and label pair $(x, y^\star(x))$, the cross-entropy loss is:
+
+\begin{equation*}
+    \mathcal{L}_\text{CE}(x, y^\star(x); \pi_\theta) = -\log \pi_\theta(y^\star(x)|x)
+\end{equation*}
+
+On the other hand, the corresponding RL objective for the same pair is:
+
+\begin{equation*}
+    \mathcal{L}_\text{RL}(x, y^\star; \pi_\theta) = -\mathbb{E}_{y \sim \pi_\theta(\cdot|x)}[-\log\pi_\theta(y|x) \cdot \hat{A}(y|x)]
+\end{equation*}
+
+where the expectation is computed using Monte-Carlo sampling $K$ rollouts of $y$ from $\pi_\theta(\cdot | x)$. GRPO, REINFORCE and \ours{} vary only in the calculation of the advantage $A(y|x)$. Concretely, let $y^{(1)}, \ldots, y^{(K)}$ be our $K$ rollouts, sampled from the conditional probability distribution $\pi_\theta(\cdot|x)$. We operate under a binary reward setting, meaning the reward function $r(x, y)$ is:
+
+\begin{equation*}
+    r(x, y) = \mathbb{I}[y = y^\star(x)] = 
+    \begin{cases}
+        1, & \text{if } y = y^\star(x) \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{equation*}
+
+Given this reward, we calculate advantage under GRPO, REINFORCE and \ours{} as follows:
+
+\begin{equation*}
+    \hat{A}_{\text{GRPO}}(x, y) = \frac{r(x, y) - \hat{\mu}}{\hat{\sigma}}
+\end{equation*}
+
+\begin{equation*}
+    \hat{A}_{\text{REINFORCE}}(x, y) = r(x, y) - \hat{\mu}
+\end{equation*}
+
+\begin{equation*}
+    \hat{A}_{\text{MAXRL}}(x, y) = \frac{r(x, y) - \hat{\mu}}{\hat{\mu}}
+\end{equation*}
+
+where $\hat{\mu} = \frac{\sum_{i = 1}^K r(x, y^{(i)})}{K}$, $\hat{\sigma} = \sqrt{\frac{\sum_{i = 1}^K (r(x, y^{(i)} - \hat{\mu})^2}{K}}$ is the mean and standard deviation of rewards of the sampled rollouts.
+
+Finally, at each training step, a batch of (input image, label) pairs are collected from the training dataset. The above computation gives us per (input image, label) loss, we average them over all the pairs in a given batch to calculate the final loss which is then used to update the model via gradient descent.
+
+
+\subsection{Training Hyperparameters}
+
+We use the following set of hyperparameters in all ImageNet experiments:
+
+\begin{itemize}
+    \item \textbf{Batch size}: 256
+    \item \textbf{Number of epochs}: 20
+    \item \textbf{Optimizer}: SGD with momentum 0.9, no Nesterov momentum, initial learning rate 0.1. We run a sweep over the learning rate over 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 0.7, and 1.0. We find the standard learning rate, 0.1, generally works well for all objectives, and report that in our experiments.
+    \item \textbf{Learning rate scheduler}: Cosine scheduler~\citep{loshchilov2017sgdrstochasticgradientdescent}, with linear warmup for the first epoch.
+    \item \textbf{Image augmentations}: No augmentations are used for evaluation, we only resize each image to 224x224 and normalize the images by mean and standard deviation of pixel values. For training, in addition to the same resizing and normalizing steps, we also add a random horizontal flip (with probability 0.5) and a random resized crop to 224 (with scale (0.08, 1.0)). 
+    \item \textbf{Number of rollouts, K}: This is usually varied for different experiments.
+\end{itemize}
+
+All training is done on single L40S GPUs for 15 hours. 
+
+
+\subsection{Equivalence of Validation Top-1 Accuracy and Majority Voting Accuracy} \label{app:imagenet_majority_voting_accuracy}
+
+In this section, we discuss the validation top-1 accuracy metric, which is the traditional metric used in image classification. Formally, validation accuracy for a single image and label pair $(x, y^\star(x))$ is defined as:
+
+\begin{equation*}
+    \text{Accuracy}(x, y^\star(x) ; \pi_\theta) = \mathbb{I}\left[\arg\max_{y \in \mathcal{Y}} \pi_\theta(y|x) = y^\star(x) \right] = \begin{cases}
+        1, & \text{if } \arg\max_{y \in \mathcal{Y}} \pi_\theta(y|x) = y^\star(x) \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{equation*}
+
+which is then averaged over all validation examples for the final metric. In other words, validation accuracy is the same as majority voting accuracy~\citep{wang2023selfconsistencyimproveschainthought} in traditional LLM chain-of-thought reasoning tasks.
+
+\subsection{Pass@k Calculation}
+
+To calculate pass@k from a generative model, one usually samples $T \geq k$ rollouts from the model, calculate success or failure from each of them, and then uses an appropriate statistical estimator for pass@k~\citep{chen2021evaluatinglargelanguagemodels,yue2025doesreinforcementlearningreally}. However, since there is no latent reasoning process involved in our didactic ImageNet experiments and since we can directly calculate the model likelihood of label $y \in \mathcal{Y}$ for an input image $x \in \mathcal{X}$, namely $\pi_\theta(y | x)$, we can also analytically compute pass@k without sampling as well. Formally, in all ImageNet experiments, we calculate pass@k for an example (image, label) pair $(x, y^\star(x))$ as follows:
+
+\begin{equation*}
+    \text{Pass}@k(x, y^\star(x); \pi_\theta) = 1 - (1 - \pi_\theta(y^\star(x)|x))^k
+\end{equation*}
+
+The average pass@k is then obtained by averaging the above quantity over all example pairs in the validation dataset.
+
+\subsection{Gradient Norm Analysis} \label{app:imagenet_gradient_norm_analysis}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/appendix_figures/imagenet_p_vs_grad_norm_plot.pdf}
+    \caption{\footnotesize \textbf{(ImageNet Gradient Norm Analysis)} Scatter plot, where each point has the pass rate (model's predicted probability of the correct class) of a particular image in the x-axis, and gradient $L^2$ norm for that image in the y-axis, for 1000 randomly selected images from the ImageNet validation dataset after 1500 steps of training on a ResNet-50 model. Cross Entropy and \ours{} have similar scatter plot: with high gradient norm for hard inputs (pass rate close to 0) and lower gradient norm for the easier ones (pass rate close to 1). In contrast, highest gradient norm for GRPO is on medium difficulty (pass rate close to 0.5) inputs, with hard inputs having very low gradient norm. Finally, REINFORCE fails to produce any significant gradient norm and its pass rate is confined below 0.003 after 1500 steps, demonstrating its difficulty to learn in this setting.}
+    \label{fig:imagenet_p_vs_grad_p}
+\end{figure}
+
+\cref{fig:imagenet_p_vs_grad_p} shows the correlation between gradient norm and pass rate (model's predicted probability of the correct class) for a particular image on different objectives. We see that cross-entropy and \ours{} have similar scatter plot: with high gradient norm for hard inputs (pass rate close to 0) and lower gradient norm for the easier ones (pass rate close to 1). In contrast, highest gradient norm for GRPO is on medium difficulty (pass rate close to 0.5) inputs, with hard inputs having very low gradient norm. Finally, REINFORCE fails to produce any significant gradient norm compared to the other objectives and its pass rate is confined below 0.003 after 1500 steps, demonstrating its difficulty to learn in this setting. This is also reflected in our other results, where REINFORCE does not show any signs of learning. We attribute this to the very low gradient norm: since the randomly initialized model has pass rate $0.001$ in expectation over all inputs, REINFORCE fails to produce sufficiently large gradients during training and therefore stalls in model improvement. One caveat: REINFORCE's failure maybe due to us training the model from scratch --- on a pretrained model, it indeed produces gradients but still shows poor gradient norm on hard inputs (see~\cref{fig:qwen_p_vs_grad_norm_analysis}).
+
+
+\subsection{More Experimental Results}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/imagenet_main_paper_figure_1.pdf}
+    \caption{\footnotesize \textbf{(Additional ImageNet results)} On the didactic image classification setting, \ours{} outperforms and scales better than GRPO with additional compute, and approaches the same performance as maximum likelihood training via cross-entropy given sufficient number of rollouts ($\geq 1024$). Note that REINFORCE remains flat, since the initial model's pass rate is low ($\sim 0.1\%$) and REINFORCE fails to generate significant gradient signal (\cref{fig:imagenet_p_vs_grad_p}). From left, the plots show Pass@1, Pass@128, Majority Voting Accuracy (equivalent to traditional validation top-1 accuracy in image classification, see Appendix~\ref{app:imagenet_majority_voting_accuracy}), and coverage of the final checkpoint, respectively.}
+    \label{fig:imagenet_more_experiments}
+    % \vspace{-0.2cm}
+\end{figure*}
+
+Here we present additional experimental results. In particular, \textbf{(1)} we compare against GRPO with varying number of rollouts, \textbf{(2)} record additional metrics such as majority voting accuracy (i.e., validation top-1 accuracy), and \textbf{(3)} show the resulting coverage (pass@k vs k) from different objectives.~\cref{fig:imagenet_more_experiments} records our findings: \ours{} outperforms and scales better than GRPO with additional compute. While GRPO improves performance if given more compute unlike REINFORCE, it remains suboptimal compared to \ours{} and supervised cross-entropy training. Moreover, both GRPO and REINFORCE exhibit worse coverage as their pass@k values are significantly lower compared to \ours{}, corroborating our experiments from other sections.
+
+\newpage
+
+
+\section{Details on Other Training Settings} \label{app:task_description}
+
+\subsection{Maze} \label{app:maze_task_description}
+
+\subsubsection{Model Architecture}
+
+We adopt a lightweight decoder-only Transformer model following the Qwen2 architecture~\citep{yang2024qwen2technicalreport}, with a total of approximately $3M$ parameters. The model consists of 4 Transformer layers, each using full self-attention. The hidden size is set to 256, with an intermediate (feed-forward) dimension of 1024, and 4 attention heads per layer. We use grouped query attention with 2 key-value heads. The model employs RMSNorm with $\sigma = 1\times10^{-6}$ and uses the SiLU activation function in the feed-forward networks. Rotary positional embeddings (RoPE)~\citep{su2023roformerenhancedtransformerrotary} are applied with $\theta = 1,000,000$, and the maximum sequence length is 512 tokens. The vocabulary size is 32 tokens, and input and output embeddings are tied. The model is trained and evaluated using bfloat16 precision, with attention dropout set to 0. The architecture follows a standard causal language modeling setup with autoregressive decoding.
+
+\subsubsection{Task Description}
+
+Mazes are procedurally generated using Prim’s algorithm~\citep{prim1957shortest}, and task difficulty is controlled by the grid size.
+We use a symbolic tokenization to represent both the maze layout and the navigation policy, with tokens drawn from a small, discrete vocabulary.
+
+The input sequence describes a two-dimensional grid in row-major order. Each cell is represented by a single token indicating its type (e.g., \textsc{WALL}, \textsc{PATH}, \textsc{START}, or \textsc{GOAL}). Rows are separated by a dedicated \textsc{NEWLINE} token, and the entire grid is delimited by special boundary tokens marking the beginning (\textsc{GRID\_START}) and end (\textsc{GRID\_END}) of the grid description. Following the maze specification, the model autoregressively generates a sequence of navigation actions drawn from a fixed action vocabulary (e.g., directional moves) and terminates by a \textsc{DONE} token. 
+
+Below, we provide an example data instance following this format.
+
+\begin{tcolorbox}[
+  colback=gray!3,
+  colframe=gray!40,
+  title={7*7 Maze Example Model Input and Output Format},
+  fonttitle=\small\bfseries,
+  boxrule=0.4pt,
+  arc=2mm,
+  left=4pt,
+  right=4pt,
+  top=4pt,
+  bottom=4pt
+]
+\label{box:maze-prompts}
+
+\textbf{Input:}
+
+{\ttfamily\small
+
+<bos> GRID\_START WALL WALL WALL WALL WALL WALL WALL NEWLINE WALL START WALL PATH PATH PATH WALL NEWLINE WALL PATH WALL PATH WALL WALL WALL NEWLINE WALL PATH PATH PATH PATH PATH WALL NEWLINE WALL PATH WALL WALL WALL PATH WALL NEWLINE WALL PATH WALL PATH PATH GOAL WALL NEWLINE WALL WALL WALL WALL WALL WALL WALL NEWLINE GRID\_END PATH\_START
+}
+
+\textbf{Output:}
+
+{\ttfamily\small
+RIGHT RIGHT RIGHT RIGHT DOWN DOWN DOWN DOWN DONE <eos>
+}
+\end{tcolorbox}
+
+
+For reference, we also visualize one typical successful trajectory and one representative failed prediction in Fig.~\ref{fig:maze-example}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figures/appendix_figures/maze-example-dual.png}
+    \caption{\textbf{(Maze Data Visualization)} The left plot shows a successful navigation trajectory, while the right plot illustrates a failure case produced by the trained model, where the generated action sequence deviates from the correct path before reaching the goal.}
+    \label{fig:maze-example}
+\end{figure}
+
+
+
+\subsubsection{Training Setups}
+
+% During reinforcement learning, the correctness of a generated navigation trajectory is determined through interaction with the environment, which checks whether the predicted action leads from the start cell to the goal. In contrast, during pretraining, the model is trained via next-token prediction and directly memorizes valid navigation paths without environment feedback.
+
+To ensure sufficient task complexity and rigorous evaluation, we construct a training set of 1 million distinct \(17 \times 17\) mazes and a test set of 256 non-overlapping samples. We first pretrain the model from scratch, where it is trained to follow a provided ground-truth trajectory for each maze. During SFT, we use a learning rate of $5 \times 10^{-4}$ with the \texttt{AdamW} optimizer~\citep{kingma2017adammethodstochasticoptimization,loshchilov2019decoupledweightdecayregularization} and train for 1,500 steps with a batch size of 32. This pretraining stage initializes the model with the basic output format required for representing maze-solving trajectories. Subsequently, we perform reinforcement learning (RL) training. By default, we use a data batch size of 32, a rollout number of 128, a learning rate of $1\times10^{-4}$. We update the model parameters only once per RL step (fully on-policy setting~\citep{tajwar2024preferencefinetuningllmsleverage}) to ensure all trajectories are on-policy, with 20{,}000 training steps. On this basis, we compare the performance of different RL algorithms. 
+
+In addition, we fix the data batch size to 256 and vary the rollout number from 4, 8, 16, 32, 64 to 128 when illustrating the scaling trends of GRPO and our MaxRL algorithm. Each training run uses 4 RTX 4090 GPUs and is conducted for at least 9{,}000 steps. Given the small number of model parameters, the model is no longer memory-bound, so we modified the rollout engine (instead of using the default vLLM~\citep{kwon2023efficient} engine) in the \texttt{verl}~\citep{zhang2024framework,sheng2024hybridflow} codebase to increase sampling parallelism and speed up training.
+
+\newpage
+
+\subsection{GSM8K} \label{app:gsm8k_task_description}
+
+\subsubsection{Prompt template}
+
+We conduct reinforcement finetuning for the \texttt{SmolLM2-360M-Instruct} model~\citep{allal2025smollm2smolgoesbig} on GSM8K~\citep{cobbe2021trainingverifierssolvemath} training set for 1500 steps. We use GSM8K-Platinum~\citep{vendrow2025largelanguagemodelbenchmarks}, a revised version of the original GSM8K test that is non-overlapping with the GSM8K train dataset, for evaluation. An example of prompt and the model's response are shown below. In particular, we take each individual problem, append it with `` Let's think step by step and output the final answer within \texttt{\textbackslash \textbackslash boxed\{\}}." and process the string through the SmolLM2-360M-Instruct model's tokenizer chat-template to obtain the final prompt for the model.
+
+\begin{tcolorbox}[
+    colback=cyan!5,       
+    colframe=cyan!50!blue, 
+    coltext=black,
+    coltitle=white,
+  title={SmolLM2-360M-Instruct},
+  fonttitle=\small\bfseries,
+  boxrule=0.4pt,
+  arc=2mm,
+  left=4pt,
+  right=4pt,
+  top=4pt,
+  bottom=4pt
+]
+\label{box:gsm8k}
+
+{\ttfamily\small
+<|im\_start|>system
+}
+
+{\ttfamily\small
+You are a helpful AI assistant named SmolLM, trained by Hugging Face<|im\_end|>
+}
+
+{\ttfamily\small
+<|im\_start|>user
+}
+
+{\ttfamily\small
+Jeannie hikes the 12 miles to Mount Overlook at a pace of 4 miles per hour, and then returns at a pace of 6 miles per hour. How long did her hike take, in hours? Let's think step by step and output the final answer within \texttt{\textbackslash \textbackslash boxed\{\}}. <|im\_end|>
+}
+
+{\ttfamily\small
+<|im\_start|>assistant
+}
+
+{\ttfamily\small
+To find the time it takes for Jeannie to hike the entire trip, we need to calculate her total travel time and then divide it by the rate at which she travels.
+}
+
+{\ttfamily\small
+Jeannie hikes the 12 miles at a pace of 4 miles per hour. So, the time taken is 12 miles / 4 miles per hour = 3 hours.
+}
+
+{\ttfamily\small
+Next, she returns at a pace of 6 miles per hour. So, the time taken to return is 12 miles / 6 miles per hour = 2 hours.
+}
+
+{\ttfamily\small
+Therefore, the total time taken is 3 hours + 2 hours = 5 hours.
+}
+
+{\ttfamily\small
+So, the final answer is 5 hours. \texttt{\textbackslash \textbackslash boxed\{5\}} <|im\_end|>
+}
+
+\end{tcolorbox}
+
+
+\subsubsection{Hyperparameters}
+Detailed hyperparameter setup is provided in \cref{tab:config_smollm}. For other baselines, we use $T=16$ for PKPO, which means we optimize Pass@16 as the objective, and $\gamma=0.05$ for differential smoothing.
+
+\begin{table}[h!]
+  \caption{Training hyperparameters for SmolLM2-360M-Instruct on GSM8K.}
+  \label{tab:config_smollm}
+  \centering
+  \begin{tcolorbox}[
+    enhanced,
+    hbox,
+    title={\hspace{0.0cm} Training hyperparameters for SmolLM2-360M-Instruct},
+    colback=teal!5,
+    colframe=teal,      
+    coltext=black,
+    coltitle=white,
+    fonttitle=\bfseries,
+    arc=1mm,
+    boxrule=1pt,
+    boxsep=1pt,                
+    left=2pt, right=2pt,       
+    top=0pt,                   
+    bottom=2pt,       
+    toptitle=3pt, bottomtitle=3pt,
+    center
+  ]
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \setlength{\tabcolsep}{12pt}
+\begin{tabular}{l|l|l|l} 
+  \textbf{Parameter} & \textbf{Value} & \textbf{Parameter} & \textbf{Value} \\
+  \hline
+  Base model & SmoLM2-360M-Instruct & Training set & GSM8K \\
+  Test set & GSM8K & Prompts per batch & 256 \\
+  Generations per prompt & 128 & Grad update per RL step & 1 \\
+  Max prompt length & 512 & Max response len & 2048 \\
+  Learning rate & $1 \times 10^{-5}$ &  Training Steps & 1500 \\
+  KL coeff & 0.0 & Entropy coeff & 0.0 \\
+  Rollout temp & 1.0 & Validation top\_p & 0.95 \\
+  Validation temp & 0.6 & Device & 8 $\times$ Nvidia GH200 \\
+\end{tabular}
+  \end{tcolorbox}
+\end{table}
+
+\newpage
+
+\subsection{Qwen3 Training} \label{app:realistic_reasoning_task_description}
+
+\subsubsection{Prompt template}
+
+We use the Qwen-math template~\citep{yang2024qwen2technicalreport,qwen2025qwen25technicalreport,yang2024qwen25mathtechnicalreportmathematical} for formatting our prompts. We show an example prompt~\citep{yu2025dapoopensourcellmreinforcement} after formatting through our template below. In particular, we take each individual problem, append it with ``\textbackslash nPlease reason step by step, and put your final answer within \textbackslash \textbackslash boxed\{\{\}\}." and process the string through the SmolLM2-360M-Instruct model's tokenizer chat-template to obtain the final prompt for the model.
+
+\begin{tcolorbox}[
+    colback=cyan!5,       
+    colframe=cyan!50!blue, 
+    coltext=black,
+    coltitle=white,
+  title={Qwen Math Prompt Template},
+  fonttitle=\small\bfseries,
+  boxrule=0.4pt,
+  arc=2mm,
+  left=4pt,
+  right=4pt,
+  top=4pt,
+  bottom=4pt
+]
+\label{box:qwen-math-prompts}
+
+{\ttfamily\small
+<|im\_start|>system
+}
+
+{\ttfamily\small
+Please reason step by step and put the final answer in \texttt{\textbackslash \textbackslash boxed\{\}}. <|im\_end|>
+}
+
+{\ttfamily\small
+<|im\_start|>user
+}
+
+{\ttfamily\small
+ Denote by $S(n)$ the sum of the digits of the positive integer $n$. Find all the solutions of the equation $n(S(n)-1)=2010$. Let's think step by step and output the final answer within \texttt{\textbackslash \textbackslash boxed\{\}}. <|im\_end|>
+}
+
+{\ttfamily\small
+<|im\_start|>assistant
+}
+
+\end{tcolorbox}
+
+\subsubsection{Hyperparameters}
+
+Next, we describe the default hyperparameters for our training setup. Since there are many possible alternatives to handle off-policy updates and corresponding importance ratio~\citep{schulman2017proximalpolicyoptimizationalgorithms,shao2024deepseekmathpushinglimitsmathematical,zheng2025groupsequencepolicyoptimization,minimax2025minimaxm1scalingtesttimecompute,yu2025dapoopensourcellmreinforcement}, to keep things simple, we choose to train in the fully on-policy setup, meaning we have no importance ratio or associated clipping. Similarly, to avoid tuning additional hyperparameters for each algorithm, following~\citet{olmo2025olmo3}, we remove KL penalty and also entropy bonus in our default training comparison. Note: we train with GRPO and entropy bonus as a baseline in our SmolLM2-360M-Instruct training on GSM8K, results are recorded in ~\cref{tab:gsm8k_comparison_with_baselines}: \ours{} outperform this variant, showing that entropy bonus does not fully mitigate issues resulting from GRPO though it can slightly mitigate it, as also observed by~\citet{yue2025doesreinforcementlearningreally}. 
+
+We generate all training rollouts using temperature 1.0, and do not use special sampling techniques. Similarly, we also do not use any adaptive sampling~\citep{yu2025dapoopensourcellmreinforcement} or fixes for inference-training logit mismatch~\citep{he2025defeating,khatri2025artscalingreinforcementlearning} Finally, for evaluation, we follow the same protocol as~\citet{yue2025doesreinforcementlearningreally}, and we run inference with temperature 0.6, top-p sampling parameter 0.95, no top-k or min-p sampling~\citep{nguyen2025turningheatminpsampling}.
+
+\cref{tab:config_qwen} shows our default hyperparameter setting.
+
+\begin{table}[h!]
+  \caption{Training hyperparameters for Qwen3-1.7B-Base and Qwen3-4B-Base training.}
+  \label{tab:config_qwen}
+  \centering
+  \begin{tcolorbox}[
+    enhanced,
+    hbox,
+    title={\hspace{0.0cm} Training hyperparameters for Qwen3-1.7B-Base and Qwen3-4B-Base},
+    colback=teal!5,
+    colframe=teal,      
+    coltext=black,
+    coltitle=white,
+    fonttitle=\bfseries,
+    arc=1mm,
+    boxrule=1pt,
+    boxsep=1pt,                
+    left=2pt, right=2pt,       
+    top=0pt,                   
+    bottom=2pt,       
+    toptitle=3pt, bottomtitle=3pt,
+    center
+  ]
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \setlength{\tabcolsep}{12pt}
+\begin{tabular}{l|l|l|l} 
+  \textbf{Parameter} & \textbf{Value} & \textbf{Parameter} & \textbf{Value} \\
+  \hline
+  Base model & Qwen3-1.7B-Base, Qwen3-4B-Base  & Prompts per batch & 256 \\
+  Generations per prompt & 16 & Grad update per RL step & 1 \\
+  Max prompt length & 1024 & Max response len & 4096 \\
+  Learning rate & $1 \times 10^{-6}$ &  Training Steps & 1000 \\
+  KL coeff & 0.0 & Entropy coeff & 0.0 \\
+  Rollout temp & 1.0 & Validation top-p & 0.95 \\
+  Validation temp & 0.6 & Device & 32 $\times$ Nvidia H200 \\
+\end{tabular}
+  \end{tcolorbox}
+\end{table}
+
+\newpage
+
+\section{General RL Training Objective}
+
+Our discussion here follows that of~\citep{shafayat2025largereasoningmodelsselftrain}. For continuity with existing literature, we use slightly different notations from the rest of the paper for this section. Let $x$ represent a prompt, and let $y \sim \pi(\cdot|x)$ represent sequence of tokens autoregressively sampled from the language model $\pi$ conditioned on the prompt $x$. Let $\pi_\theta$ be the current policy, and $\pi_{\theta_\text{old}}$ be an older policy (from earlier iterations in training) used for data generation. In our implementation (based on \texttt{verl}~\citep{zhang2024framework,sheng2024hybridflow}), we use the following general RL objective:
+
+\begin{align*}
+\mathcal{J}(\theta) 
+= \mathbb{E}_{x \sim \mathcal{D},\ \{y_i\}_{i=1}^G \sim \pi_{\theta_{\text{old}}}(\cdot|x)} 
+\Bigg[ 
+    \frac{1}{T} \sum_{i=1}^G \sum_{t=1}^{|y_i|} 
+    \min \Big( & w_{i,t}(\theta) \hat{A}_{i,t}, 
+     \text{clip}(w_{i,t}(\theta),\ 1 - \varepsilon,\ 1 + \varepsilon) \hat{A}_{i,t} 
+    \Big) 
+\Bigg]
+\end{align*}
+
+where $T$ is the total number of tokens in the mini-batch (excluding tokens in the prompt etc., since we only compute loss on the model generated tokens), $\pi_\theta$ represents the current LLMs autoregressive probability distribution, $\pi_{\theta_\text{old}}$ denote the behavior policy/data generation policy's probability distribution, $w_{i, t}(\theta)$ is the importance ratio, defined as:
+
+$$w_{i,t}(\theta) = \frac{
+    \pi_\theta(y_{i,t} \mid x,\ y_{i,<t})
+}{
+    \pi_{\theta_{\text{old}}}(y_{i,t} \mid x,\ y_{i,<t})
+}$$
+
+Since we operate fully on-policy, i.e., one RL step per one batch of generated rollouts, this is always one in our experiments, and the clipping parameter $\epsilon$ has no effect on our training. $\hat{A}_{i,t}$ represents the advantage for the $t$-th token in the sequence $y_i$. The same advantage defined at a sequence level is applied to each token in the sequence, so henceforth we will drop the $t$ from the notation as well.
+
+The main difference between GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical}, RLOO~\citep{ahmadian2024basicsrevisitingreinforcestyle} and \ours{} come from their use of different advantage functions. RLOO objective uses the following advantage function:
+
+$$\frac{1}{G}\sum_{i=1}^{G}[R(y_{(i)},x) - \frac{1}{G-1}\sum_{j\neq k}R(y_{(j)},x)]$$
+
+whereas GRPO uses the following advantage function:
+
+$$\hat{A}_i = \frac{
+    r(x, y_i) - \text{mean}\left( \{ r(x, y_i) \}_{i=1}^G \right)
+}{
+    \text{std}\left( \{ r(x, y_i) \}_{i=1}^G \right) + \epsilon
+}$$
+
+where $\epsilon$ is a small number ($1 \times 10^{-6}$) added to avoid division by zero. Finally, the advantage for \ours{} is follows:
+$$\hat{A}_i = \frac{
+    r(x, y_i) - \text{mean}\left( \{ r(x, y_i) \}_{i=1}^G \right)
+}{
+    \text{mean}\left( \{ r(x, y_i) \}_{i=1}^G \right) + \epsilon
+}$$
+Here $G$ is the number of online samples generated. RLOO, GRPO and \ours{} create a dynamic baseline for each sample without needing a separate value function (unlike PPO~\citep{schulman2017proximalpolicyoptimizationalgorithms}), effectively estimating the expected return on-the-fly during training. Not having a value networks makes the training much simpler for all three algorithms.
+
+\section{Pass@k Calculation for Tasks with Sampling}
+
+Unlike the ImageNet setting, we can't usually directly calculate pass@k via accessing the true probability of the correct action. Therefore, we use the default pass@k calculation mechanism in \texttt{verl}~\citep{sheng2024hybridflow,zhang2024framework}, using the bootstrapping low variance unbiased estimator introduced by~\citet{chen2021evaluatinglargelanguagemodels}. This employs generating $n \geq k$ samples per task, counting the number of correct samples $c(x)$ among the $n$ samples, and estimate pass@k as:
+
+\begin{equation*}
+    \text{Pass}@k = \mathbb{E}_{x \sim \rho}\left[ 1 - \frac{\binom{n - c(x)}{k}}{\binom{n}{k}}\right]
+\end{equation*}
+
+\newpage
+
+\section{Results on an Additional Benchmark: AIME 2024}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.3\linewidth]{figures/appendix_figures/large_scale_experiments_aime24.pdf}
+    \caption{\footnotesize \textbf{(Evaluation of Qwen3 model training on AIME 2024)} Here we report performance on an additional benchmark, AIME 2024. \ours{} outperform both base model and GRPO on both Qwen3-1.7B-Base and Qwen3-4B-Base, leading to $7.3\times$ and $1.7\times$ maximum inference efficiency respectively.}
+    \label{fig:aime24_evaluation}
+\end{figure}
+
+\section{More on \ours{} Extracting Better Learning Signal During Training}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/appendix_figures/smollm_maze_non_zero_pass_rate_prompts.pdf}
+    \caption{\footnotesize \textbf{(Fraction of training tasks with non-zero pass rate)} Similar to~\cref{fig:prompts_solved_during_training}, we also record the fraction of training tasks where the model generates at least one correct rollout on maze and SmolLM2-360M-Instruct training on GSM8K. We see the same trends as~\cref{fig:prompts_solved_during_training}, and \ours{} consistently outperforms both GRPO and RLOO, demonstrating \ours{} ability to generate better learning signal during training, as tasks with zero pass-rate contributes no gradients.}
+    \label{fig:smollm_maze_non_zero_pass_rate_prompts}
+\end{figure}
+
+\section{Additional Results on Qwen3-4B-Base} \label{app:qwen3_4B_base}
+
+\subsection{Majority Voting Performance}
+
+\begin{table}[h]
+\centering
+\caption{\footnotesize \textbf{(Majority Voting Performance Comparison on Qwen3-4B-Base)} We compare the performance of \ours{} in terms of majority voting against the pretrained base model and GRPO. }
+\begin{tabular}{lccccc}
+\hline
+ & AIME 2024 & AIME 2025 & BeyondAIME & MATH-500 & Minerva \\
+ & (majority@4096) & (majority@4096) & (majority@4096) & (majority@2048) & (majority@2048) \\
+\hline
+Base  & 23.3 & 23.3 & 7.0  & 69.8 & 18.8 \\
+GRPO  & 23.3 & 23.3 & 7.0  & 72.4 & 27.2 \\
+MaxRL & \textbf{26.7} & \textbf{26.7} & \textbf{14.0} & \textbf{74.0} & \textbf{28.7} \\
+\hline
+\end{tabular}
+\label{tab:majority_voting}
+\end{table}
+
+Here we present comparisons across one other metric, majority voting~\citep{wang2023selfconsistencyimproveschainthought}, a commonly used verifier free method for scaling test-time compute, where we generate N i.i.d. rollouts from the model for a single task $x$, group the responses by the final answer, and take the most frequent answer as our outcome.~\cref{tab:majority_voting} shows our results across all five benchmarks, we outperform both the pre-trained base model and GRPO trained model on majority voting across all benchmarks.
+
+\subsection{Training Dynamics}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/appendix_figures/qwen3_4B_base_training_dynamics.pdf}
+    \caption{\footnotesize \textbf{(Additional training dynamics metrics for Qwen3-4B-Base)} We show comparison between GRPO and \ours{} in terms of mean response length, entropy of the actor, and gradient norm during training for the Qwen3-4B-Base model. \ours{} generally produces longer chains-of-thought, and also retains higher actor entropy during training. \ours{} also produce larger gradient norm during training.}
+    \label{fig:qwen3_4b_base_response_length_and_actor_entropy}
+\end{figure}
+
+\subsection{Validation Accuracy During Training}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/qwen3_4B_validation_accuracy_during_training.pdf}
+    \caption{\footnotesize \textbf{(Qwen3-4B-Base validation pass@1 during training)} Pass@1 (estimated using 32 samples) during training of Qwen3-4B-Base, on 3 different evaluation dataset. \ours{} consistently outperform GRPO during training.}
+    \label{fig:qwen3_4B_validation_accuracy_during_training}
+    % \vspace{-0.5cm}
+\end{figure}
+
+\newpage
+
+\section{Additional Results on Qwen3-1.7B-Base} \label{app:qwen3_1.7B_base_additional_results}
+
+\subsection{Validation Accuracy During Training}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/appendix_figures/qwen3_1.7B_validation_accuracy_during_training.pdf}
+    \caption{\footnotesize \textbf{(Qwen3-1.7B-Base validation accuracy during intermediate training)} We record validation pass@1 (using mean over 32 rollouts per prompt) over AIME 2024, AIME 2025 and MATH-500 during Qwen3-1.7B-Base model training. Similar to~\cref{fig:smollm_pass_at_k_vs_training_steps}, we observe that \ours{} initially trail behind GRPO at pass@1, but catches up with extended training and then converges to a higher value.}
+    \label{fig:qwen3_1.7B_base_validation_accuracy_during_training}
+\end{figure}
+
+\subsection{Training Dynamics}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/appendix_figures/qwen3_1.7B_base_training_dynamics.pdf}
+    \caption{\footnotesize \textbf{(Additional training dynamics metrics for Qwen3-1.7B-Base)} We show comparison between GRPO and \ours{} in terms of mean response length, entropy of the actor, and gradient norm during training for the Qwen3-1.7B-Base model. \ours{} generally produces longer chains-of-thought, and also retains higher actor entropy during training. \ours{} also produce larger gradient norm during training.}
+    \label{fig:qwen3_1_7b_base_response_length_and_actor_entropy}
+\end{figure}
+
+\newpage
+
+% \section{Additional Experimental Results on SmolLM-360M-Instruct Training on GSM8K} \label{app:smollm_additional_results}
+
+
+% \begin{table}[h!]
+% \centering
+% \caption{Performance comparison across methods in SmolLM}
+% \label{tab:qwen3_4B_base_majority_voting}
+% \resizebox{0.45\textwidth}{!}{%
+%     \begin{tabular}{l|ccc}
+%     \toprule
+%     \textbf{Method} & \textbf{Pass@1} & \textbf{Pass@128} & \textbf{Pass@1024} \\
+%     \midrule
+%     GRPO & 29.3 & 45.8 & 48.8 \\
+%     RLOO & 27.5 & 44.6 & 48.5 \\
+%     GRPO (with entropy bonus) & 31.1 & 48.1 & 51.6 \\
+%     PKPO (T = 16) & 30.7 & 67.2 & 75.9 \\
+%     Differential Smoothing & 31.4 & 48.5 & 52.3 \\
+%     \midrule
+%     \textbf{MaxRL} & 33.2 & 75.0 & 83.4 \\
+%     \bottomrule
+%     \end{tabular}
+% }
+% \end{table}
+
+\section{Additional Experimental Results on Maze}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/appendix_figures/maze_training_step.pdf}
+    \caption{\footnotesize \textbf{(Infinite training compute in maze experiment)} We investigate how different objectives perform when we train a 3M model to solve 17x17 maze puzzles. \ours{} performs significantly better compared with GRPO and REINFORCE in Pass@1, Pass@32, Pass@128 and Pass@256. These results signify \ours{}'s effectiveness in computation scaling during RL.}
+    \label{fig:maze_passk_steps}
+\end{figure}
+
+% \begin{table}[h!]
+% \centering
+% \caption{Performance comparison across methods in maze experiments}
+% \label{tab:rl_methods_passk}
+% \resizebox{0.45\textwidth}{!}{%
+%     \begin{tabular}{l|ccc}
+%     \toprule
+%     \textbf{Method} & \textbf{Pass@1} & \textbf{Pass@128} & \textbf{Pass@256} \\
+%     \midrule
+%     GRPO & 39.6 & 42.4 & 43.0 \\
+%     GRPO (with entropy bonus) & 47.2 & 53.4 & 54.0 \\
+%     PKPO (T = 16) & 74.5 & 77.6 & 77.9 \\
+%     SELF & 46.1 & 86.3 & 87.5 \\
+%     Differential Smoothing & 50.0 & 57.8 & 58.7 \\
+%     \midrule
+%     \textbf{MaxRL} & 84.4 & 92.0 & 94.3 \\
+%     \bottomrule
+%     \end{tabular}
+% }
+% \end{table}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/appendix_figures/maze_baseline_curves.pdf}
+    \caption{\footnotesize \textbf{(Training curves compared with other baselines.)} We compare \ours{} with other RL algorithms, including entropy regularization, PKPO~\citep{walder2025passkpolicyoptimizationsolving}, Differential Smoothing~\citep{gai2025differentialsmoothingmitigatessharpening} and SELF~\citep{nguyen2025reasoningboundaryparadoxreinforcement}. \ours{} significantly outperforms other methods in all metrics, and is the only method to maintain both good average performance (pass@1) and coverage (pass@k).}
+    \label{fig:maze_baseline_curves}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019 and 2021 and by Csaba Szepesvari, Gang Niu and Sivan Sabato in 2022.
+% Modified again in 2023 and 2024 by Sivan Sabato and Jonathan Scarlett.
+% Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.

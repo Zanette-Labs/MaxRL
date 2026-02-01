@@ -44,22 +44,22 @@
     
     body { color: var(--text-dark); }
     
-    .hero { background: #1e40af; }
-    .hero .title.is-1 { color: #fff; font-weight: 700; }
-    .hero .publication-authors a { color: #93c5fd; }
-    .hero .publication-authors a:hover { color: #bfdbfe; }
-    .hero .publication-authors span { color: #e5e7eb; }
+    .hero { background: #fff; border-bottom: 1px solid #e5e7eb; }
+    .hero .title.is-1 { color: #1f2937; font-weight: 700; }
+    .hero .publication-authors a { color: #1e40af !important; }
+    .hero .publication-authors a:hover { color: #3b82f6 !important; text-decoration: underline; }
+    .hero .publication-authors span { color: #4b5563; }
     
     .publication-links .button {
       margin: 0.25rem;
       background: transparent;
-      border: 1px solid rgba(255,255,255,0.4);
-      color: #fff;
+      border: 1px solid #d1d5db;
+      color: #374151;
     }
     .publication-links .button:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.6);
-      color: #fff;
+      background: #f3f4f6;
+      border-color: #9ca3af;
+      color: #1f2937;
     }
 
     /* Section titles */
@@ -283,6 +283,7 @@
             <span class="author-block" style="margin-left: 1em;"><sup>3</sup>Zhejiang University</span><br>
             <span class="author-block"><sup>4</sup>UC Berkeley</span>
             <span class="author-block" style="margin-left: 1em;"><sup>5</sup>Impossible, Inc.</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>*</sup>Equal Contribution</span>
           </div>
 
           <div class="column has-text-centered" style="margin-top: 1.5rem;">
@@ -312,7 +313,7 @@
   <div class="container is-max-desktop">
     <div class="content has-text-justified">
       
-      <h2 class="title is-3 section-title">Introduction: Two Perspectives on Learning</h2>
+      <h2 class="title is-3 section-title">Maximum Likelihood vs. Reinforcement Learning</h2>
       
       <p>
         <strong>Maximum likelihood</strong> training is the foundational optimization principle behind modern machine learning. 
@@ -348,7 +349,7 @@
   <div class="container is-max-desktop">
     <div class="content has-text-justified">
       
-      <h2 class="title is-3 section-title">Core Insight: Correctness Formulates a Likelihood</h2>
+      <h2 class="title is-3 section-title">Correctness as Likelihood</h2>
       
       <p>
         For these correctness-based tasks, a <em>probabilistic modeling</em> lens exposes a viewpoint that is absent in the standard RL formulation. 
@@ -473,7 +474,7 @@
       
       <!-- Number line / Spectrum visualization (SVG) -->
       <div style="margin: 2rem 0; text-align: center;">
-        <svg viewBox="0 0 600 100" style="max-width: 100%; height: auto;">
+        <svg viewBox="0 0 600 100" style="max-width: 70%; height: auto;">
           <!-- Main axis line -->
           <line x1="50" y1="50" x2="550" y2="50" stroke="#e5e7eb" stroke-width="3" stroke-linecap="round"/>
           
@@ -548,9 +549,9 @@
       </p>
       
       <p>
-        <strong>Crucially:</strong> This estimator is unbiased for the truncated objective $J_{\mathrm{MaxRL}}^{(N)}$. 
-        Increasing samples $N$ in REINFORCE only reduces variance of a fixed pass@1 objective. 
-        In MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
+        This estimator is unbiased for the truncated objective $J_{\mathrm{MaxRL}}^{(N)}$. 
+        A key distinction emerges: in REINFORCE, increasing the number of samples $N$ only reduces variance while optimizing a fixed pass@1 objective. 
+        In MaxRL, increasing $N$ improves the <em>objective itself</em>, progressively approaching maximum likelihood.
       </p>
       
       <!-- Subsection: Weight Function View -->
@@ -562,7 +563,7 @@
       
       <div class="figure-container">
         <center>
-          <img src="./static/images/weight_functions.png" alt="Weight functions comparison" style="max-width: 60%;">
+          <img src="./static/images/weight_functions.png" alt="Weight functions comparison" style="max-width: 50%;">
         </center>
         <p class="figure-caption">
           <strong>Population-level weighting functions.</strong> As $T$ increases, MaxRL approaches ML weighting, 
@@ -570,7 +571,8 @@
         </p>
       </div>
       
-      <table class="comparison-table">
+      <center>
+      <table class="comparison-table" style="max-width: 70%;">
         <thead>
           <tr>
             <th style="color: #fff;">Method</th>
@@ -579,12 +581,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>RL (REINFORCE)</strong></td><td>$1$</td><td>No reweighting</td></tr>
+          <tr><td><strong>REINFORCE</strong></td><td>$1$</td><td>No reweighting</td></tr>
           <tr><td><strong>GRPO</strong></td><td>$\frac{1}{\sqrt{p(1-p)}}$</td><td>Moderate upweighting</td></tr>
-          <tr><td><strong>MaxRL (T)</strong></td><td>$\frac{1-(1-p)^T}{p}$</td><td>Compute-controlled</td></tr>
           <tr><td><strong>Maximum Likelihood</strong></td><td>$\frac{1}{p}$</td><td>Full inverse weighting</td></tr>
+          <tr><td><strong>MaxRL (Ours)</strong></td><td>$\frac{1-(1-p)^T}{p}$</td><td>Compute-controlled</td></tr>
         </tbody>
       </table>
+      </center>
       
     </div>
   </div>
@@ -597,10 +600,9 @@
     
     <div class="content has-text-justified" style="margin-bottom: 2rem;">
       <p>
-        We evaluate MaxRL across four experimental settings spanning different data regimes, task complexities, and model scales. 
-        First, we validate on ImageNet where exact maximum likelihood is computable. 
-        Then we study maze navigation with infinite fresh data, GSM8K math reasoning in a data-scarce regime, 
-        and finally scale to training Qwen3 models on challenging math benchmarks.
+        We first show that MaxRL closely approximates exact maximum likelihood where it is computable on a toy image classification task, 
+        and then demonstrate consistent improvements across maze navigation, GSM8K math reasoning, 
+        and finally on large-scale Qwen3 training and challenging math reasoning problems.
       </p>
     </div>
     
@@ -611,7 +613,7 @@
         Image classification provides a clean testbed: reward is 1 if predicted class matches ground truth, 0 otherwise.
       </p>
       <div class="figure-container">
-        <center><img src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 100%;"></center>
+        <center><img src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 80%;"></center>
         <p class="figure-caption">
           <strong>ImageNet training dynamics.</strong> With sufficient rollouts, MaxRL closely matches cross-entropy training, 
           while REINFORCE fails to make progress from low initial pass rates.
@@ -681,7 +683,7 @@
         </p>
       </div>
       <div class="figure-container">
-        <center><img src="./static/images/fraction_solved_problems_during_training.png" alt="Training coverage" style="max-width: 100%;"></center>
+        <center><img src="./static/images/fraction_solved_problems_during_training.png" alt="Training coverage" style="max-width: 85%;"></center>
         <p class="figure-caption">
           <strong>Training coverage.</strong> Fraction of prompts with at least one correct rollout during training. 
           MaxRL maintains higher coverage throughout training.
@@ -699,9 +701,9 @@
     
     <div class="conclusion-box content has-text-justified">
       <p>
-        We have introduced <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a framework that bridges 
+        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a framework that bridges 
         the gap between reinforcement learning and maximum likelihood for correctness-based tasks. Through a Maclaurin expansion 
-        of the log-likelihood, we showed that standard RL optimizes only the first-order term (pass@1), while maximum likelihood 
+        of the log-likelihood, we show that standard RL optimizes only the first-order term (pass@1), while maximum likelihood 
         corresponds to an infinite harmonic mixture of pass@k objectives.
       </p>
       <p>
@@ -712,8 +714,7 @@
       </p>
       <p>
         Empirically, MaxRL demonstrates superior performance in image classification, maze navigation, math reasoning, and 
-        large-scale LLM training. Most notably, MaxRL maintains high pass@k while improving pass@1, translating to 
-        <strong>2–20× inference efficiency gains</strong>: achieving the same success rate with far fewer samples at deployment time.
+        large-scale LLM training. Compared with GRPO, MaxRL achieves <strong>higher pass@k while improving pass@1</strong>, requiring <strong>2.3x-19.2x</strong> fewer samples at deployment time to achieve the same pass@k coverage.
       </p>
     </div>
     
