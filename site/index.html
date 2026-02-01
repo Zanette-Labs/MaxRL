@@ -44,7 +44,7 @@
     
     body { color: var(--text-dark); }
     
-    .hero { background: #1f2937; }
+    .hero { background: #1e40af; }
     .hero .title.is-1 { color: #fff; font-weight: 700; }
     .hero .publication-authors a { color: #93c5fd; }
     .hero .publication-authors a:hover { color: #bfdbfe; }
@@ -203,7 +203,25 @@
     table.comparison-table tr:hover td { background: var(--bg-gray); }
     
     pre code { display: block; padding: 1rem; background: #1f2937; color: #e5e7eb; border-radius: 6px; overflow-x: auto; }
-    .bibtex-box { background: #fff; border: 1px solid var(--border-light); border-radius: 6px; padding: 1rem; }
+    .bibtex-box { 
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #334155;
+      border-radius: 12px; 
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .bibtex-box pre {
+      margin: 0;
+      background: transparent;
+    }
+    .bibtex-box code {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      background: transparent;
+      padding: 0;
+    }
     
     footer.footer { background: #1f2937; color: #9ca3af; padding: 2rem; }
     footer a { color: #93c5fd; }
@@ -246,28 +264,26 @@
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">Maximum Likelihood Reinforcement Learning</h1>
           
-          <!-- Authors Section (commented out) -->
-          <!--
+          <!-- Authors Section -->
           <div class="is-size-5 publication-authors">
-            <span class="author-block"><a href="https://tajwarfahim.github.io/">Fahim Tajwar</a><sup>1*</sup>,</span>
-            <span class="author-block"><a href="#">Guanning Zeng</a><sup>2*</sup>,</span>
-            <span class="author-block"><a href="#">Yueer Zhou</a><sup>3</sup>,</span>
-            <span class="author-block"><a href="#">Yuda Song</a><sup>1</sup>,</span><br>
-            <span class="author-block"><a href="#">Daman Arora</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Yiding Jiang</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://tajwarfahim.github.io/">Fahim Tajwar</a><sup>*,1</sup>,</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=SU6ooAQAAAAJ">Guanning Zeng</a><sup>*,2</sup>,</span>
+            <span class="author-block"><a href="https://zhouyueer7.github.io/">Yueer Zhou</a><sup>3</sup>,</span>
+            <span class="author-block"><a href="https://yudasong.github.io/">Yuda Song</a><sup>1</sup>,</span><br>
+            <span class="author-block"><a href="https://daman1209arora.github.io/">Daman Arora</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://yidingjiang.github.io/">Yiding Jiang</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cs.cmu.edu/~schneide/">Jeff Schneider</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cs.cmu.edu/~rsalakhu/">Ruslan Salakhutdinov</a><sup>1</sup>,</span><br>
-            <span class="author-block"><a href="#">Haiwen Feng</a><sup>4,5</sup>,</span>
+            <span class="author-block"><a href="https://havenfeng.github.io/">Haiwen Feng</a><sup>4,5</sup>,</span>
             <span class="author-block"><a href="https://azanette.com">Andrea Zanette</a><sup>1</sup></span>
           </div>
           <div class="is-size-6 publication-authors" style="margin-top: 1rem;">
-            <span class="author-block"><sup>1</sup> Carnegie Mellon University</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>2</sup> Tsinghua University</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>3</sup> Zhejiang University</span><br>
-            <span class="author-block"><sup>4</sup> UC Berkeley</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>5</sup> Impossible, Inc</span>
+            <span class="author-block"><sup>1</sup>Carnegie Mellon University</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>2</sup>Tsinghua University</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>3</sup>Zhejiang University</span><br>
+            <span class="author-block"><sup>4</sup>UC Berkeley</span>
+            <span class="author-block" style="margin-left: 1em;"><sup>5</sup>Impossible, Inc.</span>
           </div>
-          -->
 
           <div class="column has-text-centered" style="margin-top: 1.5rem;">
             <div class="publication-links">
