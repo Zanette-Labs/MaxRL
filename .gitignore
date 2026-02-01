@@ -140,3 +140,5 @@ core
 others/
 maclaurin_test/
 *.out
+
+paper.tex
