@@ -527,11 +527,13 @@
       <div class="right-panel">
         <div class="right-title">MaxRL (Ours)</div>
         <div class="algo-box">
-          <div class="algo-label">Conditional-Form<br>Maximum Likelihood Advantage</div>
+          <div class="algo-label">Conditional Form of the<br>Maximum Likelihood Advantage</div>
           <div class="algo-formula">
-            $$A_j = \begin{cases} 0, & \text{if } \hat{\mu} = 0 \\[0.5em] \displaystyle\frac{r_j - \hat{\mu}}{\hat{\mu}}, & \text{otherwise} \end{cases}$$
+            $$A_j = \begin{cases} \displaystyle\frac{r_j - \hat{r}}{\hat{r}}, & \hat{r} > 0 \\[0.6em] 0, & \text{otherwise} \end{cases}$$
           </div>
-          <div class="algo-insight">Normalize by successes, not total samples</div>
+          <div class="algo-formula" style="margin-top: -4px;">
+            $\text{where } \hat{r} = \frac{1}{N}\sum_{j=1}^N r_j$
+          </div>
         </div>
       </div>
     </div>
