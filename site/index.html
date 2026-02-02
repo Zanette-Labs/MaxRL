@@ -45,7 +45,7 @@
     body { color: var(--text-dark); }
     
     .hero { background: #f3f4f6; border-bottom: 1px solid #e5e7eb; }
-    .hero .hero-body { padding-top: 4rem; padding-bottom: 2.5rem; }
+    .hero .hero-body { padding-top: 4rem; padding-bottom: 1.2rem; }
     .hero .title.is-1 { color: #ab1727; font-weight: 400; font-family: Georgia, 'Times New Roman', serif; }
     .hero .publication-authors a { color: #374151 !important; }
     .hero .publication-authors a:hover { color: #C41230 !important; text-decoration: underline; }
@@ -325,14 +325,8 @@
 </section>
 
 <!-- ==================== ABSTRACT ==================== -->
-<section class="section section-white" style="padding-top: 2rem; padding-bottom: 1rem;">
+<section class="section section-white" style="padding-top: 1.5rem; padding-bottom: 1rem;">
   <div class="container is-max-desktop">
-    <div class="content has-text-justified">
-
-      <p>
-        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a sampling-based framework to approximate maximum likelihood in reinforcement learning. MaxRL addresses the challenges of optimizing non-differentiable likelihood objectives by defining a compute-indexed family of sample-based objectives that interpolate between standard reinforcement learning and exact maximum likelihood as additional sampling compute is allocated.
-      </p>
-    </div>
     
     <!-- Teaser Diagram -->
     <style>
@@ -341,7 +335,7 @@
         gap: 14px;
         max-width: 100%;
         align-items: stretch;
-        margin: 2rem 0;
+        margin: 0.0rem 0;
       }
       .teaser-container .left-panel {
         flex: 2.5;
@@ -498,7 +492,7 @@
     <div class="teaser-container">
       <!-- 左侧：A Unified Perspective -->
       <div class="left-panel">
-        <div class="left-title">RL vs. Log Likelihood: A Unified Perspective</div>
+        <div class="left-title">Reinforcement Learning vs. Maximum Likelihood: A Unified Perspective</div>
         <div class="teaser-formula-box">
           $$\nabla_\theta J_{\mathrm{MaxRL}}^{(T)} = \sum_{k=1}^{T} \frac{1}{k} \nabla_\theta \mathrm{pass@}k$$
         </div>
@@ -518,7 +512,7 @@
           </div>
           <div class="point p3">
             <div class="point-dot ml"></div>
-            <div class="point-label ml">Max. Likelihood</div>
+            <div class="point-label ml">Maximum Likelihood</div>
             <div class="point-sub">$T \to \infty$</div>
           </div>
         </div>
@@ -545,6 +539,12 @@
       </center>
       <p class="figure-caption">
         <strong>Large-scale results on Qwen3-4B.</strong> MaxRL Pareto-dominates GRPO across all benchmarks, achieving higher Pass@1 while simultaneously improving Pass@K. This translates to <strong>2.3×–19.2× sample efficiency</strong> gains at inference time.
+      </p>
+    </div>
+    
+    <div class="content has-text-justified" style="margin-top: 1.5rem;">
+      <p>
+        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a sampling-based framework to approximate maximum likelihood in reinforcement learning. MaxRL addresses the challenges of optimizing non-differentiable likelihood objectives by defining a compute-indexed family of sample-based objectives that interpolate between standard reinforcement learning and exact maximum likelihood as additional sampling compute is allocated.
       </p>
     </div>
   </div>
