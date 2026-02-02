@@ -44,7 +44,7 @@
     
     body { color: var(--text-dark); }
     
-    .hero { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+    .hero { background: #f3f4f6; border-bottom: 1px solid #e5e7eb; }
     .hero .hero-body { padding-top: 4rem; padding-bottom: 2.5rem; }
     .hero .title.is-1 { color: #ab1727; font-weight: 400; font-family: Georgia, 'Times New Roman', serif; }
     .hero .publication-authors a { color: #374151 !important; }
@@ -320,6 +320,229 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ABSTRACT ==================== -->
+<section class="section section-white" style="padding-top: 2rem; padding-bottom: 1rem;">
+  <div class="container is-max-desktop">
+    <div class="content has-text-justified">
+
+      <p>
+        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a sampling-based framework to approximate maximum likelihood in reinforcement learning. MaxRL addresses the challenges of optimizing non-differentiable likelihood objectives by defining a compute-indexed family of sample-based objectives that interpolate between standard reinforcement learning and exact maximum likelihood as additional sampling compute is allocated.
+      </p>
+    </div>
+    
+    <!-- Teaser Diagram -->
+    <style>
+      .teaser-container {
+        display: flex;
+        gap: 14px;
+        max-width: 100%;
+        align-items: stretch;
+        margin: 2rem 0;
+      }
+      .teaser-container .left-panel {
+        flex: 2.5;
+        background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+        border: 2px solid #e7e5e4;
+        border-radius: 8px;
+        padding: 10px 40px;
+      }
+      .teaser-container .left-title {
+        text-align: center;
+        font-family: 'Google Sans', Georgia, serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 6px;
+      }
+      .teaser-container .teaser-formula-box {
+        background: rgba(255,255,255,0.9);
+        border: 1px solid #d6d3d1;
+        border-radius: 5px;
+        padding: 6px 28px;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      .teaser-container .teaser-formula-box .katex { color: #C41230; }
+      .teaser-container .spectrum {
+        position: relative;
+        height: 58px;
+      }
+      .teaser-container .axis-line {
+        position: absolute;
+        top: 22px;
+        left: 30px;
+        right: 30px;
+        height: 3px;
+        background: linear-gradient(to right, #1d4ed8, #C41230, #16a34a);
+        border-radius: 2px;
+      }
+      .teaser-container .axis-arrow {
+        position: absolute;
+        top: 17px;
+        right: 18px;
+        width: 0;
+        height: 0;
+        border-left: 9px solid #16a34a;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+      }
+      .teaser-container .dashed-arc {
+        position: absolute;
+        top: 0px;
+        left: 12%;
+        width: 76%;
+        height: 24px;
+        border: 2px dashed transparent;
+        border-top-color: #9ca3af;
+        border-radius: 100px 100px 0 0;
+        opacity: 0.5;
+      }
+      .teaser-container .point {
+        position: absolute;
+        top: 12px;
+        transform: translateX(-50%);
+        text-align: center;
+      }
+      .teaser-container .point-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin: 0 auto 2px;
+      }
+      .teaser-container .point-dot.rl { background: #1d4ed8; }
+      .teaser-container .point-dot.maxrl { 
+        background: #C41230; 
+        width: 18px; 
+        height: 18px; 
+        margin-top: -2px;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(196,18,48,0.25);
+      }
+      .teaser-container .point-dot.ml { background: #16a34a; }
+      .teaser-container .point-label {
+        font-family: 'Noto Sans', sans-serif;
+        font-weight: 700;
+        font-size: 10px;
+        margin-top: 1px;
+      }
+      .teaser-container .point-label.rl { color: #1d4ed8; }
+      .teaser-container .point-label.maxrl { color: #C41230; font-size: 11px; }
+      .teaser-container .point-label.ml { color: #16a34a; }
+      .teaser-container .point-sub {
+        font-size: 9px;
+        color: #6b7280;
+        font-style: italic;
+      }
+      .teaser-container .point.p1 { left: 15%; }
+      .teaser-container .point.p2 { left: 50%; }
+      .teaser-container .point.p3 { left: 85%; }
+      .teaser-container .right-panel {
+        flex: 1;
+        background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+        border: 2px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 10px 18px;
+        display: flex;
+        flex-direction: column;
+      }
+      .teaser-container .right-title {
+        text-align: center;
+        font-family: 'Google Sans', Georgia, serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 6px;
+      }
+      .teaser-container .algo-box {
+        background: #fff;
+        border: 1px solid #d4d4d4;
+        border-radius: 5px;
+        padding: 8px 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .teaser-container .algo-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 4px;
+        line-height: 1.2;
+      }
+      .teaser-container .algo-formula {
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .teaser-container .algo-formula .katex { font-size: 0.95em; }
+      .teaser-container .algo-insight {
+        text-align: center;
+        font-size: 9px;
+        font-weight: 600;
+        color: #6b7280;
+        background: #f3f4f6;
+        padding: 4px 6px;
+        border-radius: 3px;
+        margin-top: auto;
+      }
+      @media (max-width: 768px) {
+        .teaser-container { flex-direction: column; }
+      }
+    </style>
+    
+    <div class="teaser-container">
+      <!-- 左侧：A Unified Perspective -->
+      <div class="left-panel">
+        <div class="left-title">RL vs. Log Likelihood: A Unified Perspective</div>
+        <div class="teaser-formula-box">
+          $$\nabla_\theta J_{\mathrm{MaxRL}}^{(T)} = \sum_{k=1}^{T} \frac{1}{k} \nabla_\theta \mathrm{pass@}k$$
+        </div>
+        <div class="spectrum">
+          <div class="dashed-arc"></div>
+          <div class="axis-line"></div>
+          <div class="axis-arrow"></div>
+          <div class="point p1">
+            <div class="point-dot rl"></div>
+            <div class="point-label rl">Standard RL</div>
+            <div class="point-sub">$T = 1$</div>
+          </div>
+          <div class="point p2">
+            <div class="point-dot maxrl"></div>
+            <div class="point-label maxrl">MaxRL</div>
+            <div class="point-sub">$T = N$</div>
+          </div>
+          <div class="point p3">
+            <div class="point-dot ml"></div>
+            <div class="point-label ml">Max. Likelihood</div>
+            <div class="point-sub">$T \to \infty$</div>
+          </div>
+        </div>
+      </div>
+      <!-- 右侧：MaxRL Algorithm -->
+      <div class="right-panel">
+        <div class="right-title">MaxRL (Ours)</div>
+        <div class="algo-box">
+          <div class="algo-label">Conditional-Form<br>Maximum Likelihood Advantage</div>
+          <div class="algo-formula">
+            $$A_j = \begin{cases} 0, & \text{if } \hat{\mu} = 0 \\[0.5em] \displaystyle\frac{r_j - \hat{\mu}}{\hat{\mu}}, & \text{otherwise} \end{cases}$$
+          </div>
+          <div class="algo-insight">Normalize by successes, not total samples</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Qwen3-4B Results Figure -->
+    <div class="figure-container" style="margin-top: 2rem;">
+      <center>
+        <img src="./static/images/large_scale_experiments_summary_qwen_3_4B.png" alt="MaxRL Results on Qwen3-4B" style="max-width: 100%;">
+      </center>
+      <p class="figure-caption">
+        <strong>Large-scale results on Qwen3-4B.</strong> MaxRL Pareto-dominates GRPO across all benchmarks, achieving higher Pass@1 while simultaneously improving Pass@K. This translates to <strong>2.3×–19.2× sample efficiency</strong> gains at inference time.
+      </p>
     </div>
   </div>
 </section>
