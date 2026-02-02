@@ -296,7 +296,7 @@
             <span class="author-block" style="margin-left: 0.8em;"><sup>*</sup>Equal Contribution</span>
           </div>
 
-<div class="column has-text-centered" style="margin-top: 1.5rem;">
+          <div class="column has-text-centered" style="margin-top: 1.5rem;">
             <div class="publication-links">
               <span class="link-block">
                 <a href="#" class="external-link button is-normal is-rounded">
@@ -488,11 +488,11 @@
         .teaser-container { flex-direction: column; }
       }
     </style>
-    
+      
     <div class="teaser-container">
       <!-- 左侧：A Unified Perspective -->
       <div class="left-panel">
-        <div class="left-title">Reinforcement Learning vs. Maximum Likelihood: A Unified Perspective</div>
+        <div class="left-title">RL vs. Maximum Likelihood: A Unified Perspective</div>
         <div class="teaser-formula-box">
           $$\nabla_\theta J_{\mathrm{MaxRL}}^{(T)} = \sum_{k=1}^{T} \frac{1}{k} \nabla_\theta \mathrm{pass@}k$$
         </div>
@@ -555,20 +555,23 @@
   <div class="container is-max-desktop">
     <div class="content has-text-justified">
       
-      <h2 class="title is-3 section-title">RL Optimizes a First-Order Approximation of Maximum Likelihood</h2>
+      <h2 class="title is-3 section-title">Why Maximum Likelihood?</h2>
       
       <p>
-        Many modern learning problems—code generation, mathematical reasoning, and multi-step planning—are non-differentiable but admit a <strong>binary notion of correctness</strong>. 
-        For each input $x$, the model induces a probability of success $p_\theta(x)$, defining an implicit <strong>likelihood over correct outcomes</strong>.
+        Maximum likelihood emerges as a principled objective in supervised learning—it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
+        In contrast, many modern learning problems—code generation, mathematical reasoning, multi-step planning—involve non-differentiable generation but admit an implicit <strong>binary notion of correctness</strong>. 
+        For each input $x$, the model induces a probability of success $p_\theta(x)$, defining an implicit likelihood over correct outcomes.
       </p>
       
       <p>
-        Reinforcement learning and maximum likelihood optimize <strong>different objectives</strong> over this probability:
+        In these settings, <strong>reinforcement learning</strong> is typically applied. 
+        RL was designed to handle problems where the likelihood cannot be optimized directly due to non-differentiable intermediate sampling. 
+        However, the two approaches optimize <strong>fundamentally different objectives</strong>:
       </p>
       
       <div class="math-comparison">
-        <div class="math-box" style="border-top: 3px solid #1d4ed8;">
-          <h4 style="color: #1d4ed8;">Reinforcement Learning</h4>
+        <div class="math-box" style="border-top: 3px solid #1e40af;">
+          <h4 style="color: #1e40af;">Reinforcement Learning</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
           </p>
@@ -578,8 +581,8 @@
             <strong>→ Dominated by easy examples</strong>
           </p>
         </div>
-        <div class="math-box" style="border-top: 3px solid #16a34a;">
-          <h4 style="color: #16a34a;">Maximum Likelihood</h4>
+        <div class="math-box" style="border-top: 3px solid #7c3aed;">
+          <h4 style="color: #7c3aed;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
           </p>
@@ -592,15 +595,14 @@
       </div>
       
       <p>
-        The $1/p_\theta(x)$ reweighting in maximum likelihood places greater emphasis on hard, low-success inputs. 
+        The $1/p_\theta(x)$ factor in maximum likelihood places greater emphasis on hard, low-success inputs. 
         This leads to very different optimization dynamics—maximum likelihood pushes learning signal toward difficult problems where the model struggles.
       </p>
       
-      <div class="insight-box">
-        <p style="margin: 0;">
-          <strong>Key insight:</strong> Standard RL optimizes only a first-order approximation of the maximum likelihood objective.
-        </p>
-      </div>
+      <p>
+        Nevertheless, maximum likelihood is statistically challenging to estimate when $p_\theta(x)$ is small. 
+        <strong>Can we approximate maximum likelihood in a way that scales with compute?</strong>
+      </p>
 
     </div>
   </div>
@@ -609,188 +611,134 @@
 <!-- ==================== MAXRL METHOD ==================== -->
 <section class="section section-white">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 section-title">Maximum Likelihood Reinforcement Learning (MaxRL)</h2>
+    <h2 class="title is-3 section-title">MaxRL: Approximating Maximum Likelihood with More Compute</h2>
     
     <div class="content has-text-justified">
       
       <p>
-        Maximum likelihood emerges as a principled objective, but it is statistically challenging to estimate when the success probability 
-        $p_\theta(x)$ is small. We show that this challenge admits a principled resolution that <strong>scales with compute</strong>.
+        We show that the challenge of estimating maximum likelihood admits a principled resolution that <strong>scales with compute</strong>. 
+        The key insight comes from a Maclaurin expansion of the log-likelihood.
       </p>
       
       <!-- Subsection: Maclaurin Expansion -->
       <h4 class="subsection-title">Maclaurin Expansion of Maximum Likelihood</h4>
       
-      <p>
-        Standard reinforcement learning optimizes the expected pass@1:
-      </p>
+      <p>The log-likelihood admits a <strong>Maclaurin expansion</strong> in terms of failure events:</p>
       
       <div class="formula-box">
-        <p style="font-size: 1.1rem; margin: 0;">
-          $\nabla_\theta J_{\mathrm{RL}}(x) = \nabla_\theta \mathrm{pass@}1(x)$
+        <p style="font-size: 1rem; margin: 0;">
+          $J_{\mathrm{ML}}(x) = \log p = -\sum_{k=1}^{\infty}\frac{(1-p)^k}{k} = -\sum_{k=1}^{\infty}\frac{\mathrm{fail@}k(x)}{k}$
         </p>
       </div>
       
-      <p>
-        What about maximum likelihood? The log-likelihood admits a <strong>Maclaurin (failure-series) expansion</strong>:
-      </p>
+      <p>Differentiating yields the <strong>population-level gradient identity</strong>:</p>
       
-      <div class="formula-box">
-        <p style="font-size: 1.1rem; margin: 0;">
-          $\log p = -\sum_{k=1}^{\infty}\frac{(1-p)^k}{k} = -\sum_{k=1}^{\infty}\frac{\mathrm{fail@}k}{k}$
-        </p>
-      </div>
-      
-      <p>
-        Differentiating yields the population-level gradient identity:
-      </p>
-      
-      <div class="formula-box">
-        <p style="font-size: 1.2rem; margin: 0; font-weight: 500;">
+      <div class="formula-box" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #C41230;">
+        <p style="font-size: 1.1rem; margin: 0; font-weight: 500;">
           $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
         </p>
       </div>
       
       <p>
-        This is a key identity: <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
-        Higher-order terms encode learning signal from increasingly rare success patterns, which become essential when the model's pass rate is small.
+        This is a key result: <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
+        Higher-order terms encode learning signal from increasingly rare success patterns—critical when the pass rate $p$ is small.
       </p>
       
       <p>
-        Comparing the two objectives, the RL gradient corresponds to retaining solely the <strong>first-order term</strong>. From this perspective, 
-        <em>reinforcement learning is a first-order approximation of maximum likelihood in correctness space</em>.
+        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$—the <strong>first-order term</strong> of this expansion. 
+        From this perspective, <em>reinforcement learning is a first-order approximation of maximum likelihood</em>.
       </p>
       
-      <!-- Subsection: Truncated Objectives -->
-      <h4 class="subsection-title">Truncated Objectives</h4>
+      <!-- Subsection: MaxRL Objective -->
+      <h4 class="subsection-title">MaxRL Objective Function</h4>
       
       <p>
-        Optimizing the full infinite mixture is infeasible under finite compute. We define the <strong>truncated maximum likelihood objective</strong> 
-        at level $T$:
+        Optimizing the full infinite mixture is infeasible. We define the <strong>truncated maximum likelihood objective</strong> at level $T$:
       </p>
       
       <div class="formula-box">
-        <p style="font-size: 1.1rem; margin: 0;">
+        <p style="font-size: 1rem; margin: 0;">
           $\nabla_\theta J_{\mathrm{MaxRL}}^{(T)}(x) = \sum_{k=1}^{T}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
         </p>
       </div>
       
-      <!-- Number line / Spectrum visualization (SVG) -->
-      <div style="margin: 2rem 0; text-align: center;">
-        <svg viewBox="0 0 600 100" style="max-width: 70%; height: auto;">
-          <!-- Main axis line -->
-          <line x1="50" y1="50" x2="550" y2="50" stroke="#e5e7eb" stroke-width="3" stroke-linecap="round"/>
+      <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
+      
+      <ul style="margin: 1rem 0;">
+        <li><strong>$T = 1$</strong> recovers standard reinforcement learning (pass@1)</li>
+        <li><strong>$T \to \infty$</strong> recovers exact maximum likelihood</li>
+        <li><strong>$T = N$</strong> (number of rollouts) is what we use in practice</li>
+      </ul>
           
-          <!-- Arrow at end -->
-          <polygon points="545,45 555,50 545,55" fill="#e5e7eb"/>
-          
-          <!-- RL point (T=1) -->
-          <circle cx="80" cy="50" r="8" fill="#1e40af"/>
-          <text x="80" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">Standard RL</text>
-          <text x="80" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = 1</text>
-          
-          <!-- MaxRL point (T=N) -->
-          <circle cx="300" cy="50" r="10" fill="#C41230" stroke="#fff" stroke-width="2"/>
-          <text x="300" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#C41230">MaxRL</text>
-          <text x="300" y="78" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = N</text>
-          
-          <!-- ML point (T→∞) -->
-          <circle cx="520" cy="50" r="8" fill="#7c3aed"/>
-          <text x="520" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#7c3aed">Max. Likelihood</text>
-          <text x="520" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T → ∞</text>
-          
-          <!-- Gradient arc connecting RL to ML (decorative) -->
-          <path d="M 95 50 Q 300 20 505 50" stroke="url(#gradientArc)" stroke-width="2" fill="none" stroke-dasharray="4,4" opacity="0.5"/>
-          
-          <defs>
-            <linearGradient id="gradientArc" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#1e40af"/>
-              <stop offset="50%" stop-color="#C41230"/>
-              <stop offset="100%" stop-color="#7c3aed"/>
-            </linearGradient>
-          </defs>
-        </svg>
+      <div class="insight-box">
+        <p style="margin: 0;">
+          <strong>Key property:</strong> MaxRL provides a principled framework for trading additional compute for higher-fidelity approximations to maximum likelihood.
+        </p>
       </div>
       
-      <p>
-        This defines a <strong>compute-indexed hierarchy</strong>: increasing $T$ provides progressively better approximations to maximum likelihood. 
-        In practice, we set $T = N$ where $N$ is the number of rollouts per prompt.
-      </p>
+      <!-- Subsection: Gradient Estimator -->
+      <h4 class="subsection-title">Gradient Estimator</h4>
       
-      <!-- Subsection: Empirical Gradient Estimator -->
-      <h4 class="subsection-title">Empirical Gradient Estimator</h4>
-      
-      <p>
-        The maximum likelihood gradient admits a simple <strong>conditional expectation representation</strong>:
-      </p>
+      <p>The ML gradient admits a simple <strong>conditional expectation representation</strong> (Theorem 1 in paper):</p>
       
       <div class="formula-box">
-        <p style="font-size: 1.1rem; margin: 0;">
+        <p style="font-size: 1rem; margin: 0;">
           $\nabla_\theta J_{\mathrm{ML}}(x) = \mathbb{E}\left[\nabla_\theta \log \pi_\theta(z \mid x) \;\middle|\; \text{success}\right]$
         </p>
       </div>
       
       <p>
-        This leads to a remarkably simple estimator. Given $N$ rollouts with $K$ successes, the <strong>conditional estimator</strong> averages 
-        score functions over successful trajectories only:
+        This leads to a remarkably simple estimator: <strong>average score functions over successful trajectories only</strong>. 
+        Given $N$ rollouts with $K$ successes:
       </p>
       
-      <div class="algorithm-box">
-        <span class="keyword">for</span> each prompt $x$ <span class="keyword">in</span> batch:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;Sample $N$ rollouts from $\pi_\theta(\cdot|x)$<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;$K$ ← number of successful rollouts<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;$\hat{\mu}$ ← $K / N$ &nbsp;&nbsp;<span class="comment"># empirical pass rate</span><br><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> $K > 0$:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A(y) = \frac{r(y) - \hat{\mu}}{\hat{\mu}}$ &nbsp;&nbsp;<span class="comment"># MaxRL advantage</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A(y) = 0$<br><br>
-        <span class="function">PolicyGradientUpdate</span>(advantages)
+      <!-- Side-by-side comparison -->
+      <div class="comparison-table" style="display: flex; gap: 1rem; margin: 1.5rem 0;">
+        <div style="flex: 1; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #1e40af; border-radius: 8px; padding: 1.2rem;">
+          <h5 style="color: #1e40af; margin: 0 0 1rem 0; text-align: center; font-size: 1rem;">REINFORCE</h5>
+          <div style="text-align: center; font-size: 1rem; margin-bottom: 1rem;">
+            $\displaystyle\frac{1}{N}\sum_{i=1}^N r_i S_i$
+          </div>
+          <p style="font-size: 0.9rem; color: #4b5563; margin: 0; text-align: center;">
+            <strong>Unbiased for:</strong><br>$\nabla_\theta\,\mathrm{pass@}1$
+          </p>
+          <hr style="margin: 0.8rem 0; border: none; border-top: 1px solid #93c5fd;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0; text-align: center;">
+            Normalize by <em>total samples</em> $N$
+          </p>
+        </div>
+        <div style="flex: 1; background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 2px solid #C41230; border-radius: 8px; padding: 1.2rem;">
+          <h5 style="color: #C41230; margin: 0 0 1rem 0; text-align: center; font-size: 1rem;">MaxRL (Ours)</h5>
+          <div style="text-align: center; font-size: 1rem; margin-bottom: 1rem;">
+            $\displaystyle\frac{1}{K}\sum_{i=1}^N r_i S_i$
+          </div>
+          <p style="font-size: 0.9rem; color: #4b5563; margin: 0; text-align: center;">
+            <strong>Unbiased for:</strong><br>$\sum_{k=1}^{N}\frac{1}{k}\nabla_\theta \mathrm{pass@}k$
+          </p>
+          <hr style="margin: 0.8rem 0; border: none; border-top: 1px solid #fca5a5;">
+          <p style="font-size: 0.85rem; color: #6b7280; margin: 0; text-align: center;">
+            Normalize by <em>successful samples</em> $K$
+          </p>
+        </div>
       </div>
       
-      <p style="margin-top: 1.5rem;">
-        The key difference from REINFORCE is simple: <strong>normalize by $K$ (successful samples) instead of $N$ (total samples)</strong>.
-      </p>
-      
       <p>
-        This estimator is unbiased for the truncated objective $J_{\mathrm{MaxRL}}^{(N)}$. 
-        A key distinction emerges: in REINFORCE, increasing the number of samples $N$ only reduces variance while optimizing a fixed pass@1 objective. 
-        In MaxRL, increasing $N$ improves the <em>objective itself</em>, progressively approaching maximum likelihood.
+        <strong>The difference is a single-line change:</strong> normalize by $K$ instead of $N$. 
+        But this changes the objective being optimized fundamentally.
       </p>
       
-      <!-- Subsection: Weight Function View -->
-      <h4 class="subsection-title">A Unifying Weight-Function View</h4>
-      
-      <p>
-        All objectives can be unified through a weighting function $w(p)$ that determines how learning signal is allocated:
-      </p>
-      
-      <div class="figure-container">
-        <center>
-          <img src="./static/images/weight_functions.png" alt="Weight functions comparison" style="max-width: 50%;">
-        </center>
-        <p class="figure-caption">
-          <strong>Population-level weighting functions.</strong> As $T$ increases, MaxRL approaches ML weighting, 
-          emphasizing hard inputs while remaining bounded at moderate pass rates.
+      <div class="insight-box" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #16a34a;">
+        <p style="margin: 0;">
+          <strong>Critical distinction:</strong> Increasing $N$ in REINFORCE reduces <em>variance</em> of a fixed pass@1 objective. 
+          In MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
         </p>
       </div>
       
-      <center>
-      <table class="comparison-table" style="max-width: 70%;">
-        <thead>
-          <tr>
-            <th style="color: #fff;">Method</th>
-            <th style="color: #fff;">Weight Function $w(p)$</th>
-            <th style="color: #fff;">Behavior on Hard Inputs</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>REINFORCE</strong></td><td>$1$</td><td>No reweighting</td></tr>
-          <tr><td><strong>GRPO</strong></td><td>$\frac{1}{\sqrt{p(1-p)}}$</td><td>Moderate upweighting</td></tr>
-          <tr><td><strong>Maximum Likelihood</strong></td><td>$\frac{1}{p}$</td><td>Full inverse weighting</td></tr>
-          <tr><td><strong>MaxRL (Ours)</strong></td><td>$\frac{1-(1-p)^T}{p}$</td><td>Compute-controlled</td></tr>
-        </tbody>
-      </table>
-      </center>
+      <p style="margin-top: 1.5rem;">
+        <strong>Comparison with GRPO:</strong> GRPO normalizes by the empirical standard deviation $\sigma$, which induces a population-level weighting of $1/\sqrt{p(1-p)}$—providing moderate upweighting of hard inputs. 
+        However, unlike MaxRL, increasing compute under GRPO does not yield a better approximation to maximum likelihood. 
+        MaxRL's normalization by $K$ (successful samples) is the key design choice that enables compute-scaling toward ML.
+      </p>
       
     </div>
   </div>
@@ -873,28 +821,7 @@
       </div>
     </div>
     
-    <div class="result-card">
-      <h4>Analysis</h4>
-      <p>
-        We analyze MaxRL's behavior by examining gradient norms and training coverage across different methods.
-      </p>
-      <div class="figure-container">
-        <center><img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient analysis" style="max-width: 100%;"></center>
-        <p class="figure-caption">
-          <strong>Gradient norm vs pass rate.</strong> MaxRL generates larger gradient norms on difficult prompts (low pass rate), 
-          consistent with its inverse-probability weighting.
-        </p>
       </div>
-      <div class="figure-container">
-        <center><img src="./static/images/fraction_solved_problems_during_training.png" alt="Training coverage" style="max-width: 85%;"></center>
-        <p class="figure-caption">
-          <strong>Training coverage.</strong> Fraction of prompts with at least one correct rollout during training. 
-          MaxRL maintains higher coverage throughout training.
-        </p>
-      </div>
-    </div>
-    
-  </div>
 </section>
 
 <!-- ==================== CONCLUSION ==================== -->
