@@ -269,31 +269,31 @@
 <!-- Hero Section -->
 <section class="hero">
   <div class="hero-body">
-    <div class="container is-max-desktop">
+    <div class="container is-max-widescreen">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Maximum Likelihood Reinforcement Learning</h1>
+          <h1 class="title is-1 publication-title" style="white-space: nowrap;">Maximum Likelihood Reinforcement Learning</h1>
           
           <!-- Authors Section -->
           <div class="is-size-5 publication-authors">
             <span class="author-block"><a href="https://tajwarfahim.github.io/">Fahim Tajwar</a><sup>*,1</sup>,</span>
             <span class="author-block"><a href="https://scholar.google.com/citations?user=SU6ooAQAAAAJ">Guanning Zeng</a><sup>*,2</sup>,</span>
             <span class="author-block"><a href="https://zhouyueer7.github.io/">Yueer Zhou</a><sup>3</sup>,</span>
-            <span class="author-block"><a href="https://yudasong.github.io/">Yuda Song</a><sup>1</sup>,</span><br>
-            <span class="author-block"><a href="https://daman1209arora.github.io/">Daman Arora</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://yudasong.github.io/">Yuda Song</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://daman1209arora.github.io/">Daman Arora</a><sup>1</sup>,</span><br>
             <span class="author-block"><a href="https://yidingjiang.github.io/">Yiding Jiang</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cs.cmu.edu/~schneide/">Jeff Schneider</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="https://www.cs.cmu.edu/~rsalakhu/">Ruslan Salakhutdinov</a><sup>1</sup>,</span><br>
+            <span class="author-block"><a href="https://www.cs.cmu.edu/~rsalakhu/">Ruslan Salakhutdinov</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://havenfeng.github.io/">Haiwen Feng</a><sup>4,5</sup>,</span>
             <span class="author-block"><a href="https://azanette.com">Andrea Zanette</a><sup>1</sup></span>
           </div>
-          <div class="is-size-6 publication-authors" style="margin-top: 1rem;">
-            <span class="author-block"><sup>1</sup>Carnegie Mellon University</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>2</sup>Tsinghua University</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>3</sup>Zhejiang University</span><br>
-            <span class="author-block"><sup>4</sup>UC Berkeley</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>5</sup>Impossible, Inc.</span>
-            <span class="author-block" style="margin-left: 1em;"><sup>*</sup>Equal Contribution</span>
+          <div class="is-size-6 publication-authors" style="margin-top: 0.8rem;">
+            <span class="author-block"><sup>1</sup>CMU</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>2</sup>Tsinghua University</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>3</sup>Zhejiang University</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>4</sup>UC Berkeley</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>5</sup>Impossible, Inc.</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>*</sup>Equal Contribution</span>
           </div>
 
 <div class="column has-text-centered" style="margin-top: 1.5rem;">
@@ -315,7 +315,7 @@
 
           <div style="margin-top: 1.5rem; text-align: center;">
             <p style="font-family: 'Castoro', Georgia, serif; font-size: 1.1rem; color: #374151;">
-              <strong>TL;DR&nbsp;</strong> MaxRL turns RL into an approximation to maximum likelihood, pushing learning toward hard problems and improving both Pass@1 and Pass@K while using up to 20× fewer samples.
+              <strong>TL;DR</strong>&nbsp; MaxRL is a reinforcement learning method that optimizes the maximum likelihood objective.
             </p>
           </div>
         </div>
@@ -377,16 +377,17 @@
         left: 30px;
         right: 30px;
         height: 3px;
-        background: linear-gradient(to right, #1d4ed8, #C41230, #16a34a);
+        background: linear-gradient(to right, #1e40af, #C41230, #7c3aed);
         border-radius: 2px;
       }
+      /* Colors: RL=indigo, MaxRL=red, ML=purple */
       .teaser-container .axis-arrow {
         position: absolute;
         top: 17px;
         right: 18px;
         width: 0;
         height: 0;
-        border-left: 9px solid #16a34a;
+        border-left: 9px solid #7c3aed;
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent;
       }
@@ -413,7 +414,7 @@
         border-radius: 50%;
         margin: 0 auto 2px;
       }
-      .teaser-container .point-dot.rl { background: #1d4ed8; }
+      .teaser-container .point-dot.rl { background: #1e40af; }
       .teaser-container .point-dot.maxrl { 
         background: #C41230; 
         width: 18px; 
@@ -421,16 +422,16 @@
         margin-top: -2px;
         box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(196,18,48,0.25);
       }
-      .teaser-container .point-dot.ml { background: #16a34a; }
+      .teaser-container .point-dot.ml { background: #7c3aed; }
       .teaser-container .point-label {
         font-family: 'Noto Sans', sans-serif;
         font-weight: 700;
         font-size: 10px;
         margin-top: 1px;
       }
-      .teaser-container .point-label.rl { color: #1d4ed8; }
+      .teaser-container .point-label.rl { color: #1e40af; }
       .teaser-container .point-label.maxrl { color: #C41230; font-size: 11px; }
-      .teaser-container .point-label.ml { color: #16a34a; }
+      .teaser-container .point-label.ml { color: #7c3aed; }
       .teaser-container .point-sub {
         font-size: 9px;
         color: #6b7280;
@@ -547,96 +548,57 @@
   </div>
 </section>
 
-<!-- ==================== TWO PERSPECTIVES ==================== -->
+<!-- ==================== RL VS ML ==================== -->
 <section class="section section-white">
   <div class="container is-max-desktop">
     <div class="content has-text-justified">
       
-      <h2 class="title is-3 section-title">Maximum Likelihood vs. Reinforcement Learning</h2>
+      <h2 class="title is-3 section-title">RL Optimizes a First-Order Approximation of Maximum Likelihood</h2>
       
       <p>
-        <strong>Maximum likelihood</strong> training is the foundational optimization principle behind modern machine learning. 
-        In fully differentiable settings, optimizing log-likelihood objectives—most commonly via cross-entropy—has reliably 
-        translated increases in model capacity, data, and compute into consistent performance improvements.
+        Many modern learning problems—code generation, mathematical reasoning, and multi-step planning—are non-differentiable but admit a <strong>binary notion of correctness</strong>. 
+        For each input $x$, the model induces a probability of success $p_\theta(x)$, defining an implicit <strong>likelihood over correct outcomes</strong>.
       </p>
       
       <p>
-        <strong>Reinforcement learning</strong>, by contrast, originated in optimal control and sequential decision-making 
-        where the end-to-end process is non-differentiable. The learning process is framed as interaction with an environment 
-        and the goal is to maximize expected return.
-      </p>
-      
-      <p>
-        Many modern learning problems—navigation, program synthesis, structured prediction, and <em>multi-step reasoning in LLMs</em>—are 
-        non-differentiable but admit a <strong>binary notion of correctness</strong>. They involve generating sequences of stochastic decisions, 
-        with success determined at the end by an external verifier. Because this generation process is non-differentiable end-to-end, 
-        reinforcement learning is typically used to maximize expected reward.
-      </p>
-      
-      <div class="insight-box">
-        <p style="margin: 0;">
-          <strong>But is maximizing expected correctness the right optimization target?</strong>
-        </p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ==================== PROBABILISTIC MODELING LENS ==================== -->
-<section class="section section-gray">
-  <div class="container is-max-desktop">
-    <div class="content has-text-justified">
-      
-      <h2 class="title is-3 section-title">Correctness as Likelihood</h2>
-      
-      <p>
-        For these correctness-based tasks, a <em>probabilistic modeling</em> lens exposes a viewpoint that is absent in the standard RL formulation. 
-        For each input, the model induces a distribution over stochastic outputs, together with a binary random variable indicating correctness. 
-        The resulting probability of success is a function of the model parameters and therefore defines a <strong>likelihood over correct outcomes</strong>—even 
-        if intermediate computations are non-differentiable.
-      </p>
-      
-      <p>
-        These two perspectives induce <strong>different optimization objectives</strong>. Let $p_\theta(x)$ denote the probability that 
-        a model with parameters $\theta$ produces a correct output for input $x$:
+        Reinforcement learning and maximum likelihood optimize <strong>different objectives</strong> over this probability:
       </p>
       
       <div class="math-comparison">
-        <div class="math-box rl">
-          <h4>🎮 Control Formulation (RL)</h4>
+        <div class="math-box" style="border-top: 3px solid #1d4ed8;">
+          <h4 style="color: #1d4ed8;">Reinforcement Learning</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-            Maximize expected correctness. Each input contributes in proportion to how changes affect its success probability.
+            Maximizes expected correctness (pass@1).
             <br><br>
-            <strong>→ Optimization dominated by easy examples</strong>
+            <strong>→ Dominated by easy examples</strong>
           </p>
         </div>
-        <div class="math-box ml">
-          <h4>📊 Modeling Formulation (ML)</h4>
+        <div class="math-box" style="border-top: 3px solid #16a34a;">
+          <h4 style="color: #16a34a;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-            Maximize likelihood of correct outcomes. Gradient reweighted by inverse success probability.
+            Reweights by inverse success probability.
             <br><br>
-            <strong>→ Concentrated effort on hard, uncertain inputs</strong>
+            <strong>→ Focuses on hard problems</strong>
           </p>
         </div>
       </div>
       
       <p>
-        Historically, this distinction was inconsequential in classical RL settings where agents interacted with a single environment. 
-        <strong>Modern applications</strong> operate in a fundamentally different regime: models are trained and evaluated across 
-        large, heterogeneous input distributions, where <em>generalization</em> and <em>coverage</em> are central concerns. 
-        In this regime, objectives that differ in how they allocate learning signal can induce markedly different behavior.
+        The $1/p_\theta(x)$ reweighting in maximum likelihood places greater emphasis on hard, low-success inputs. 
+        This leads to very different optimization dynamics—maximum likelihood pushes learning signal toward difficult problems where the model struggles.
       </p>
       
-      <p>
-        This raises a natural question: <em>what objective function should reinforcement learning maximize in correctness-based tasks?</em>
-      </p>
+      <div class="insight-box">
+        <p style="margin: 0;">
+          <strong>Key insight:</strong> Standard RL optimizes only a first-order approximation of the maximum likelihood objective.
+        </p>
+      </div>
 
     </div>
   </div>
@@ -721,8 +683,8 @@
           <polygon points="545,45 555,50 545,55" fill="#e5e7eb"/>
           
           <!-- RL point (T=1) -->
-          <circle cx="80" cy="50" r="8" fill="#1d4ed8"/>
-          <text x="80" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1d4ed8">Standard RL</text>
+          <circle cx="80" cy="50" r="8" fill="#1e40af"/>
+          <text x="80" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">Standard RL</text>
           <text x="80" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = 1</text>
           
           <!-- MaxRL point (T=N) -->
@@ -731,8 +693,8 @@
           <text x="300" y="78" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T = N</text>
           
           <!-- ML point (T→∞) -->
-          <circle cx="520" cy="50" r="8" fill="#16a34a"/>
-          <text x="520" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#16a34a">Max. Likelihood</text>
+          <circle cx="520" cy="50" r="8" fill="#7c3aed"/>
+          <text x="520" y="30" text-anchor="middle" font-size="13" font-weight="600" fill="#7c3aed">Max. Likelihood</text>
           <text x="520" y="75" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">T → ∞</text>
           
           <!-- Gradient arc connecting RL to ML (decorative) -->
@@ -740,9 +702,9 @@
           
           <defs>
             <linearGradient id="gradientArc" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#1d4ed8"/>
+              <stop offset="0%" stop-color="#1e40af"/>
               <stop offset="50%" stop-color="#C41230"/>
-              <stop offset="100%" stop-color="#16a34a"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
             </linearGradient>
           </defs>
         </svg>
