@@ -94,10 +94,14 @@
     .insight-box {
       background: #fff;
       border: 1px solid var(--border-light);
-      border-left: 4px solid var(--primary);
+      border-left: 4px solid #16a34a;
       padding: 1.5rem 2rem;
       border-radius: 4px;
       margin: 1.5rem 0;
+    }
+    .insight-box p {
+      font-family: 'Castoro', Georgia, serif;
+      font-size: 1.1rem;
     }
     
     .math-comparison {
@@ -620,7 +624,7 @@
         The key insight comes from a Maclaurin expansion of the log-likelihood.
       </p>
       
-      <!-- Subsection: Maclaurin Expansion -->
+      <!-- Maclaurin Expansion -->
       <h4 class="subsection-title">Maclaurin Expansion of Maximum Likelihood</h4>
       
       <p>The log-likelihood admits a <strong>Maclaurin expansion</strong> in terms of failure events:</p>
@@ -633,23 +637,28 @@
       
       <p>Differentiating yields the <strong>population-level gradient identity</strong>:</p>
       
-      <div class="formula-box" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #C41230;">
-        <p style="font-size: 1.1rem; margin: 0; font-weight: 500;">
+      <div class="formula-box">
+        <p style="font-size: 1.1rem; margin: 0;">
           $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
         </p>
       </div>
       
       <p>
-        This is a key result: <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
+        From this Maclaurin expansion, we see that <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
         Higher-order terms encode learning signal from increasingly rare success patterns—critical when the pass rate $p$ is small.
       </p>
       
       <p>
-        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$—the <strong>first-order term</strong> of this expansion. 
-        From this perspective, <em>reinforcement learning is a first-order approximation of maximum likelihood</em>.
+        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$—the <strong>first-order term</strong> of this expansion:
       </p>
       
-      <!-- Subsection: MaxRL Objective -->
+      <div class="insight-box">
+        <p style="margin: 0;">
+          Reinforcement learning is a first-order approximation of maximum likelihood.
+        </p>
+      </div>
+      
+      <!-- MaxRL Objective -->
       <h4 class="subsection-title">MaxRL Objective Function</h4>
       
       <p>
@@ -672,72 +681,160 @@
           
       <div class="insight-box">
         <p style="margin: 0;">
-          <strong>Key property:</strong> MaxRL provides a principled framework for trading additional compute for higher-fidelity approximations to maximum likelihood.
+          MaxRL objectives provide a principled framework for trading additional compute for higher-fidelity approximations to maximum likelihood.
         </p>
       </div>
       
-      <!-- Subsection: Gradient Estimator -->
-      <h4 class="subsection-title">Gradient Estimator</h4>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PRACTICAL GRADIENT ESTIMATOR ==================== -->
+<section class="section section-gray">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">Practical Gradient Estimator of MaxRL</h2>
+    
+    <div class="content has-text-justified">
       
-      <p>The ML gradient admits a simple <strong>conditional expectation representation</strong> (Theorem 1 in paper):</p>
+      <p>
+        A natural approach to estimate the truncated objective is to approximate each pass@k term separately. 
+        We take an alternate approach that leads to a simpler estimator and a new viewpoint.
+      </p>
       
-      <div class="formula-box">
-        <p style="font-size: 1rem; margin: 0;">
+      <!-- Theorem 1 -->
+      <div class="result-card" style="border-left: 4px solid var(--primary); margin: 1.5rem 0;">
+        <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Theorem 1: Conditional Form of the ML Gradient</h4>
+        <p style="margin-bottom: 1rem;">The gradient of the maximum likelihood objective admits the following conditional expectation representation:</p>
+        <div style="text-align: center; font-size: 1.1rem; padding: 0.5rem 0;">
           $\nabla_\theta J_{\mathrm{ML}}(x) = \mathbb{E}\left[\nabla_\theta \log \pi_\theta(z \mid x) \;\middle|\; \text{success}\right]$
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0;">
+          <strong>Interpretation:</strong> The ML gradient equals the average score function over <em>successful trajectories only</em>.
         </p>
       </div>
       
       <p>
-        This leads to a remarkably simple estimator: <strong>average score functions over successful trajectories only</strong>. 
-        Given $N$ rollouts with $K$ successes:
+        This theorem suggests a simple estimator: sample $N$ trajectories from the policy, then average the score functions only over successful ones.
+        Given $N$ rollouts with $K$ successes, we define:
       </p>
       
-      <!-- Side-by-side comparison -->
-      <div class="comparison-table" style="display: flex; gap: 1rem; margin: 1.5rem 0;">
-        <div style="flex: 1; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #1e40af; border-radius: 8px; padding: 1.2rem;">
-          <h5 style="color: #1e40af; margin: 0 0 1rem 0; text-align: center; font-size: 1rem;">REINFORCE</h5>
-          <div style="text-align: center; font-size: 1rem; margin-bottom: 1rem;">
+      <div class="formula-box" style="margin: 1.5rem 0;">
+        <p style="font-size: 1rem; margin: 0;">
+          $\widehat{g}_N(x) = \begin{cases} \displaystyle\frac{1}{K}\sum_{i=1}^N r_i S_i, & K \ge 1 \\[0.6em] 0, & K = 0 \end{cases}$
+        </p>
+      </div>
+      
+      <p>
+        where $r_i \in \{0,1\}$ is the binary reward and $S_i = \nabla_\theta \log \pi_\theta(z_i \mid x)$ is the score function.
+      </p>
+      
+      <!-- Theorem 2 -->
+      <div class="result-card" style="border-left: 4px solid var(--primary); margin: 1.5rem 0;">
+        <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Theorem 2: Estimator–Objective Equivalence</h4>
+        <p style="margin-bottom: 1rem;">The estimator $\widehat{g}_N(x)$ is an unbiased estimator for the MaxRL gradient of order $T = N$:</p>
+        <div style="text-align: center; font-size: 1.1rem; padding: 0.5rem 0;">
+          $\mathbb{E}\left[\widehat{g}_N(x)\right] = \nabla_\theta J_{\mathrm{MaxRL}}^{(N)}(x)$
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0;">
+          <strong>Implication:</strong> Using $N$ rollouts automatically targets the $T=N$ truncated ML objective—no explicit pass@k estimation needed.
+        </p>
+      </div>
+            
+      <p>The difference between REINFORCE and MaxRL is remarkably simple at the estimator level:</p>
+      
+      <div class="math-comparison">
+        <div class="math-box" style="border-top: 3px solid #1e40af;">
+          <h4 style="color: #1e40af;">REINFORCE</h4>
+          <p style="text-align: center; font-size: 1.1rem;">
             $\displaystyle\frac{1}{N}\sum_{i=1}^N r_i S_i$
-          </div>
-          <p style="font-size: 0.9rem; color: #4b5563; margin: 0; text-align: center;">
-            <strong>Unbiased for:</strong><br>$\nabla_\theta\,\mathrm{pass@}1$
           </p>
-          <hr style="margin: 0.8rem 0; border: none; border-top: 1px solid #93c5fd;">
-          <p style="font-size: 0.85rem; color: #6b7280; margin: 0; text-align: center;">
-            Normalize by <em>total samples</em> $N$
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            <strong>Unbiased for:</strong> $\nabla_\theta\,\mathrm{pass@}1$
+            <br><br>
+            <strong>→ Normalize by total samples $N$</strong>
           </p>
         </div>
-        <div style="flex: 1; background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 2px solid #C41230; border-radius: 8px; padding: 1.2rem;">
-          <h5 style="color: #C41230; margin: 0 0 1rem 0; text-align: center; font-size: 1rem;">MaxRL (Ours)</h5>
-          <div style="text-align: center; font-size: 1rem; margin-bottom: 1rem;">
+        <div class="math-box" style="border-top: 3px solid #C41230;">
+          <h4 style="color: #C41230;">MaxRL (Ours)</h4>
+          <p style="text-align: center; font-size: 1.1rem;">
             $\displaystyle\frac{1}{K}\sum_{i=1}^N r_i S_i$
-          </div>
-          <p style="font-size: 0.9rem; color: #4b5563; margin: 0; text-align: center;">
-            <strong>Unbiased for:</strong><br>$\sum_{k=1}^{N}\frac{1}{k}\nabla_\theta \mathrm{pass@}k$
           </p>
-          <hr style="margin: 0.8rem 0; border: none; border-top: 1px solid #fca5a5;">
-          <p style="font-size: 0.85rem; color: #6b7280; margin: 0; text-align: center;">
-            Normalize by <em>successful samples</em> $K$
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            <strong>Unbiased for:</strong> $\sum_{k=1}^{N}\frac{1}{k}\nabla_\theta \mathrm{pass@}k$
+            <br><br>
+            <strong>→ Normalize by successful samples $K$</strong>
           </p>
         </div>
       </div>
       
-      <p>
-        <strong>The difference is a single-line change:</strong> normalize by $K$ instead of $N$. 
-        But this changes the objective being optimized fundamentally.
-      </p>
-      
-      <div class="insight-box" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #16a34a;">
+      <div class="insight-box">
         <p style="margin: 0;">
-          <strong>Critical distinction:</strong> Increasing $N$ in REINFORCE reduces <em>variance</em> of a fixed pass@1 objective. 
+          Increasing $N$ in REINFORCE reduces <em>variance</em> of a fixed pass@1 objective. 
           In MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
         </p>
       </div>
       
-      <p style="margin-top: 1.5rem;">
-        <strong>Comparison with GRPO:</strong> GRPO normalizes by the empirical standard deviation $\sigma$, which induces a population-level weighting of $1/\sqrt{p(1-p)}$—providing moderate upweighting of hard inputs. 
-        However, unlike MaxRL, increasing compute under GRPO does not yield a better approximation to maximum likelihood. 
-        MaxRL's normalization by $K$ (successful samples) is the key design choice that enables compute-scaling toward ML.
+      <!-- Variance Reduction -->
+      <h4 class="subsection-title">Variance Reduction</h4>
+      
+      <p>
+        We reduce variance using a zero-mean control variate—the unconditional average score $V_N = \frac{1}{N}\sum_{i=1}^N S_i$, which satisfies $\mathbb{E}[V_N]=0$. 
+        Subtracting $V_N$ preserves unbiasedness while reducing variance.
+        The on-policy implementation differs from standard REINFORCE by a <strong>single-line modification</strong> to the advantage calculation, 
+        where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
+      </p>
+      
+      <div class="figure-container" style="margin: 1.5rem 0;">
+        <center>
+          <img src="./static/images/Algorithm.png" alt="MaxRL Algorithm" style="max-width: 100%;">
+        </center>
+      </div>
+      
+      <!-- Comparison with GRPO -->
+      <h4 class="subsection-title">Comparison with GRPO</h4>
+      
+      <p>
+        All methods—RL, GRPO, MaxRL, ML—admit population-level gradients of the form 
+        $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$, 
+        where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty:
+      </p>
+      
+      <table class="comparison-table" style="margin: 1.5rem 0;">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Weight $w(p)$</th>
+            <th>Emphasis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RL (REINFORCE)</strong></td>
+            <td style="text-align: center;">$1$</td>
+            <td>Uniform across difficulties</td>
+          </tr>
+          <tr>
+            <td><strong>GRPO</strong></td>
+            <td style="text-align: center;">$\frac{1}{\sqrt{p(1-p)}}$</td>
+            <td>Moderate upweighting of hard inputs</td>
+          </tr>
+          <tr style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);">
+            <td><strong>MaxRL ($T$)</strong></td>
+            <td style="text-align: center;">$\frac{1-(1-p)^T}{p}$</td>
+            <td>Approaches ML as $T \to \infty$</td>
+          </tr>
+          <tr>
+            <td><strong>Maximum Likelihood</strong></td>
+            <td style="text-align: center;">$\frac{1}{p}$</td>
+            <td>Strong emphasis on hard inputs</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <p>
+        GRPO's $1/\sqrt{p(1-p)}$ weighting provides moderate upweighting of hard inputs, which is a heuristic choice but contributes to its superior performance compared with vanilla REINFORCE.
+        However, GRPO assigns <em>increased</em> weight to very easy inputs ($p \to 1$), unlike likelihood-based objectives.
+        In contrast, MaxRL's normalization by $K$ enables approximation to maximum likelihood with respect to the number of rollouts.
       </p>
       
     </div>
