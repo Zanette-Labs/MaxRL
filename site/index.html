@@ -265,6 +265,155 @@
     .conclusion-box p:last-child {
       margin-bottom: 0;
     }
+    
+    /* ==================== MOBILE RESPONSIVE STYLES ==================== */
+    
+    /* Tablets and smaller */
+    @media (max-width: 1024px) {
+      .hero .title.is-1 { font-size: 2.2rem; }
+    }
+    
+    /* Mobile devices */
+    @media (max-width: 768px) {
+      /* Hero Section */
+      .hero .hero-body { padding-top: 2rem; padding-bottom: 1rem; }
+      .hero .title.is-1 { 
+        font-size: 1.5rem; 
+        white-space: normal !important; 
+        line-height: 1.3;
+      }
+      
+      /* Authors - make them wrap nicely */
+      .publication-authors { font-size: 0.9rem !important; }
+      .publication-authors .author-block { 
+        display: inline; 
+        white-space: nowrap;
+      }
+      .is-size-6.publication-authors { font-size: 0.8rem !important; }
+      .is-size-6.publication-authors .author-block { margin-left: 0.3em !important; }
+      
+      /* Section padding */
+      .section { padding: 2rem 1rem; }
+      
+      /* Titles */
+      h2.title.is-3, .title.is-3.section-title { font-size: 1.4rem; }
+      h4.subsection-title { font-size: 1.1rem; }
+      
+      /* Math comparison boxes */
+      .math-comparison { gap: 1rem; }
+      .math-box { padding: 1rem; }
+      .math-box p { font-size: 0.95rem; }
+      
+      /* Formula boxes - handle overflow */
+      .formula-box { 
+        overflow-x: auto; 
+        padding: 0.5rem;
+      }
+      .formula-box p { font-size: 0.9rem; }
+      
+      /* Insight boxes */
+      .insight-box { padding: 1rem 1.25rem; }
+      .insight-box p { font-size: 1rem; }
+      
+      /* Result cards */
+      .result-card { padding: 1.25rem; }
+      .result-card h4 { font-size: 1.1rem; }
+      
+      /* Figure captions */
+      .figure-caption { font-size: 0.8rem; }
+      
+      /* Tables - make scrollable */
+      .comparison-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      table.comparison-table { 
+        min-width: 500px; 
+        font-size: 0.85rem;
+      }
+      table.comparison-table th, 
+      table.comparison-table td { 
+        padding: 0.5rem 0.75rem; 
+      }
+      
+      /* Conclusion box */
+      .conclusion-box { padding: 1.25rem; }
+      
+      /* BibTeX */
+      .bibtex-box { padding: 1rem; }
+      .bibtex-box code { font-size: 0.7rem; }
+      
+      /* Publication links buttons */
+      .publication-links .button { 
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+      }
+      
+      /* Footer */
+      footer.footer { padding: 1.5rem 1rem; }
+      footer.footer img { height: 60px !important; }
+      footer p { font-size: 0.85rem; }
+      
+      /* TL;DR text */
+      .hero .hero-body p[style*="Castoro"] { font-size: 0.95rem !important; }
+    }
+    
+    /* Small phones */
+    @media (max-width: 480px) {
+      .hero .title.is-1 { font-size: 1.25rem; }
+      .publication-authors { font-size: 0.8rem !important; }
+      
+      h2.title.is-3, .title.is-3.section-title { font-size: 1.25rem; }
+      
+      .content p, .content li { font-size: 0.9rem; }
+      
+      .math-box h4 { font-size: 0.95rem; }
+      .math-box p { font-size: 0.85rem; }
+      
+      .result-card { padding: 1rem; }
+      .result-card h4 { font-size: 1rem; }
+      
+      /* Extra small formulas */
+      .formula-box p { font-size: 0.85rem; }
+      
+      /* Theorem boxes */
+      .result-card[style*="border-left"] { padding: 1rem; }
+      .result-card[style*="border-left"] h4 { font-size: 1rem; }
+      .result-card[style*="border-left"] div[style*="text-align: center"] { font-size: 0.9rem !important; }
+    }
+    
+    /* Ensure images never overflow */
+    img { max-width: 100%; height: auto; }
+    
+    /* KaTeX formula overflow handling */
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    
+    /* Global overflow prevention */
+    .container { overflow-x: hidden; }
+    .content { word-wrap: break-word; overflow-wrap: break-word; }
+    
+    /* Table wrapper for mobile scrolling */
+    .comparison-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Algorithm box mobile */
+    @media (max-width: 768px) {
+      .algorithm-box { 
+        font-size: 0.75rem; 
+        padding: 1rem;
+      }
+    }
+    
+    /* Result card theorem boxes mobile adjustments */
+    @media (max-width: 768px) {
+      .result-card div[style*="text-align: center"] {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
   </style>
 </head>
 <body>
@@ -275,7 +424,7 @@
     <div class="container is-max-widescreen">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title" style="white-space: nowrap;">Maximum Likelihood Reinforcement Learning</h1>
+          <h1 class="title is-1 publication-title">Maximum Likelihood Reinforcement Learning</h1>
           
           <!-- Authors Section -->
           <div class="is-size-5 publication-authors">
@@ -601,37 +750,39 @@
         where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty:
       </p>
       
-      <table class="comparison-table" style="margin: 1.5rem 0;">
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Weight $w(p)$</th>
-            <th>Emphasis</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>RL (REINFORCE)</strong></td>
-            <td style="text-align: center;">$1$</td>
-            <td>Uniform across difficulties</td>
-          </tr>
-          <tr>
-            <td><strong>GRPO</strong></td>
-            <td style="text-align: center;">$\frac{1}{\sqrt{p(1-p)}}$</td>
-            <td>Moderate upweighting of hard inputs</td>
-          </tr>
-          <tr style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);">
-            <td><strong>MaxRL ($T$)</strong></td>
-            <td style="text-align: center;">$\frac{1-(1-p)^T}{p}$</td>
-            <td>Approaches ML as $T \to \infty$</td>
-          </tr>
-          <tr>
-            <td><strong>Maximum Likelihood</strong></td>
-            <td style="text-align: center;">$\frac{1}{p}$</td>
-            <td>Strong emphasis on hard inputs</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="comparison-table-wrapper">
+        <table class="comparison-table" style="margin: 1.5rem 0;">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Weight $w(p)$</th>
+              <th>Emphasis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>RL (REINFORCE)</strong></td>
+              <td style="text-align: center;">$1$</td>
+              <td>Uniform across difficulties</td>
+            </tr>
+            <tr>
+              <td><strong>GRPO</strong></td>
+              <td style="text-align: center;">$\frac{1}{\sqrt{p(1-p)}}$</td>
+              <td>Moderate upweighting of hard inputs</td>
+            </tr>
+            <tr style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);">
+              <td><strong>MaxRL ($T$)</strong></td>
+              <td style="text-align: center;">$\frac{1-(1-p)^T}{p}$</td>
+              <td>Approaches ML as $T \to \infty$</td>
+            </tr>
+            <tr>
+              <td><strong>Maximum Likelihood</strong></td>
+              <td style="text-align: center;">$\frac{1}{p}$</td>
+              <td>Strong emphasis on hard inputs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       
       <p>
         GRPO's $1/\sqrt{p(1-p)}$ weighting provides moderate upweighting of hard inputs, which is a heuristic choice but contributes to its superior performance compared with vanilla REINFORCE.
