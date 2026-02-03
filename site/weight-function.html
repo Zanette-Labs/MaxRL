@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>MaxRL Weight Functions - Interactive Plot</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Task: Render all mathematical notation using MathJax.
-         Implementation: load MathJax and use \( ... \) / $$ ... $$ syntax in HTML. -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root {
@@ -103,7 +101,6 @@
         .tab[data-mode="maxrl"]:hover .tab-sub { color: var(--cmu-red); }
         .tab[data-mode="ml"]:hover .tab-sub { color: var(--gold); }
 
-        /* 选中态配色 */
         .tab[data-mode="rl"].active { background: var(--blue); color: white; }
         .tab[data-mode="maxrl"].active { background: var(--cmu-red); color: white; }
         .tab[data-mode="ml"].active { background: var(--gold); color: white; }
@@ -116,8 +113,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            /* Task: Always show the slider for T, even when other toggles are selected.
-               Implementation: keep it visible by default and never hide it in JS. */
         }
 
         input[type=range] {
@@ -155,8 +150,7 @@
         </div>
     </div>
 
-    <!-- Task: Show a caption between toggles and slider that explains each T-regime.
-         Implementation: update this MathJax-rendered text based on the selected mode. -->
+
     <div id="regime-caption" style="margin-top: 20px; font-size: 14px; color:#555; min-height: 1.4em;">
         \(T = N\) (number of rollouts) is what we use in practice.
     </div>
@@ -164,8 +158,7 @@
     <div id="slider-area">
         <span style="font-size: 14px; color:#666;">Parameter \(T\)</span>
 
-        <!-- Slider indices correspond to T_VALUES array in the script.
-             Initialize at index 5 → T_VALUES[5] = 32. -->
+
         <input type="range" id="t-slider" min="0" max="12" step="1" value="5">
         <span id="t-display" class="val-text">32</span>
     </div>
@@ -191,8 +184,7 @@
 
     // Core color theme for RL / MaxRL / ML / GRPO.
     const theme = {
-        // Task: Make GRPO green lighter so it does not dominate visually.
-        // Implementation: use a softer hex color and matching translucent variant.
+
         grpo: { normal: '#9BC794', light: 'rgba(155, 199, 148, 0.6)' },
         rl:   { normal: '#0056b3', light: 'rgba(0, 86, 179, 0.4)' },
         maxrl: { normal: '#C41230', light: 'rgba(196, 18, 48, 0.4)' },
