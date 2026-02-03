@@ -626,11 +626,19 @@
       
       <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
       
-      <ul style="margin: 1rem 0;">
-        <li><strong>$T = 1$</strong> recovers standard reinforcement learning (pass@1)</li>
-        <li><strong>$T \to \infty$</strong> recovers exact maximum likelihood</li>
-        <li><strong>$T = N$</strong> (number of rollouts) is what we use in practice</li>
-      </ul>
+
+      <div style="margin: 1.5rem 0;">
+        <center>
+          <iframe
+            src="./weight-function.html"
+            title="MaxRL Weight Functions"
+            width="1000"
+            height="850"
+            style="border: none; overflow: hidden;"
+            scrolling="no">
+          </iframe>
+        </center>
+      </div>
           
       <div class="insight-box">
         <p style="margin: 0;">
@@ -737,11 +745,19 @@
         where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
       </p>
       
-      <div class="figure-container" style="margin: 1.5rem 0;">
-        <center>
-          <img src="./static/images/Algorithm2.png" alt="MaxRL Algorithm" style="max-width: 100%;">
-        </center>
-      </div>
+           <div style="margin: 1.5rem 0;">
+            <center>
+              <iframe
+                src="./code.html"
+                title="MaxRL Advantage Code Diff"
+                width="900"
+                height="905"
+                style="border: none; overflow: hidden;"
+                scrolling="no">
+              </iframe>
+            </center>
+          </div>
+          
       
       <!-- Comparison with GRPO -->
       <h4 class="subsection-title">Comparison with GRPO</h4>
