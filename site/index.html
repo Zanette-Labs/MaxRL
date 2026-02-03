@@ -501,7 +501,7 @@
     
     <div class="content has-text-justified" style="margin-top: 1.5rem;">
       <p>
-        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a sampling-based framework to approximate maximum likelihood in reinforcement learning. MaxRL addresses the challenges of optimizing non-differentiable likelihood objectives by defining a compute-indexed family of sample-based objectives that interpolate between standard reinforcement learning and exact maximum likelihood as additional sampling compute is allocated.
+        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a framework to optimize maximum likelihood with reinforcement learning. 
       </p>
     </div>
   </div>
@@ -515,38 +515,34 @@
       <h2 class="title is-3 section-title">Why Maximum Likelihood?</h2>
       
       <p>
-        Maximum likelihood emerges as a principled objective in supervised learning—it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
-        In contrast, many modern learning problems—code generation, mathematical reasoning, multi-step planning—involve non-differentiable generation but admit an implicit <strong>binary notion of correctness</strong>. 
-        For each input $x$, the model induces a probability of success $p_\theta(x)$, defining an implicit likelihood over correct outcomes.
+        Maximum likelihood emerges as a principled objective in supervised learning, as it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
+        In contrast, many modern learning problems such as code generation, mathematical reasoning, and multi-step planning involve non-differentiable generation but admit an implicit <strong>binary notion of correctness</strong>. 
+        For each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$, defining an implicit likelihood over correct outcomes.
       </p>
       
       <p>
         In these settings, <strong>reinforcement learning</strong> is typically applied. 
-        RL was designed to handle problems where the likelihood cannot be optimized directly due to non-differentiable intermediate sampling. 
+        RL was conceived to handle problems where the likelihood cannot be optimized directly due to non-differentiable intermediate sampling. 
         However, the two approaches optimize <strong>fundamentally different objectives</strong>:
       </p>
       
       <div class="math-comparison">
-        <div class="math-box" style="border-top: 3px solid #1e40af;">
-          <h4 style="color: #1e40af;">Reinforcement Learning</h4>
+        <div class="math-box" style="border-top: 3px solid #4b5563;">
+          <h4 style="color: #374151;">Reinforcement Learning</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
           </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-            Maximizes expected correctness (pass@1).
-            <br><br>
-            <strong>→ Dominated by easy examples</strong>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+            Maximizes expected correctness (pass@1)
           </p>
         </div>
-        <div class="math-box" style="border-top: 3px solid #7c3aed;">
-          <h4 style="color: #7c3aed;">Maximum Likelihood</h4>
+        <div class="math-box" style="border-top: 3px solid #4b5563;">
+          <h4 style="color: #374151;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1.1rem;">
-            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
+            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\nabla_\theta \log p_\theta(x)\right]$
           </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-            Reweights by inverse success probability.
-            <br><br>
-            <strong>→ Focuses on hard problems</strong>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+            Reweights by inverse success probability
           </p>
         </div>
       </div>
