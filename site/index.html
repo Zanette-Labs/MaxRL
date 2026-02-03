@@ -44,8 +44,10 @@
     
     body { color: var(--text-dark); }
     
-    .hero { background: #f3f4f6; border-bottom: 1px solid #e5e7eb; }
-    .hero .hero-body { padding-top: 4rem; padding-bottom: 1.2rem; }
+    .hero { background: #f3f4f6; border-bottom: 1px solid #e5e7eb; overflow: visible !important; }
+    .hero .hero-body { padding-top: 2rem; padding-bottom: 0.8rem; overflow: visible !important; }
+    .hero * { overflow: visible !important; }
+    .hero .container, .hero .columns, .hero .column { overflow: visible !important; max-height: none !important; }
     .hero .title.is-1 { color: #ab1727; font-weight: 400; font-family: Georgia, 'Times New Roman', serif; }
     .hero .publication-authors a { color: #374151 !important; }
     .hero .publication-authors a:hover { color: #C41230 !important; text-decoration: underline; }
@@ -276,7 +278,7 @@
     /* Mobile devices */
     @media (max-width: 768px) {
       /* Hero Section */
-      .hero .hero-body { padding-top: 2rem; padding-bottom: 1rem; }
+      .hero .hero-body { padding-top: 1.2rem; padding-bottom: 0.6rem; }
       .hero .title.is-1 { 
         font-size: 1.5rem; 
         white-space: normal !important; 
@@ -439,7 +441,7 @@
             <span class="author-block"><a href="https://havenfeng.github.io/">Haiwen Feng</a><sup>4,5</sup>,</span>
             <span class="author-block"><a href="https://azanette.com">Andrea Zanette</a><sup>1</sup></span>
           </div>
-          <div class="is-size-6 publication-authors" style="margin-top: 0.8rem;">
+          <div class="is-size-6 publication-authors" style="margin-top: 0.4rem;">
             <span class="author-block"><sup>1</sup>CMU</span>
             <span class="author-block" style="margin-left: 0.8em;"><sup>2</sup>Tsinghua University</span>
             <span class="author-block" style="margin-left: 0.8em;"><sup>3</sup>Zhejiang University</span>
@@ -448,7 +450,7 @@
             <span class="author-block" style="margin-left: 0.8em;"><sup>*</sup>Equal Contribution</span>
           </div>
 
-          <div class="column has-text-centered" style="margin-top: 1.5rem;">
+          <div class="has-text-centered" style="margin-top: 0.8rem;">
             <div class="publication-links">
               <span class="link-block">
                 <a href="#" class="external-link button is-normal is-rounded">
@@ -465,8 +467,8 @@
             </div>
           </div>
 
-          <div style="margin-top: 1.5rem; text-align: center;">
-            <p style="font-family: 'Castoro', Georgia, serif; font-size: 1.1rem; color: #374151;">
+          <div style="margin-top: 0.6rem; text-align: center;">
+            <p style="font-family: 'Castoro', Georgia, serif; font-size: 1.05rem; color: #374151;">
               <strong>TL;DR</strong>&nbsp; MaxRL optimizes the maximum likelihood objective with reinforcement learning.
             </p>
           </div>
@@ -477,7 +479,7 @@
 </section>
 
 <!-- ==================== ABSTRACT ==================== -->
-<section class="section section-white" style="padding-top: 1.5rem; padding-bottom: 1rem;">
+<section class="section section-white" style="padding-top: 0.8rem; padding-bottom: 0.5rem;">
   <div class="container is-max-desktop">
     
     <!-- Teaser Diagram -->
