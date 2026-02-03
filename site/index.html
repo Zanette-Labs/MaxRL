@@ -821,11 +821,18 @@
       </p>
     </div>
     
+    <!-- Takeaway 1 -->
     <div class="result-card">
+      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          📊 Takeaway 1: MaxRL approaches exact maximum likelihood given infinite compute.
+        </p>
+      </div>
       <h4>ImageNet: Comparison with Exact Likelihood</h4>
       <p>
         We first validate MaxRL where exact maximum likelihood (cross-entropy) is computable. 
         Image classification provides a clean testbed: reward is 1 if predicted class matches ground truth, 0 otherwise.
+        When direct maximum-likelihood optimization is available, MaxRL converges to it as sampling compute increases.
       </p>
       <div class="figure-container">
         <center><img src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 80%;"></center>
@@ -836,11 +843,18 @@
       </div>
     </div>
     
+    <!-- Takeaway 2 -->
     <div class="result-card">
+      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🚀 Takeaway 2: MaxRL scales better with additional compute in the infinite data regime.
+        </p>
+      </div>
       <h4>Maze Navigation: Infinite Data Regime</h4>
       <p>
         We study training with continually fresh data using procedurally generated mazes. 
         Each training input is newly generated, and the model never encounters the same maze twice.
+        In a data-rich training regime, MaxRL scales more favorably with additional compute compared to existing methods.
       </p>
       <div class="figure-container">
         <center><img src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
@@ -854,11 +868,18 @@
       </center>
     </div>
     
+    <!-- Takeaway 3 -->
     <div class="result-card">
+      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🛡️ Takeaway 3: MaxRL is more resistant to overfitting.
+        </p>
+      </div>
       <h4>GSM8K: Data-Scarce Regime</h4>
       <p>
         In the data-scarce regime, models train for many epochs over a fixed dataset. 
         This exposes differences in how objectives allocate learning signal under repeated training.
+        MaxRL can sustain improvement over a large number of epochs, demonstrating less pass@k degradation (overfitting) and converging to a higher average performance.
       </p>
       <div class="figure-container">
         <center><img src="./static/images/smollm_training_step.png" alt="GSM8K training dynamics" style="max-width: 100%;"></center>
@@ -869,11 +890,18 @@
       </div>
     </div>
     
+    <!-- Takeaway 4 -->
     <div class="result-card">
+      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🧠 Takeaway 4: MaxRL's benefits transfer to larger scale mathematical reasoning.
+        </p>
+      </div>
       <h4>Large-Scale LLM Training</h4>
       <p>
         We train <strong>Qwen3-1.7B-Base</strong> and <strong>Qwen3-4B-Base</strong> models on POLARIS-53K (~50K math reasoning prompts), 
         and evaluate on AIME 2025, BeyondAIME, MATH-500, and Minerva.
+        On larger scale mathematical reasoning, MaxRL Pareto-dominates GRPO and shows little to no diversity degradation with respect to the base model.
       </p>
       <div class="figure-container">
         <center><img src="./static/images/large_scale_experiments_summary.png" alt="Large scale LLM results" style="max-width: 100%;"></center>
@@ -885,7 +913,43 @@
       </div>
     </div>
     
+    <!-- Takeaway 5 -->
+    <div class="result-card">
+      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          ⚡ Takeaway 5: MaxRL shows characteristically different optimization dynamics.
+        </p>
       </div>
+      <h4>Gradient Norm & Training Dynamics Analysis</h4>
+      <p>
+        Besides performance metrics, MaxRL exhibits different optimization dynamics. 
+        Most notably, it produces stronger gradients on harder prompts, and also leads to a larger fraction of prompts with at least one correct rollout during training.
+      </p>
+      <div class="analysis-columns" style="margin-top: 1.5rem;">
+        <div class="analysis-col">
+          <div class="figure-container">
+            <div class="img-wrapper">
+              <img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 100%;">
+            </div>
+            <p class="figure-caption">
+              <strong>Gradient norm analysis.</strong> MaxRL generates larger gradient norms over prompts with close to 0 pass rates, concentrating learning signal on harder problems.
+            </p>
+          </div>
+        </div>
+        <div class="analysis-col">
+          <div class="figure-container">
+            <div class="img-wrapper">
+              <img src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 100%;">
+            </div>
+            <p class="figure-caption">
+              <strong>Training dynamics comparison.</strong> MaxRL consistently produces at least one correct rollout for more prompts, demonstrating effectiveness at extracting more learning signal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
 </section>
 
 <!-- ==================== CONCLUSION ==================== -->
