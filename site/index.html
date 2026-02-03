@@ -475,11 +475,19 @@
       
       <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
       
-      <ul style="margin: 1rem 0;">
-        <li><strong>$T = 1$</strong> recovers standard reinforcement learning (pass@1)</li>
-        <li><strong>$T \to \infty$</strong> recovers exact maximum likelihood</li>
-        <li><strong>$T = N$</strong> (number of rollouts) is what we use in practice</li>
-      </ul>
+
+      <div style="margin: 1.5rem 0;">
+        <center>
+          <iframe
+            src="./weight-function.html"
+            title="MaxRL Weight Functions"
+            width="1000"
+            height="850"
+            style="border: none; overflow: hidden;"
+            scrolling="no">
+          </iframe>
+        </center>
+      </div>
           
       <div class="insight-box">
         <p style="margin: 0;">
@@ -586,8 +594,6 @@
         where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
       </p>
       
-      <!-- Task: Replace static Algorithm2.png with an embedded MaxRL code diff figure.
-           Implementation: Use an iframe that loads code.html exactly as-is, with fixed size and no scrollbars. -->
            <div style="margin: 1.5rem 0;">
             <center>
               <iframe
