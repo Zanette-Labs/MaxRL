@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P-Norm Method Diff</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+
+    <style>
+        body { background: #f9fafb; padding: 0px 20px; }
+        
+        .code-window {
+            background: #2d2d2d;
+            border-radius: 8px;
+            box-shadow: 0 15px 18px rgba(0,0,0,0.5);
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+
+        .window-header {
+            background: #1f1f1f;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .red-dot { background-color: #ff5f56; } .yellow-dot { background-color: #ffbd2e; } .green-dot { background-color: #27c93f; }
+        .title { color: #888; margin-left: 10px; font-size: 13px; }
+
+        pre[class*="language-"] {
+            margin: 0 !important; border: none !important; background: transparent !important; padding: 20px !important;
+            line-height: 1.6;
+        }
+
+        /* --- Simplified Diff Highlighting: Direct line number targeting --- */
+        /* Task: Highlight specific code lines for diff display
+           Implementation: Use CSS nth-child to target line numbers, then use JavaScript to mark code lines */
+        
+        /* Line numbers container */
+        .line-numbers .line-numbers-rows { 
+            border-right: 1.5px solid #6c6c6c; 
+            padding-right: 6px;
+        }
+        
+        /* Code container */
+        pre[class*="language-"] {
+            position: relative;
+        }
+        
+        /* Code line highlights - full line background */
+        .line-highlight-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .line-highlight-bg.delete {
+            background: rgba(244, 67, 54, 0.15) !important;
+            border-left: 4px solid #f44336;
+        }
+        
+        .line-highlight-bg.add {
+            background: rgba(76, 175, 80, 0.15) !important;
+            border-left: 4px solid #4caf50;
+        }
+        
+        /* Ensure code is above highlights */
+        code[class*="language-"] {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Line number markers and background */
+        .line-numbers-rows > span.line-delete::after {
+            position: absolute;
+            right: 5px;
+            color: #ff6666;
+            font-weight: bold;
+        }
+        
+        .line-numbers-rows > span.line-add::after {
+            position: absolute;
+            right: 5px;
+            color: #66ff66;
+            font-weight: bold;
+        }
+        
+        .line-numbers-rows > span {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="code-window">
+        <div class="window-header">
+            <span class="dot red-dot"></span>
+            <span class="dot yellow-dot"></span>
+            <span class="dot green-dot"></span>
+            <span class="title">verl/trainer/ppo/core_algos.py</span>
+        </div>
+
+        <pre class="line-numbers">
+<code class="language-python"><span class="line-delete">def compute_grpo_outcome_advantage(</span>
+<span class="line-add">def compute_maxrl_advantage(</span>
+    token_level_rewards: torch.Tensor, response_mask: torch.Tensor, 
+    index: np.ndarray, epsilon: float = 1e-6,
+):
+    """
+    Computes advantage. 
+    """
+    # 0. Define Arguments
+
+    with torch.no_grad():
+        bsz = scores.shape[0]
+
+        # 1. Group scores by index
+        for i in range(bsz):
+            id2score[index[i]].append(scores[i])
+            
+        # 2. Calculate statistics for each group
+        for idx in id2score:
+            id2mean[idx] = torch.mean(torch.tensor(id2score[idx]))
+            id2std[idx] = torch.std(torch.tensor(id2score[idx]))
+            
+        # 3. Normalize scores
+        for i in range(bsz):
+            # GRPO: Normalize by Standard Deviation
+<span class="line-delete">            scores[i] = (scores[i] - id2mean[index[i]]) / (id2std[index[i]] + epsilon)</span>
+            
+            # MaxRL: Normalize by Pass Rate
+<span class="line-add">            scores[i] = (scores[i] - id2mean[index[i]]) / (id2mean[index[i]] + epsilon)</span>
+
+        scores = scores.unsqueeze(-1) * response_mask
+
+    return scores, scores
+</code>
+        </pre>
+    </div>
+
+    <script>
+        // Save original HTML before Prism processes it
+        (function() {
+            const codeElement = document.querySelector('code.language-python');
+            if (codeElement) {
+                window.originalCodeHTML = codeElement.innerHTML;
+            }
+        })();
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    
+    <script>
+        // Task: Create full-line highlights and mark line numbers after Prism renders
+        // Implementation: Find diff markers, calculate line positions, create background divs and mark line numbers
+        
+        (function() {
+            function markDiffLines() {
+                const preElement = document.querySelector('pre.line-numbers');
+                const codeElement = document.querySelector('code.language-python');
+                if (!preElement || !codeElement) return;
+                
+                // Get line number spans
+                const lineNumberSpans = preElement.querySelectorAll('.line-numbers-rows > span');
+                if (lineNumberSpans.length === 0) return;
+                
+                // Calculate line height
+                const lineHeight = parseFloat(getComputedStyle(preElement).lineHeight) || 1.6 * 16;
+                const paddingTop = parseFloat(getComputedStyle(preElement).paddingTop) || 20;
+                
+                // Task: Find HTML span markers using saved original HTML
+                // Implementation: Use original HTML saved before Prism processing to find marked lines
+                
+                // Use the original HTML saved before Prism processing
+                const originalHTML = window.originalCodeHTML || codeElement.innerHTML;
+                
+                // Split HTML by lines to find which lines contain markers
+                const htmlLines = originalHTML.split('\n');
+                
+                // Process each HTML line to find markers
+                htmlLines.forEach(function(htmlLine, index) {
+                    // Check for delete marker
+                    if (htmlLine.includes('line-delete')) {
+                        if (lineNumberSpans[index]) {
+                            lineNumberSpans[index].classList.add('line-delete');
+                        }
+                        
+                        // Create background highlight
+                        const bg = document.createElement('div');
+                        bg.className = 'line-highlight-bg delete';
+                        bg.style.top = (paddingTop + index * lineHeight) + 'px';
+                        bg.style.height = lineHeight + 'px';
+                        preElement.appendChild(bg);
+                    }
+                    
+                    // Check for add marker
+                    if (htmlLine.includes('line-add')) {
+                        if (lineNumberSpans[index]) {
+                            lineNumberSpans[index].classList.add('line-add');
+                        }
+                        
+                        // Create background highlight
+                        const bg = document.createElement('div');
+                        bg.className = 'line-highlight-bg add';
+                        bg.style.top = (paddingTop + index * lineHeight) + 'px';
+                        bg.style.height = lineHeight + 'px';
+                        preElement.appendChild(bg);
+                    }
+                });
+            }
+            
+            // Wait for Prism to finish rendering
+            function runWhenReady() {
+                if (typeof Prism !== 'undefined' && document.querySelector('.line-numbers-rows')) {
+                    // Wait a bit longer to ensure Prism has fully processed the code
+                    setTimeout(markDiffLines, 500);
+                } else {
+                    setTimeout(runWhenReady, 100);
+                }
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', runWhenReady);
+            } else {
+                runWhenReady();
+            }
+        })();
+    </script>
+</body>
+</html>

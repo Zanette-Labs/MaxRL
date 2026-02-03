@@ -586,11 +586,21 @@
         where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
       </p>
       
-      <div class="figure-container" style="margin: 1.5rem 0;">
-        <center>
-          <img src="./static/images/Algorithm2.png" alt="MaxRL Algorithm" style="max-width: 100%;">
-        </center>
-      </div>
+      <!-- Task: Replace static Algorithm2.png with an embedded MaxRL code diff figure.
+           Implementation: Use an iframe that loads code.html exactly as-is, with fixed size and no scrollbars. -->
+           <div style="margin: 1.5rem 0;">
+            <center>
+              <iframe
+                src="./code.html"
+                title="MaxRL Advantage Code Diff"
+                width="900"
+                height="905"
+                style="border: none; overflow: hidden;"
+                scrolling="no">
+              </iframe>
+            </center>
+          </div>
+          
       
       <!-- Comparison with GRPO -->
       <h4 class="subsection-title">Comparison with GRPO</h4>
