@@ -528,7 +528,7 @@
       
       <div class="math-comparison">
         <div class="math-box" style="border-top: 3px solid #1e40af;">
-          <h4 style="color: #1e40af;">Reinforcement Learning</h4>
+          <h4 style="color: #1e40af; text-align: center;">Reinforcement Learning</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
           </p>
@@ -537,7 +537,7 @@
           </p>
         </div>
         <div class="math-box" style="border-top: 3px solid #C41230;">
-          <h4 style="color: #C41230;">Maximum Likelihood</h4>
+          <h4 style="color: #C41230; text-align: center;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\nabla_\theta \log p_\theta(x)\right]$
           </p>
@@ -704,25 +704,25 @@
       
       <div class="math-comparison">
         <div class="math-box" style="border-top: 3px solid #1e40af;">
-          <h4 style="color: #1e40af;">REINFORCE</h4>
+          <h4 style="color: #1e40af; text-align: center;">REINFORCE</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\displaystyle\frac{1}{N}\sum_{i=1}^N r_i S_i$
           </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
             <strong>Unbiased for:</strong> $\nabla_\theta\,\mathrm{pass@}1$
             <br><br>
-            <strong>→ Normalize by total samples $N$</strong>
+            Normalize by total samples $N$
           </p>
         </div>
         <div class="math-box" style="border-top: 3px solid #C41230;">
-          <h4 style="color: #C41230;">MaxRL (Ours)</h4>
+          <h4 style="color: #C41230; text-align: center;">MaxRL (Ours)</h4>
           <p style="text-align: center; font-size: 1.1rem;">
             $\displaystyle\frac{1}{K}\sum_{i=1}^N r_i S_i$
           </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
             <strong>Unbiased for:</strong> $\sum_{k=1}^{N}\frac{1}{k}\nabla_\theta \mathrm{pass@}k$
             <br><br>
-            <strong>→ Normalize by successful samples $K$</strong>
+            Normalize by successful samples $K$
           </p>
         </div>
       </div>
