@@ -622,18 +622,6 @@
       
       <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
 
-            <!-- <div style="margin: 1.5rem 0;">
-        <center>
-          <iframe
-            src="./weight-function.html"
-            title="MaxRL Weight Functions"
-            width="1000"
-            height="850"
-            style="border: none; overflow: hidden;"
-            scrolling="no">
-          </iframe>
-        </center>
-      </div> -->
 
       <ul style="margin: 1.5rem 0; padding-left: 1.5rem;">
         <li style="margin-bottom: 0.5rem;">$T = 1$ recovers standard reinforcement learning (pass@1)</li>
@@ -757,55 +745,42 @@
           </div>
           
       
-      <!-- Comparison with GRPO -->
-      <h4 class="subsection-title">Comparison with GRPO</h4>
-      
+          </div>
+  </div>
+</section>
+
+<!-- ==================== A UNIFYING WEIGHT FUNCTION VIEW ==================== -->
+<section class="section section-white">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">A Unifying Weight Function View</h2>
+    
+    <div class="content has-text-justified">
       <p>
-        All methods—RL, GRPO, MaxRL, ML—admit population-level gradients of the form 
+        All methods—RL, GRPO, MaxRL, and ML—admit population-level gradients of the form 
         $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$, 
-        where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty:
+        where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty.
+        The key distinction among objectives is <strong>how strongly they emphasize hard, low-pass-rate inputs</strong>. 
+        As $T$ increases, MaxRL uniquely approaches maximum likelihood weighting in the low pass rate regime.
       </p>
       
-      <div class="comparison-table-wrapper">
-        <table class="comparison-table" style="margin: 1.5rem 0;">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Weight $w(p)$</th>
-              <th>Emphasis</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>RL (REINFORCE)</strong></td>
-              <td style="text-align: center;">$1$</td>
-              <td>Uniform across difficulties</td>
-            </tr>
-            <tr>
-              <td><strong>GRPO</strong></td>
-              <td style="text-align: center;">$\frac{1}{\sqrt{p(1-p)}}$</td>
-              <td>Moderate upweighting of hard inputs</td>
-            </tr>
-            <tr style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);">
-              <td><strong>MaxRL ($T$)</strong></td>
-              <td style="text-align: center;">$\frac{1-(1-p)^T}{p}$</td>
-              <td>Approaches ML as $T \to \infty$</td>
-            </tr>
-            <tr>
-              <td><strong>Maximum Likelihood</strong></td>
-              <td style="text-align: center;">$\frac{1}{p}$</td>
-              <td>Strong emphasis on hard inputs</td>
-            </tr>
-          </tbody>
-        </table>
+      <div style="margin: 1.5rem 0;">
+        <center>
+          <iframe
+            src="./weight-function.html"
+            title="MaxRL Weight Functions"
+            width="1000"
+            height="850"
+            style="border: none; overflow: hidden;"
+            scrolling="no">
+          </iframe>
+        </center>
       </div>
       
       <p>
-        GRPO's $1/\sqrt{p(1-p)}$ weighting provides moderate upweighting of hard inputs, which is a heuristic choice but contributes to its superior performance compared with vanilla REINFORCE.
+        GRPO's $1/\sqrt{p(1-p)}$ weighting provides moderate upweighting of hard inputs, which contributes to its superior performance compared with vanilla REINFORCE.
         However, GRPO assigns <em>increased</em> weight to very easy inputs ($p \to 1$), unlike likelihood-based objectives.
-        In contrast, MaxRL's normalization by $K$ enables approximation to maximum likelihood with respect to the number of rollouts.
+        In contrast, MaxRL's normalization by $K$ enables principled approximation to maximum likelihood as the number of rollouts increases.
       </p>
-      
     </div>
   </div>
 </section>
