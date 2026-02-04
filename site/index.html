@@ -238,7 +238,9 @@
       padding: 0;
     }
     
-    footer.footer { background: #1f2937; color: #9ca3af; padding: 2rem; }
+    footer.footer { background: #1f2937; color: #9ca3af; padding: 2rem; overflow: hidden; }
+    footer.footer .columns { margin: 0; }
+    footer.footer .container { overflow: hidden; }
     footer a { color: #93c5fd; }
     footer a:hover { color: #bfdbfe; }
     
@@ -717,8 +719,8 @@
       
       <div class="insight-box">
         <p style="margin: 0;">
-          Increasing $N$ in REINFORCE reduces <em>variance</em> of a fixed pass@1 objective. 
-          In MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
+          Increasing $N$ in REINFORCE only reduces <em>variance</em> of a fixed pass@1 objective. 
+          However, in MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
         </p>
       </div>
       
@@ -756,11 +758,11 @@
     
     <div class="content has-text-justified">
       <p>
-        All methods—RL, GRPO, MaxRL, and ML—admit population-level gradients of the form 
+        All of the objectives mentioned above admit population-level gradients of the form 
         $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$, 
         where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty.
         The key distinction among objectives is <strong>how strongly they emphasize hard, low-pass-rate inputs</strong>. 
-        As $T$ increases, MaxRL uniquely approaches maximum likelihood weighting in the low pass rate regime.
+        Below, we present a visualization of the weight functions for each objective. From this visualization, we can see that as $T$ increases, MaxRL uniquely approaches maximum likelihood weighting.
       </p>
       
       <div style="margin: 1.5rem 0;">
@@ -777,9 +779,9 @@
       </div>
       
       <p>
-        GRPO's $1/\sqrt{p(1-p)}$ weighting provides moderate upweighting of hard inputs, which contributes to its superior performance compared with vanilla REINFORCE.
+        We also include the commonly used GRPO weighting function for reference. From the figure, we can see that
+        GRPO's "division by square root" operation also provides moderate upweighting of hard inputs. Though this is a heuristic design, it explains why it is usually superior to vanilla REINFORCE.
         However, GRPO assigns <em>increased</em> weight to very easy inputs ($p \to 1$), unlike likelihood-based objectives.
-        In contrast, MaxRL's normalization by $K$ enables principled approximation to maximum likelihood as the number of rollouts increases.
       </p>
     </div>
   </div>
