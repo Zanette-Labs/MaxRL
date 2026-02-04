@@ -856,16 +856,16 @@
         Each training input is newly generated, and the model never encounters the same maze twice.
         In a data-rich training regime, MaxRL scales more favorably with additional compute compared to existing methods.
       </p>
+      <center>
+        <img src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 0.5rem;">
+        <p class="figure-caption" style="margin-top: 0.5rem;">Example maze: successful navigation (left) vs. failure case (right).</p>
+      </center>
       <div class="figure-container">
         <center><img src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
         <p class="figure-caption">
           <strong>Scaling behavior with increasing rollouts per prompt.</strong> MaxRL consistently outperforms GRPO, which outperforms RLOO.
         </p>
       </div>
-      <center>
-        <img src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 1rem;">
-        <p class="figure-caption" style="margin-top: 0.5rem;">Example maze: successful navigation (left) vs. failure case (right).</p>
-      </center>
     </div>
     
     <!-- Takeaway 3 -->
