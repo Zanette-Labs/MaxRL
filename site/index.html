@@ -640,7 +640,7 @@
 </section>
 
 <!-- ==================== PRACTICAL GRADIENT ESTIMATOR ==================== -->
-<section class="section section-gray">
+<section class="section section-gray" style="padding-bottom: 1.5rem;">
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">Practical Gradient Estimator of MaxRL</h2>
     
@@ -733,13 +733,13 @@
         where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
       </p>
       
-           <div style="margin: 1.5rem 0 0rem 0;">
+           <div style="margin: 1.5rem 0 0 0;">
             <center>
               <iframe
                 src="./code.html"
                 title="MaxRL Advantage Code Diff"
                 width="900"
-                height="905"
+                height="870"
                 style="border: none; overflow: hidden;"
                 scrolling="no">
               </iframe>
@@ -752,7 +752,7 @@
 </section>
 
 <!-- ==================== A UNIFYING WEIGHT FUNCTION VIEW ==================== -->
-<section class="section section-white">
+<section class="section section-white" style="padding-top: 1.5rem;">
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">A Unifying Weight Function View</h2>
     
@@ -935,22 +935,13 @@
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">Conclusion</h2>
     
-    <div class="conclusion-box content has-text-justified">
+    <div class="content has-text-justified">
       <p>
-        We introduce <strong>Maximum Likelihood Reinforcement Learning (MaxRL)</strong>, a framework that bridges 
-        the gap between reinforcement learning and maximum likelihood for correctness-based tasks. Through a Maclaurin expansion 
-        of the log-likelihood, we show that standard RL optimizes only the first-order term (pass@1), while maximum likelihood 
-        corresponds to an infinite harmonic mixture of pass@k objectives.
-      </p>
-      <p>
-        MaxRL provides a practical middle ground: by truncating the expansion at level $T = N$ (the number of rollouts), 
-        we obtain a compute-indexed family of objectives that progressively approaches maximum likelihood as compute increases. 
-        The resulting gradient estimator is remarkably simple—normalizing by the number of successes rather than total samples—yet 
-        yields consistent improvements across diverse domains.
-      </p>
-      <p>
-        Empirically, MaxRL demonstrates superior performance in image classification, maze navigation, math reasoning, and 
-        large-scale LLM training. Compared with GRPO, MaxRL achieves <strong>higher pass@k while maintaining similar or better pass@1</strong>, requiring <strong>2.3x-19.2x</strong> fewer samples at deployment time to achieve the same pass@k coverage.
+        We introduce <strong>MaxRL</strong>, a framework that equips reinforcement learning with maximum likelihood optimization for correctness-based tasks. 
+        Our key insight is that standard RL optimizes only the first-order term of a Maclaurin expansion of the log-likelihood, 
+        while MaxRL progressively approaches maximum likelihood as compute increases.
+        The implementation for MaxRL is remarkably simple: normalize by successes rather than total samples. 
+        Empirically, MaxRL Pareto-dominates GRPO across benchmarks, achieving <strong>similar or better pass@1</strong> while requiring <strong>2.3×–19.2× fewer samples</strong> to match pass@k coverage.
       </p>
     </div>
     
