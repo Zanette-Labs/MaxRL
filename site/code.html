@@ -105,8 +105,7 @@
         </div>
 
         <pre class="line-numbers">
-<code class="language-python"><span class="line-delete">def compute_grpo_outcome_advantage(</span>
-<span class="line-add">def compute_maxrl_advantage(</span>
+<code class="language-python">def compute_advantage(
     token_level_rewards: torch.Tensor, response_mask: torch.Tensor, 
     index: np.ndarray, epsilon: float = 1e-6,
 ):
