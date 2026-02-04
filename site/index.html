@@ -621,9 +621,8 @@
       </div>
       
       <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
-      
 
-      <div style="margin: 1.5rem 0;">
+            <!-- <div style="margin: 1.5rem 0;">
         <center>
           <iframe
             src="./weight-function.html"
@@ -634,13 +633,17 @@
             scrolling="no">
           </iframe>
         </center>
-      </div>
+      </div> -->
+
+      <ul style="margin: 1.5rem 0; padding-left: 1.5rem;">
+        <li style="margin-bottom: 0.5rem;">$T = 1$ recovers standard reinforcement learning (pass@1)</li>
+        <li style="margin-bottom: 0.5rem;">$T \to \infty$ recovers exact maximum likelihood</li>
+        <li style="margin-bottom: 0;">$T = N$ (number of rollouts) is what we use in practice</li>
+      </ul>
           
-      <div class="insight-box">
-        <p style="margin: 0;">
-          MaxRL objectives provide a principled framework for trading additional compute for higher-fidelity approximations to maximum likelihood.
-        </p>
-      </div>
+      <p>
+        We will show that $T$ corresponds directly to the number of rollouts $N$, enabling us to trade sampling compute for higher-fidelity approximations to the maximum likelihood objective.
+      </p>
       
     </div>
   </div>
