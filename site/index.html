@@ -596,11 +596,11 @@
       
       <p>
         From this Maclaurin expansion, we see that <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
-        Higher-order terms encode learning signal from increasingly rare success patterns—critical when the pass rate $p$ is small.
+        Higher-order terms encode learning signal from increasingly rare success patterns, which are critical when the pass rate $p$ is small.
       </p>
       
       <p>
-        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$—the <strong>first-order term</strong> of this expansion:
+        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$, the <strong>first-order term</strong> of this expansion:
       </p>
       
       <div class="insight-box">
@@ -659,7 +659,7 @@
           $\nabla_\theta J_{\mathrm{ML}}(x) = \mathbb{E}\left[\nabla_\theta \log \pi_\theta(z \mid x) \;\middle|\; \text{success}\right]$
         </div>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; margin-bottom: 0;">
-          <strong>Interpretation:</strong> The ML gradient equals the average score function over <em>successful trajectories only</em>.
+          <strong>Interpretation:</strong> The ML gradient equals the average score function over <strong>successful trajectories only</strong>.
         </p>
       </div>
       
@@ -719,8 +719,8 @@
       
       <div class="insight-box">
         <p style="margin: 0;">
-          Increasing $N$ in REINFORCE only reduces <em>variance</em> of a fixed pass@1 objective. 
-          However, in MaxRL, increasing $N$ improves the <em>objective itself</em>, approaching maximum likelihood.
+          Increasing $N$ in REINFORCE only reduces <strong>variance</strong> of a fixed pass@1 objective. 
+          However, in MaxRL, increasing $N$ improves the <strong>objective itself</strong>, approaching maximum likelihood.
         </p>
       </div>
       
@@ -762,7 +762,7 @@
         $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$, 
         where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty.
         The key distinction among objectives is <strong>how strongly they emphasize hard, low-pass-rate inputs</strong>. 
-        Below, we present a visualization of the weight functions for each objective. From this visualization, we can see that as $T$ increases, MaxRL uniquely approaches maximum likelihood weighting.
+        Below, we present a visualization of the weight functions for each objective. From this visualization, we can see that as $T$ increases, MaxRL gradually approaches maximum likelihood weighting.
       </p>
       
       <div style="margin: 1.5rem 0;">
@@ -779,9 +779,8 @@
       </div>
       
       <p>
-        We also include the commonly used GRPO weighting function for reference. From the figure, we can see that
-        GRPO's "division by square root" operation also provides moderate upweighting of hard inputs. Though this is a heuristic design, it explains why it is usually superior to vanilla REINFORCE.
-        However, GRPO assigns <em>increased</em> weight to very easy inputs ($p \to 1$), unlike likelihood-based objectives.
+        The visualization also includes GRPO for comparison. Notably, GRPO's normalization by standard deviation provides moderate upweighting of hard inputs, which partly explains why GRPO is usually superior to vanilla REINFORCE.
+        However, unlike maximum likelihood-based objectives, GRPO assigns <strong>increased</strong> weight to very easy inputs as $p \to 1$, which deviates from the principle of maximum likelihood optimization.
       </p>
     </div>
   </div>
@@ -886,7 +885,7 @@
         <center><img src="./static/images/large_scale_experiments_summary.png" alt="Large scale LLM results" style="max-width: 100%;"></center>
         <p class="figure-caption">
           <strong>Evaluation on math benchmarks.</strong> MaxRL consistently Pareto dominates GRPO: 
-          similar or better pass@1 <em>and</em> improved pass@k. Improved coverage means achieving the same pass@k 
+          similar or better pass@1 <strong>and</strong> improved pass@k. Improved coverage means achieving the same pass@k 
           requires <strong>2.3× – 19.2×</strong> fewer samples than GRPO.
         </p>
       </div>
