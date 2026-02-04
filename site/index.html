@@ -735,10 +735,9 @@
       </div>
       
       <!-- Variance Reduction -->
-      <h4 class="subsection-title">Variance Reduction</h4>
       
       <p>
-        We reduce variance using a zero-mean control variate—the unconditional average score $V_N = \frac{1}{N}\sum_{i=1}^N S_i$, which satisfies $\mathbb{E}[V_N]=0$. 
+        In addition, we can reduce variance by using a zero-mean control variate, the unconditional average score $V_N = \frac{1}{N}\sum_{i=1}^N S_i$, which satisfies $\mathbb{E}[V_N]=0$. 
         Subtracting $V_N$ preserves unbiasedness while reducing variance.
         The on-policy implementation differs from standard REINFORCE by a <strong>single-line modification</strong> to the advantage calculation, 
         where the advantage is normalized by the per-task mean reward $\hat{r}$, rather than left unnormalized (RLOO) or normalized by standard deviation (GRPO):
