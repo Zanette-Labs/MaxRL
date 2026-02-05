@@ -517,9 +517,9 @@
       <h2 class="title is-3 section-title">Why Maximum Likelihood?</h2>
       
       <p>
-        Maximum likelihood emerges as a principled objective in supervised learning, as it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
-        In contrast, many modern learning problems such as code generation, mathematical reasoning, and multi-step planning involve non-differentiable generation but admit an implicit binary notion of correctness. 
-        For each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$, <strong>defining an implicit likelihood</strong> over correct outcomes.
+        Maximum likelihood is a principled objective in machine learning, reliably translating increases in model capacity, data, and compute into performance gains. 
+        Modern tasks like code generation and mathematical reasoning differ: they involve non-differentiable generation but have a binary notion of correctness. 
+        For each input $x$, the model induces a success probability $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$—an <strong>implicit likelihood</strong> over correct outcomes.
       </p>
       
       <p>
@@ -553,7 +553,7 @@
     <div class="content has-text-justified">
       
       <p>
-        MaxRL is a framework that turns more compute into increasingly better approximations of the maximum likelihood principle in sampling-based tasks.
+        MaxRL is a framework that turns more compute into increasingly better approximations of the maximum likelihood objective in sampling-based tasks.
       </p>
       
       <!-- Maclaurin Expansion -->
@@ -581,8 +581,8 @@
       </div>
 
       <p>
-        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
-        with higher-order terms encoding rare success which are critical when $p$ is small. 
+        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>. 
+        Higher-order terms represent rare successes, critical when $p$ is small. 
         In contrast, standard RL optimizes only the first-order term of this expansion.
       </p>
       
@@ -659,8 +659,8 @@
     <div class="content has-text-justified">
       
       <p>
-        A natural approach to estimate the truncated objective is to approximate each pass@k term separately. 
-        We take an alternate approach that leads to a simpler estimator and a new viewpoint.
+        A natural approach is to approximate each pass@k term separately. 
+        We take an alternate approach, yielding a simpler estimator and a new viewpoint.
       </p>
       
       <!-- Theorem 1 -->
@@ -884,19 +884,16 @@
         This exposes differences in how objectives allocate learning signal under repeated training.
         MaxRL can sustain improvement over a large number of epochs, demonstrating less pass@k degradation (overfitting) and converging to a higher average performance.
       </p>
-      <div class="figure-container">
-        <center><img src="./static/images/smollm_training_step.png" alt="GSM8K training dynamics" style="max-width: 100%;"></center>
-        <p class="figure-caption">
-          <strong>Training dynamics on GSM8K.</strong> MaxRL shows slower initial gains but sustained improvement, 
-          with substantially less pass@k degradation.
-        </p>
-      </div>
+      <!-- Sharpening Animation -->
       <div class="figure-container" style="margin-top: 2rem;">
         <center>
-          <img src="./static/images/sharpening_animation_v2.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
+          <img src="./static/images/SharpeningAnimation.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
         </center>
         <p class="figure-caption">
-          <strong>Distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL mitigates sharpening and extracts more learning signal from fixed training data.
+          <strong>Training dynamics on GSM8K and Distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL shows slower initial gains but sustained improvement, 
+          with substantially less pass@k degradation. During training, MaxRL also shows a much lower bar at 0% pass rate compared to baselines, indicating that it solves more problems in the training set. 
+          Moreover, the distribution across pass rates is more uniform for MaxRL, while GRPO and RLOO cluster around the two extremes (0% and 100% pass rates). 
+          This demonstrates that training with MaxRL mitigates sharpening and extracts more learning signal from a fixed dataset.
         </p>
       </div>
       <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
