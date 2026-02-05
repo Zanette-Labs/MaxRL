@@ -582,7 +582,7 @@
 
       <p>
         Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
-        with higher-order terms encoding rare success which are critical when $p$ is small. 
+        with higher-order terms representing rare success which are critical when $p$ is small. 
         In contrast, standard RL optimizes only the first-order term of this expansion.
       </p>
       
@@ -951,7 +951,10 @@
           <img src="./static/images/sharpening_animation_v2.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
         </center>
         <p class="figure-caption">
-          <strong>Distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL mitigates sharpening and extracts more learning signal from fixed training data.
+          <strong>Distribution of prompts across pass rate bins during GSM8K training.</strong> 
+          MaxRL exhibits a much lower bar at 0 pass rate compared to baselines, indicating that it solves more problems in the training set. 
+          Moreover, the distribution across pass rates is more uniform in MaxRL, while GRPO and RLOO concentrate near zero pass rate and 100% pass rate. 
+          This demonstrates that training with MaxRL mitigates sharpening and extracts more learning signal from a fixed dataset.
         </p>
       </div>
       <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
