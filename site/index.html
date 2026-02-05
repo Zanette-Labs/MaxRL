@@ -626,13 +626,13 @@
             $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
-            Infinite harmonic mixture
+            Infinite weighted sum
           </p>
         </div>
       </div>
       
       <p>
-        Maximum likelihood optimizes an <strong>infinite harmonic mixture of pass@k gradients</strong>, 
+        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
         with higher-order terms encoding rare success which are critical when $p$ is small. 
         In contrast, standard RL optimizes only the first-order term of this expansion.
       </p>
