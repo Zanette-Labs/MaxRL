@@ -579,6 +579,12 @@
           $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
         </p>
       </div>
+
+      <p>
+        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
+        with higher-order terms encoding rare success which are critical when $p$ is small. 
+        In contrast, standard RL optimizes only the first-order term of this expansion.
+      </p>
       
       <div class="math-comparison">
         <div class="math-box" style="border-top: 3px solid #1e40af;">
@@ -590,7 +596,7 @@
             $\nabla_\theta J_{\mathrm{RL}}(x) = \nabla_\theta \mathrm{pass@}1(x)$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
-            The first-order term
+            Optimizes pass@1
           </p>
         </div>
         <div class="math-box" style="border-top: 3px solid #C41230;">
@@ -602,16 +608,10 @@
             $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
-            Infinite weighted sum
+            Optimizes harmonic mixture of pass@k
           </p>
         </div>
       </div>
-      
-      <p>
-        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
-        with higher-order terms encoding rare success which are critical when $p$ is small. 
-        In contrast, standard RL optimizes only the first-order term of this expansion.
-      </p>
       
       <div class="insight-box">
         <p style="margin: 0;">
@@ -645,12 +645,7 @@
       <ul style="margin: 1.5rem 0; padding-left: 1.5rem;">
         <li style="margin-bottom: 0.5rem;">$T = 1$ recovers standard reinforcement learning (pass@1)</li>
         <li style="margin-bottom: 0.5rem;">$T \to \infty$ recovers exact maximum likelihood</li>
-        <li style="margin-bottom: 0;">$T = N$ (number of rollouts) is what we use in practice</li>
       </ul>
-          
-      <p>
-        We will show that $T$ corresponds directly to the number of rollouts $N$, enabling us to trade sampling compute for higher-fidelity approximations to the maximum likelihood objective.
-      </p>
       
     </div>
   </div>
