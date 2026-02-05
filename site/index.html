@@ -517,9 +517,11 @@
       <h2 class="title is-3 section-title">Why Maximum Likelihood?</h2>
       
       <p>
-        Maximum likelihood emerges as a principled objective in supervised learning, as it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
-        In contrast, many modern learning problems such as code generation, mathematical reasoning, and multi-step planning involve non-differentiable generation but admit an implicit binary notion of correctness. 
-        For each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$, <strong>defining an implicit likelihood</strong> over correct outcomes.
+        Maximum likelihood is a principled objective in supervised learning. 
+        It reliably translates increases in model capacity, data, and compute into consistent performance improvements. 
+        In contrast, modern tasks like code generation and mathematical reasoning involve non-differentiable generation. 
+        Yet they admit an implicit binary notion of correctness: for each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$. 
+        This defines an <strong>implicit likelihood</strong> over correct outcomes.
       </p>
       
       <p>
@@ -581,8 +583,8 @@
       </div>
 
       <p>
-        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>, 
-        with higher-order terms representing rare success which are critical when $p$ is small. 
+        Maximum likelihood optimizes an <strong>infinite weighted sum of pass@k gradients</strong>. 
+        Higher-order terms represent rare successes, critical when $p$ is small. 
         In contrast, standard RL optimizes only the first-order term of this expansion.
       </p>
       
@@ -659,8 +661,8 @@
     <div class="content has-text-justified">
       
       <p>
-        A natural approach to estimate the truncated objective is to approximate each pass@k term separately. 
-        We take an alternate approach that leads to a simpler estimator and a new viewpoint.
+        A natural approach is to approximate each pass@k term separately. 
+        We take an alternate approach, yielding a simpler estimator and a new viewpoint.
       </p>
       
       <!-- Theorem 1 -->
