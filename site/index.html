@@ -912,27 +912,21 @@
         Besides performance metrics, MaxRL exhibits different optimization dynamics. 
         Most notably, it produces stronger gradients on harder prompts, and also leads to a larger fraction of prompts with at least one correct rollout during training.
       </p>
-      <div class="analysis-columns" style="margin-top: 1.5rem;">
-        <div class="analysis-col">
-          <div class="figure-container">
-            <div class="img-wrapper">
-              <img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 100%;">
-            </div>
-            <p class="figure-caption">
-              <strong>Gradient norm analysis.</strong> MaxRL generates larger gradient norms over prompts with close to 0 pass rates, concentrating learning signal on harder problems.
-            </p>
-          </div>
-        </div>
-        <div class="analysis-col">
-          <div class="figure-container">
-            <div class="img-wrapper">
-              <img src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 100%;">
-            </div>
-            <p class="figure-caption">
-              <strong>Training dynamics comparison.</strong> MaxRL consistently produces at least one correct rollout for more prompts, demonstrating effectiveness at extracting more learning signal.
-            </p>
-          </div>
-        </div>
+      <div class="figure-container" style="margin-top: 1.5rem;">
+        <center>
+          <img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 70%;">
+        </center>
+        <p class="figure-caption">
+          <strong>Gradient norm analysis.</strong> MaxRL generates larger gradient norms over prompts with close to 0 pass rates, concentrating learning signal on harder problems.
+        </p>
+      </div>
+      <div class="figure-container" style="margin-top: 1.5rem;">
+        <center>
+          <img src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 70%;">
+        </center>
+        <p class="figure-caption">
+          <strong>Training dynamics comparison.</strong> MaxRL consistently produces at least one correct rollout for more prompts, demonstrating effectiveness at extracting more learning signal.
+        </p>
       </div>
       
       <!-- Sharpening Animation -->
