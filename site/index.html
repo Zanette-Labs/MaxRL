@@ -809,11 +809,6 @@
     
     <!-- Takeaway 1 -->
     <div class="result-card">
-      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
-        <p style="margin: 0; font-weight: 600; color: #C41230;">
-          📊 Takeaway 1: MaxRL approaches exact maximum likelihood given infinite compute.
-        </p>
-      </div>
       <h4>ImageNet: Comparison with Exact Likelihood</h4>
       <p>
         We first validate MaxRL where exact maximum likelihood (cross-entropy) is computable. 
@@ -827,20 +822,20 @@
           while REINFORCE fails to make progress from low initial pass rates.
         </p>
       </div>
+      <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          📊 Takeaway 1: MaxRL approaches exact maximum likelihood given infinite compute.
+        </p>
+      </div>
     </div>
     
     <!-- Takeaway 2 -->
     <div class="result-card">
-      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
-        <p style="margin: 0; font-weight: 600; color: #C41230;">
-          🚀 Takeaway 2: MaxRL scales better with additional compute in the infinite data regime.
-        </p>
-      </div>
       <h4>Maze Navigation: Infinite Data Regime</h4>
       <p>
         We study training with continually fresh data using procedurally generated mazes. 
         Each training input is newly generated, and the model never encounters the same maze twice.
-        In a data-rich training regime, MaxRL scales more favorably with additional compute compared to existing methods.
+        In a data-rich training regime, MaxRL <strong>scales more favorably with additional compute</strong> compared to existing methods.
       </p>
       <center>
         <img src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 0.5rem;">
@@ -849,21 +844,21 @@
       <div class="figure-container">
         <center><img src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
         <p class="figure-caption">
-          <strong>Scaling behavior with increasing rollouts per prompt.</strong> MaxRL consistently outperforms GRPO, which outperforms RLOO.
+          <strong>Scaling behavior with increasing rollouts per prompt.</strong> MaxRL consistently outperforms GRPO and RLOO.
+        </p>
+      </div>
+      <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🚀 Takeaway 2: MaxRL scales better with additional compute in the infinite data regime.
         </p>
       </div>
     </div>
     
     <!-- Takeaway 3 -->
     <div class="result-card">
-      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
-        <p style="margin: 0; font-weight: 600; color: #C41230;">
-          🛡️ Takeaway 3: MaxRL is more resistant to overfitting.
-        </p>
-      </div>
       <h4>GSM8K: Data-Scarce Regime</h4>
       <p>
-        In the data-scarce regime, models train for many epochs over a fixed dataset. 
+        In the data-scarce regime, models train for multiple epochs over a fixed dataset until Pass@1 no longer climbs. 
         This exposes differences in how objectives allocate learning signal under repeated training.
         MaxRL can sustain improvement over a large number of epochs, demonstrating less pass@k degradation (overfitting) and converging to a higher average performance.
       </p>
@@ -874,19 +869,19 @@
           with substantially less pass@k degradation.
         </p>
       </div>
+      <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🛡️ Takeaway 3: MaxRL is more resistant to overfitting.
+        </p>
+      </div>
     </div>
     
     <!-- Takeaway 4 -->
     <div class="result-card">
-      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
-        <p style="margin: 0; font-weight: 600; color: #C41230;">
-          🧠 Takeaway 4: MaxRL's benefits transfer to larger scale mathematical reasoning.
-        </p>
-      </div>
       <h4>Large-Scale LLM Training</h4>
       <p>
         We train <strong>Qwen3-1.7B-Base</strong> and <strong>Qwen3-4B-Base</strong> models on POLARIS-53K (~50K math reasoning prompts), 
-        and evaluate on AIME 2025, BeyondAIME, MATH-500, and Minerva.
+        and evaluate on various mathematical reasoning benchmarks.
         On larger scale mathematical reasoning, MaxRL Pareto-dominates GRPO and shows little to no diversity degradation with respect to the base model.
       </p>
       <div class="figure-container">
@@ -897,15 +892,15 @@
           requires <strong>2.3× – 19.2×</strong> fewer samples than GRPO.
         </p>
       </div>
+      <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          🧠 Takeaway 4: MaxRL's benefits transfer to larger scale mathematical reasoning.
+        </p>
+      </div>
     </div>
     
     <!-- Takeaway 5 -->
     <div class="result-card">
-      <div class="insight-box" style="margin-top: 0; margin-bottom: 1.5rem; border-left-color: #C41230;">
-        <p style="margin: 0; font-weight: 600; color: #C41230;">
-          ⚡ Takeaway 5: MaxRL shows characteristically different optimization dynamics.
-        </p>
-      </div>
       <h4>Training Dynamics Analysis</h4>
       <p>
         Besides performance metrics, MaxRL exhibits different optimization dynamics. 
@@ -937,13 +932,18 @@
           <strong>Distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL mitigates sharpening and extracts more learning signal from fixed training data.
         </p>
       </div>
+      <div class="insight-box" style="margin-top: 1.5rem; margin-bottom: 0; border-left-color: #C41230;">
+        <p style="margin: 0; font-weight: 600; color: #C41230;">
+          ⚡ Takeaway 5: MaxRL shows characteristically different optimization dynamics.
+        </p>
+      </div>
     </div>
     
   </div>
 </section>
 
 <!-- ==================== CONCLUSION ==================== -->
-<section class="section section-white">
+<!-- <section class="section section-white">
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">Conclusion</h2>
     
@@ -958,7 +958,7 @@
     </div>
     
   </div>
-</section>
+</section> -->
 
 <!-- ==================== BIBTEX ==================== -->
 <section class="section section-gray" id="BibTeX">
