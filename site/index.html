@@ -912,7 +912,7 @@
         Besides performance metrics, MaxRL exhibits different optimization dynamics. 
         Most notably, it produces stronger gradients on harder prompts, and also leads to a larger fraction of prompts with at least one correct rollout during training.
       </p>
-      <div class="figure-container" style="margin-top: 1.5rem;">
+      <div class="figure-container" style="margin-top: 1.5rem; margin-bottom: 0.3rem;">
         <center>
           <img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 80%;">
         </center>
@@ -925,7 +925,7 @@
           <img src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 70%;">
         </center>
         <p class="figure-caption">
-          <strong>Training dynamics comparison.</strong> MaxRL consistently produces at least one correct rollout for more prompts, demonstrating effectiveness at extracting more learning signal.
+          <strong>Fraction of prompts with at least one correct rollout.</strong> MaxRL maintains a higher fraction of solvable prompts throughout training, enabling continued learning even in later epochs.
         </p>
       </div>
       
