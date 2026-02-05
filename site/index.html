@@ -590,10 +590,7 @@
         <div class="math-box" style="border-top: 3px solid #1e40af;">
           <h4 style="color: #1e40af; text-align: center;">Reinforcement Learning</h4>
           <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $J_{\mathrm{RL}}(x) = p_\theta(x)$
-          </p>
-          <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $\nabla_\theta J_{\mathrm{RL}}(x) = \nabla_\theta \mathrm{pass@}1(x)$
+            $$\begin{aligned} J_{\mathrm{RL}}(x) &= p_\theta(x) \\ \nabla_\theta J_{\mathrm{RL}}(x) &= \nabla_\theta \mathrm{pass@}1(x) \end{aligned}$$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
             Optimizes pass@1
@@ -602,10 +599,7 @@
         <div class="math-box" style="border-top: 3px solid #C41230;">
           <h4 style="color: #C41230; text-align: center;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $J_{\mathrm{ML}}(x) = \log p_\theta(x)$
-          </p>
-          <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
+            $$\begin{aligned} J_{\mathrm{ML}}(x) &= \log p_\theta(x) \\ \nabla_\theta J_{\mathrm{ML}}(x) &= \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x) \end{aligned}$$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
             Optimizes harmonic mixture of pass@k
@@ -660,7 +654,7 @@
       
       <p>
         A natural approach is to approximate each pass@k term separately. 
-        We take an alternate approach, yielding a simpler estimator and a new viewpoint.
+        We take an alternative approach, yielding a simpler estimator and a new viewpoint.
       </p>
       
       <!-- Theorem 1 -->
