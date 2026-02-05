@@ -765,6 +765,14 @@
         Below, we present a visualization of the weight functions for each objective. From this visualization, we can see that as $T$ increases, MaxRL gradually approaches maximum likelihood weighting.
       </p>
       
+      <!-- GIF version -->
+      <div style="margin: 1rem 0;">
+        <center>
+          <img src="./static/images/StandardRLWeightingAxes2.gif" alt="MaxRL Weight Functions" style="max-width: 100%; border-radius: 8px;">
+        </center>
+      </div>
+      
+      <!-- Original iframe version (commented out)
       <div style="margin: 1rem 0;">
         <center>
           <iframe
@@ -777,9 +785,10 @@
           </iframe>
         </center>
       </div>
+      -->
       
       <p>
-        The visualization also includes GRPO for comparison. Notably, GRPO's normalization by standard deviation provides moderate upweighting of hard inputs, which partly explains why GRPO is usually superior to vanilla REINFORCE.
+        Notably, GRPO's normalization by standard deviation also provides moderate upweighting of hard inputs, which partly explains why GRPO is usually superior to vanilla REINFORCE.
         However, unlike maximum likelihood-based objectives, GRPO assigns <strong>increased</strong> weight to very easy inputs as $p \to 1$, which deviates from the principle of maximum likelihood optimization.
       </p>
     </div>
