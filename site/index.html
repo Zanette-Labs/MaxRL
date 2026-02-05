@@ -471,7 +471,7 @@
 
           <div style="margin-top: 0.6rem; text-align: center;">
             <p style="font-family: 'Castoro', Georgia, serif; font-size: 1.05rem; color: #374151;">
-              <strong>TL;DR</strong>&nbsp; A framework to optimize maximum likelihood with reinforcement learning.
+              <strong>TL;DR</strong>&nbsp; A framework to maximize the likelihood using reinforcement learning.
             </p>
           </div>
         </div>
@@ -487,7 +487,7 @@
     <!-- Teaser Diagram -->
     <div class="figure-container" style="margin: 0;">
       <center>
-        <img src="./static/images/teaser5.png" alt="MaxRL Teaser" style="max-width: 100%;">
+        <img src="./static/images/teaser6.png" alt="MaxRL Teaser" style="max-width: 100%;">
       </center>
     </div>
     
@@ -497,7 +497,7 @@
         <img src="./static/images/large_scale_experiments_summary_qwen_3_4B.png" alt="MaxRL Results on Qwen3-4B" style="max-width: 100%;">
       </center>
       <p class="figure-caption">
-        <strong>Large-scale results on Qwen3-4B.</strong> MaxRL Pareto-dominates GRPO across all benchmarks, achieving similar or better Pass@1 while simultaneously improving Pass@K. This translates to <strong>2.3×–19.2×</strong> gains at test-time scaling efficiency.
+        <strong>Results on Qwen3-4B.</strong> MaxRL Pareto-dominates GRPO across all benchmarks, achieving similar or better Pass@1 while significantly improving Pass@K. This translates to <strong>2.3×–19.2×</strong> gains at test-time scaling efficiency.
       </p>
     </div>
     
@@ -518,13 +518,12 @@
       
       <p>
         Maximum likelihood emerges as a principled objective in supervised learning, as it has reliably translated increases in model capacity, data, and compute into consistent performance improvements. 
-        In contrast, many modern learning problems such as code generation, mathematical reasoning, and multi-step planning involve non-differentiable generation but admit an implicit <strong>binary notion of correctness</strong>. 
-        For each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$, defining an implicit likelihood over correct outcomes.
+        In contrast, many modern learning problems such as code generation, mathematical reasoning, and multi-step planning involve non-differentiable generation but admit an implicit binary notion of correctness. 
+        For each input $x$, the model induces a probability of success $p_\theta(x) = p_\theta(y^* | x)$ over the correct answer $y^*$, <strong>defining an implicit likelihood</strong> over correct outcomes.
       </p>
       
       <p>
-        In these settings, <strong>reinforcement learning</strong> is typically applied. 
-        RL was conceived to handle problems where the likelihood cannot be optimized directly due to non-differentiable intermediate sampling. 
+        In these settings, <strong>reinforcement learning</strong> is typically applied.  
         However, the two approaches optimize <strong>fundamentally different objectives</strong>:
       </p>
       
@@ -566,7 +565,7 @@
 <!-- ==================== MAXRL METHOD ==================== -->
 <section class="section section-white">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 section-title">MaxRL: Approximating Maximum Likelihood with More Compute</h2>
+    <h2 class="title is-3 section-title">MaxRL: Scaling Maximum Likelihood Approximation with More Compute</h2>
     
     <div class="content has-text-justified">
       
