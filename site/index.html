@@ -533,37 +533,14 @@
           <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
             $J_{\mathrm{RL}} = \mathbb{E}_x\left[p_\theta(x)\right]$
           </p>
-          <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
-          </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
-            Maximizes expected correctness (pass@1)
-          </p>
         </div>
         <div class="math-box" style="border-top: 3px solid #C41230;">
           <h4 style="color: #C41230; text-align: center;">Maximum Likelihood</h4>
           <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
             $J_{\mathrm{ML}} = \mathbb{E}_x\left[\log p_\theta(x)\right]$
           </p>
-          <p style="text-align: center; font-size: 1rem; margin: 0.5rem 0;">
-            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
-          </p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
-            Reweights by inverse success probability
-          </p>
         </div>
       </div>
-      
-      <p>
-        The $1/p_\theta(x)$ factor in maximum likelihood places greater emphasis on hard, low-success inputs. 
-        This leads to very different optimization dynamics: maximum likelihood pushes learning signal toward difficult problems where the model struggles.
-      </p>
-      
-      <p>
-        Nevertheless, maximum likelihood is statistically challenging to estimate when $p_\theta(x)$ is small. 
-        <strong>Can we approximate maximum likelihood in a way that scales with compute?</strong>
-      </p>
-
     </div>
   </div>
 </section>
@@ -571,7 +548,7 @@
 <!-- ==================== MAXRL METHOD ==================== -->
 <section class="section section-white">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 section-title">MaxRL: Scaling Maximum Likelihood Approximation with More Compute</h2>
+    <h2 class="title is-3 section-title">MaxRL: Maximum Likelihood via Reinforcement Learning</h2>
     
     <div class="content has-text-justified">
       
