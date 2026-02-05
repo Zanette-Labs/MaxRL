@@ -907,7 +907,7 @@
           ⚡ Takeaway 5: MaxRL shows characteristically different optimization dynamics.
         </p>
       </div>
-      <h4>Gradient Norm & Training Dynamics Analysis</h4>
+      <h4>Training Dynamics Analysis</h4>
       <p>
         Besides performance metrics, MaxRL exhibits different optimization dynamics. 
         Most notably, it produces stronger gradients on harder prompts, and also leads to a larger fraction of prompts with at least one correct rollout during training.
@@ -933,6 +933,16 @@
             </p>
           </div>
         </div>
+      </div>
+      
+      <!-- Sharpening Animation -->
+      <div class="figure-container" style="margin-top: 2rem;">
+        <center>
+          <img src="./static/images/sharpening_animation_v2.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
+        </center>
+        <p class="figure-caption">
+          <strong>Distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL mitigates sharpening and extracts more learning signal from fixed training data.
+        </p>
       </div>
     </div>
     
