@@ -530,7 +530,10 @@
       <div class="math-comparison">
         <div class="math-box" style="border-top: 3px solid #1e40af;">
           <h4 style="color: #1e40af; text-align: center;">Reinforcement Learning</h4>
-          <p style="text-align: center; font-size: 1.1rem;">
+          <p style="text-align: center; font-size: 0.95rem; margin-bottom: 0.5rem;">
+            $J_{\mathrm{RL}} = \mathbb{E}_x\left[p_\theta(x)\right]$
+          </p>
+          <p style="text-align: center; font-size: 1.1rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
             $\nabla_\theta J_{\mathrm{RL}} = \mathbb{E}_x\left[\nabla_\theta p_\theta(x)\right]$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
@@ -539,8 +542,11 @@
         </div>
         <div class="math-box" style="border-top: 3px solid #C41230;">
           <h4 style="color: #C41230; text-align: center;">Maximum Likelihood</h4>
-          <p style="text-align: center; font-size: 1.1rem;">
-            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\nabla_\theta \log p_\theta(x)\right]$
+          <p style="text-align: center; font-size: 0.95rem; margin-bottom: 0.5rem;">
+            $J_{\mathrm{ML}} = \mathbb{E}_x\left[\log p_\theta(x)\right]$
+          </p>
+          <p style="text-align: center; font-size: 1.1rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+            $\nabla_\theta J_{\mathrm{ML}} = \mathbb{E}_x\left[\frac{1}{p_\theta(x)} \nabla_\theta p_\theta(x)\right]$
           </p>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
             Reweights by inverse success probability
@@ -549,7 +555,7 @@
       </div>
       
       <p>
-        Taking the gradient of the log introduces a $1/p_\theta(x)$ factor, which places greater emphasis on hard, low-success inputs. 
+        The $1/p_\theta(x)$ factor in maximum likelihood places greater emphasis on hard, low-success inputs. 
         This leads to very different optimization dynamics: maximum likelihood pushes learning signal toward difficult problems where the model struggles.
       </p>
       
@@ -577,7 +583,9 @@
       <!-- Maclaurin Expansion -->
       <h4 class="subsection-title">Maclaurin Expansion of Maximum Likelihood</h4>
       
-      <p>The log-likelihood admits a <strong>Maclaurin expansion</strong> in terms of failure events:</p>
+      <p>
+        The maximum likelihood objective admits a <strong>Maclaurin expansion</strong> in terms of failure events:
+      </p>
       
       <div class="formula-box">
         <p style="font-size: 1rem; margin: 0;">
@@ -585,7 +593,10 @@
         </p>
       </div>
       
-      <p>Differentiating yields the <strong>population-level gradient identity</strong>:</p>
+      <p>
+        where $\mathrm{fail@}k(x)=1-\mathrm{pass@}k(x)$ denotes the probability that all $k$ i.i.d. samples from the model fail.
+        Differentiating yields the <strong>population-level gradient identity</strong>:
+      </p>
       
       <div class="formula-box">
         <p style="font-size: 1.1rem; margin: 0;">
@@ -593,18 +604,42 @@
         </p>
       </div>
       
-      <p>
-        From this Maclaurin expansion, we see that <strong>maximum likelihood optimizes an infinite harmonic mixture of pass@k gradients</strong>. 
-        Higher-order terms encode learning signal from increasingly rare success patterns, which are critical when the pass rate $p$ is small.
-      </p>
+      <div class="math-comparison">
+        <div class="math-box" style="border-top: 3px solid #1e40af;">
+          <h4 style="color: #1e40af; text-align: center;">Reinforcement Learning</h4>
+          <p style="text-align: center; font-size: 0.95rem; margin-bottom: 0.5rem;">
+            $J_{\mathrm{RL}}(x) = p_\theta(x)$
+          </p>
+          <p style="text-align: center; font-size: 1.1rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+            $\nabla_\theta J_{\mathrm{RL}}(x) = \nabla_\theta \mathrm{pass@}1(x)$
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+            Only the first-order term
+          </p>
+        </div>
+        <div class="math-box" style="border-top: 3px solid #C41230;">
+          <h4 style="color: #C41230; text-align: center;">Maximum Likelihood</h4>
+          <p style="text-align: center; font-size: 0.95rem; margin-bottom: 0.5rem;">
+            $J_{\mathrm{ML}}(x) = \log p_\theta(x)$
+          </p>
+          <p style="text-align: center; font-size: 1.1rem; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+            $\nabla_\theta J_{\mathrm{ML}}(x) = \sum_{k=1}^{\infty}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+            Infinite harmonic mixture
+          </p>
+        </div>
+      </div>
       
       <p>
-        In contrast, standard RL optimizes only $\nabla_\theta \mathrm{pass@}1(x)$, the <strong>first-order term</strong> of this expansion:
+        Maximum likelihood optimizes an <strong>infinite harmonic mixture of pass@k gradients</strong>, 
+        with higher-order terms encoding rare success which are critical when $p$ is small. 
+        In contrast, standard RL optimizes only the first-order term of this expansion.
       </p>
       
       <div class="insight-box">
         <p style="margin: 0;">
-          Reinforcement learning is a first-order approximation of maximum likelihood.
+          Reinforcement learning optimizes a first-order approximation of the maximum likelihood objective.
         </p>
       </div>
       
@@ -617,12 +652,19 @@
       
       <div class="formula-box">
         <p style="font-size: 1rem; margin: 0;">
+          $J_{\mathrm{MaxRL}}^{(T)}(x) = -\sum_{k=1}^{T}\frac{(1-p)^k}{k}$
+        </p>
+      </div>
+      
+      <p>Differentiating yields the truncated population gradient:</p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1rem; margin: 0;">
           $\nabla_\theta J_{\mathrm{MaxRL}}^{(T)}(x) = \sum_{k=1}^{T}\frac{1}{k}\,\nabla_\theta \mathrm{pass@}k(x)$
         </p>
       </div>
       
-      <p>This defines a <strong>compute-indexed family of objectives</strong>:</p>
-
+      <p>The objective $J_{\mathrm{MaxRL}}^{(T)}(x)$ defines a <strong>compute-indexed family</strong>:</p>
 
       <ul style="margin: 1.5rem 0; padding-left: 1.5rem;">
         <li style="margin-bottom: 0.5rem;">$T = 1$ recovers standard reinforcement learning (pass@1)</li>
@@ -757,8 +799,16 @@
     
     <div class="content has-text-justified">
       <p>
-        All of the objectives mentioned above admit population-level gradients of the form 
-        $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$, 
+        All of the objectives mentioned above admit population-level gradients of the form:
+      </p>
+      
+      <div class="formula-box">
+        <p style="font-size: 1rem; margin: 0;">
+          $\nabla_\theta J = \mathbb{E}_{x}\left[w(p_\theta(x)) \nabla_\theta p_\theta(x)\right]$
+        </p>
+      </div>
+      
+      <p>
         where $w(p)$ determines how learning signal is allocated across inputs of varying difficulty.
         The key distinction among objectives is <strong>how strongly they emphasize hard, low-pass-rate inputs</strong>. 
         Below, we present a visualization of the weight functions for each objective. From this visualization, we can see that as $T$ increases, MaxRL gradually approaches maximum likelihood weighting.
