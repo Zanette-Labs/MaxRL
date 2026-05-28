@@ -70,13 +70,17 @@
       align-items: center;
       gap: 0.45em;
       font-size: 1.35rem;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: 0.01em;
       line-height: 1.35;
     }
     .venue-line i { font-size: 0.95em; }
-    .venue-oral { color: #ab1727; }
-    .venue-award { color: #b8860b; }
+    .venue-oral { color: var(--text-dark); }
+    .venue-award { color: var(--text-dark); }
+    .venue-line.venue-oral i,
+    .venue-line.venue-oral svg { color: #ab1727 !important; }
+    .venue-line.venue-award i,
+    .venue-line.venue-award svg { color: #b8860b !important; }
     @media screen and (max-width: 480px) {
       .venue-line { font-size: 1.05rem; }
     }
@@ -464,10 +468,10 @@
           <!-- Venue / Award Badges -->
           <div class="publication-badges">
             <span class="venue-line venue-oral">
-              <i class="fas fa-chalkboard-teacher"></i> ICML 2026 Oral
+              <i class="fas fa-chalkboard-teacher"></i> ICML 2026 Oral Presentation
             </span>
             <span class="venue-line venue-award">
-              <i class="fas fa-trophy"></i> Best Paper Award @ ICLR 2026 SPOT Workshop
+              <i class="fas fa-trophy"></i> Best Paper Award at ICLR 2026 SPOT Workshop
             </span>
           </div>
 
