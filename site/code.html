@@ -37,7 +37,18 @@
             line-height: 1.6;
         }
 
-        
+        /* Pin an explicit, font-independent line-height so the JS diff-highlight
+           math lines up identically across platforms/fonts (otherwise the <pre>
+           falls back to `line-height: normal`, which differs by monospace font). */
+        pre.line-numbers,
+        pre.line-numbers > code,
+        pre.line-numbers .line-numbers-rows,
+        pre.line-numbers .line-numbers-rows > span {
+            line-height: 1.6 !important;
+        }
+        pre.line-numbers { padding: 20px !important; }
+
+
         /* Line numbers container */
         .line-numbers .line-numbers-rows { 
             border-right: 1.5px solid #6c6c6c; 
@@ -169,9 +180,12 @@
                 const lineNumberSpans = preElement.querySelectorAll('.line-numbers-rows > span');
                 if (lineNumberSpans.length === 0) return;
                 
-                // Calculate line height
-                const lineHeight = parseFloat(getComputedStyle(preElement).lineHeight) || 1.6 * 16;
-                const paddingTop = parseFloat(getComputedStyle(preElement).paddingTop) || 20;
+                // Calculate line height (fall back to 1.6 x font-size if the
+                // computed value is "normal"/unavailable, so positions never drift)
+                const preStyle = getComputedStyle(preElement);
+                const fontSize = parseFloat(preStyle.fontSize) || 14;
+                const lineHeight = parseFloat(preStyle.lineHeight) || 1.6 * fontSize;
+                const paddingTop = parseFloat(preStyle.paddingTop) || 20;
                 
                 // Task: Find HTML span markers using saved original HTML
                 // Implementation: Use original HTML saved before Prism processing to find marked lines

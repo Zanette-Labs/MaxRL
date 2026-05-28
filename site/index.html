@@ -52,7 +52,31 @@
     .hero .publication-authors a { color: #374151 !important; }
     .hero .publication-authors a:hover { color: #C41230 !important; text-decoration: underline; }
     .hero .publication-authors span { color: #4b5563; }
-    
+
+    /* Venue / award badges */
+    .publication-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      margin: 0.7rem 0 1.4rem 0;
+    }
+    .venue-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45em;
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      line-height: 1.35;
+    }
+    .venue-line i { font-size: 0.95em; }
+    .venue-oral { color: #ab1727; }
+    .venue-award { color: #b8860b; }
+    @media screen and (max-width: 480px) {
+      .venue-line { font-size: 1.05rem; }
+    }
+
     .publication-links .button {
       margin: 0.25rem;
       background: transparent;
@@ -432,26 +456,35 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">Maximum Likelihood Reinforcement Learning</h1>
-          
+
+          <!-- Venue / Award Badges -->
+          <div class="publication-badges">
+            <span class="venue-line venue-oral">
+              <i class="fas fa-chalkboard-teacher"></i> ICML 2026 Oral
+            </span>
+            <span class="venue-line venue-award">
+              <i class="fas fa-trophy"></i> Best Paper Award @ ICLR 2026 SPOT Workshop
+            </span>
+          </div>
+
           <!-- Authors Section -->
           <div class="is-size-5 publication-authors">
             <span class="author-block"><a href="https://tajwarfahim.github.io/">Fahim Tajwar</a><sup>*,1</sup>,</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=SU6ooAQAAAAJ">Guanning Zeng</a><sup>*,2</sup>,</span>
-            <span class="author-block"><a href="https://zhouyueer7.github.io/">Yueer Zhou</a><sup>3</sup>,</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=SU6ooAQAAAAJ">Guanning Zeng</a><sup>*,1</sup>,</span>
+            <span class="author-block"><a href="https://zhouyueer7.github.io/">Yueer Zhou</a><sup>2</sup>,</span>
             <span class="author-block"><a href="https://yudasong.github.io/">Yuda Song</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://daman1209arora.github.io/">Daman Arora</a><sup>1</sup>,</span><br>
             <span class="author-block"><a href="https://yidingjiang.github.io/">Yiding Jiang</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cs.cmu.edu/~schneide/">Jeff Schneider</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cs.cmu.edu/~rsalakhu/">Ruslan Salakhutdinov</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="https://havenfeng.github.io/">Haiwen Feng</a><sup>4,5</sup>,</span>
+            <span class="author-block"><a href="https://havenfeng.github.io/">Haiwen Feng</a><sup>3,4</sup>,</span>
             <span class="author-block"><a href="https://azanette.com">Andrea Zanette</a><sup>1</sup></span>
           </div>
           <div class="is-size-6 publication-authors" style="margin-top: 0.4rem;">
             <span class="author-block"><sup>1</sup>CMU</span>
-            <span class="author-block" style="margin-left: 0.8em;"><sup>2</sup>Tsinghua University</span>
-            <span class="author-block" style="margin-left: 0.8em;"><sup>3</sup>Zhejiang University</span>
-            <span class="author-block" style="margin-left: 0.8em;"><sup>4</sup>UC Berkeley</span>
-            <span class="author-block" style="margin-left: 0.8em;"><sup>5</sup>Impossible, Inc.</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>2</sup>Stanford University</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>3</sup>UC Berkeley</span>
+            <span class="author-block" style="margin-left: 0.8em;"><sup>4</sup>Impossible, Inc.</span>
             <span class="author-block" style="margin-left: 0.8em;"><sup>*</sup>Equal Contribution</span>
           </div>
 
@@ -1010,7 +1043,7 @@
     </div>
     <div class="columns is-centered">
       <p>
-        Corresponding Authors: <a href="mailto:ftajwar@andrew.cmu.edu">Fahim Tajwar</a>, <a href="mailto:azanette@andrew.cmu.edu">Andrea Zanette</a><br>
+        Corresponding Authors: <a href="mailto:ftajwar@andrew.cmu.edu">Fahim Tajwar</a>, <a href="mailto:guanninz@andrew.cmu.edu">Guanning Zeng</a>, <a href="mailto:azanette@andrew.cmu.edu">Andrea Zanette</a><br>
         Template adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
       </p>
     </div>
