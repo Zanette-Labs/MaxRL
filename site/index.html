@@ -8,7 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MaxRL: Maximum Likelihood Reinforcement Learning</title>
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://ajax.googleapis.com">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro&display=swap"
         rel="stylesheet">
 
   <link rel="stylesheet" href="./static/css/bulma.min.css">
@@ -25,11 +29,11 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  <script defer src="./static/js/bulma-carousel.min.js"></script>
+  <script defer src="./static/js/bulma-slider.min.js"></script>
+  <script defer src="./static/js/index.js"></script>
 
   <style>
     :root {
@@ -536,7 +540,7 @@
     <!-- Qwen3-4B Results Figure -->
     <div class="figure-container" style="margin-top: 0.5rem;">
       <center>
-        <img src="./static/images/large_scale_experiments_summary_qwen_3_4B.png" alt="MaxRL Results on Qwen3-4B" style="max-width: 100%;">
+        <img loading="lazy" decoding="async" src="./static/images/large_scale_experiments_summary_qwen_3_4B.png" alt="MaxRL Results on Qwen3-4B" style="max-width: 100%;">
       </center>
       <p class="figure-caption">
         <strong>Results on Qwen3-4B.</strong> MaxRL Pareto-dominates GRPO across all benchmarks, achieving similar or better Pass@1 while significantly improving Pass@K. This translates to <strong>7.9×–19.2×</strong> gains at test-time scaling efficiency.
@@ -588,7 +592,7 @@
 </section>
 
 <!-- ==================== MAXRL METHOD ==================== -->
-<section class="section section-white">
+<section class="section section-white" style="padding-top: 1rem;">
   <div class="container is-max-desktop">
     <h2 class="title is-3 section-title">MaxRL: Maximum Likelihood via Reinforcement Learning</h2>
     
@@ -823,7 +827,7 @@
       <!-- GIF version -->
       <div style="margin: 1rem 0;">
         <center>
-          <img src="./static/images/StandardRLWeightingAxes2.gif" alt="MaxRL Weight Functions" style="max-width: 100%; border-radius: 8px;">
+          <img loading="lazy" decoding="async" src="./static/images/StandardRLWeightingAxes2.gif" alt="MaxRL Weight Functions" style="max-width: 100%; border-radius: 8px;">
         </center>
       </div>
       
@@ -873,7 +877,7 @@
         As sampling compute increases, MaxRL converges to exact maximum likelihood training.
       </p>
       <div class="figure-container">
-        <center><img src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 80%;"></center>
+        <center><img loading="lazy" decoding="async" src="./static/images/imagenet_new_main_paper_figure_1.png" alt="ImageNet results" style="max-width: 80%;"></center>
         <p class="figure-caption">
           <strong>ImageNet training dynamics.</strong> With sufficient rollouts, MaxRL closely matches cross-entropy training, 
           while REINFORCE fails to make progress from low initial pass rates.
@@ -895,11 +899,11 @@
         In a data-rich training regime, MaxRL <strong>scales more favorably with additional compute</strong> compared to existing methods.
       </p>
       <center>
-        <img src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 0.5rem;">
+        <img loading="lazy" decoding="async" src="./static/images/maze-example-dual.png" alt="Maze visualization" style="max-width: 50%; margin-top: 0.5rem;">
         <p class="figure-caption" style="margin-top: 0.5rem;">Example maze: successful navigation (left) vs. failure case (right).</p>
       </center>
       <div class="figure-container">
-        <center><img src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
+        <center><img loading="lazy" decoding="async" src="./static/images/maze_scaling_with_number_of_rollouts.png" alt="Maze scaling results" style="max-width: 100%;"></center>
         <p class="figure-caption">
           <strong>Scaling behavior with increasing rollouts per prompt.</strong> MaxRL consistently outperforms GRPO and RLOO.
         </p>
@@ -922,7 +926,7 @@
       <!-- Sharpening Animation -->
       <div class="figure-container" style="margin-top: 2rem;">
         <center>
-          <img src="./static/images/SharpeningAnimation.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
+          <img loading="lazy" decoding="async" src="./static/images/SharpeningAnimation.gif" alt="Pass rate distribution during training" style="max-width: 80%; border-radius: 8px;">
         </center>
         <p class="figure-caption">
           <strong>Training dynamics on GSM8K and distribution of prompts across pass rate bins during GSM8K training.</strong> MaxRL shows slower initial gains but sustained improvement, 
@@ -947,7 +951,7 @@
         On larger scale mathematical reasoning, MaxRL Pareto-dominates GRPO and shows little to no diversity degradation with respect to the base model.
       </p>
       <div class="figure-container">
-        <center><img src="./static/images/large_scale_experiments_summary.png" alt="Large scale LLM results" style="max-width: 100%;"></center>
+        <center><img loading="lazy" decoding="async" src="./static/images/large_scale_experiments_summary.png" alt="Large scale LLM results" style="max-width: 100%;"></center>
         <p class="figure-caption">
           <strong>Evaluation on math benchmarks.</strong> MaxRL consistently Pareto dominates GRPO: 
           similar or better pass@1 <strong>and</strong> improved pass@k. Improved coverage means achieving the same pass@k 
@@ -970,7 +974,7 @@
       </p>
       <div class="figure-container" style="margin-top: 1.5rem; margin-bottom: 0.3rem;">
         <center>
-          <img src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 80%;">
+          <img loading="lazy" decoding="async" src="./static/images/qwen_p_vs_grad_norm_plot.png" alt="Gradient norm analysis" style="max-width: 80%;">
         </center>
         <p class="figure-caption">
           <strong>Gradient norm analysis.</strong> MaxRL generates larger gradient norms over prompts with close to 0 pass rates, concentrating learning signal on harder problems.
@@ -978,7 +982,7 @@
       </div>
       <div class="figure-container" style="margin-top: 1.5rem;">
         <center>
-          <img src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 70%;">
+          <img loading="lazy" decoding="async" src="./static/images/fraction_solved_problems_during_training.png" alt="Training dynamics" style="max-width: 70%;">
         </center>
         <p class="figure-caption">
           <strong>Fraction of prompts with at least one correct rollout.</strong> MaxRL maintains a higher fraction of solvable prompts throughout training, enabling continued learning even in later epochs.
@@ -1018,16 +1022,15 @@
   <div class="container is-max-desktop content">
     <h2 class="title is-3 section-title">BibTeX</h2>
     <div class="bibtex-box">
-      <pre><code>@misc{tajwar2026maxrl,
-  title   = {Maximum Likelihood Reinforcement Learning}, 
-  author  = {Fahim Tajwar and Guanning Zeng and Yueer Zhou and Yuda Song
-             and Daman Arora and Yiding Jiang and Jeff Schneider and Ruslan Salakhutdinov
-             and Haiwen Feng and Andrea Zanette},
-  year    = {2026},
-  eprint  = {2602.02710},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.LG},
-  url     = {https://arxiv.org/abs/2602.02710}, 
+      <pre><code>@InProceedings{tajwar2026maxrl,
+  title     = {Maximum Likelihood Reinforcement Learning},
+  author    = {Tajwar, Fahim and Zeng, Guanning and Zhou, Yueer and Song, Yuda
+               and Arora, Daman and Jiang, Yiding and Schneider, Jeff and Salakhutdinov, Ruslan
+               and Feng, Haiwen and Zanette, Andrea},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  year      = {2026},
+  publisher = {PMLR},
 }</code></pre>
     </div>
   </div>
@@ -1038,7 +1041,7 @@
   <div class="container">
     <div class="content has-text-centered" style="margin-bottom: 1.5rem;">
       <a href="https://www.cmu.edu/" target="_blank">
-        <img src="./static/images/cmu_logo.png" alt="Carnegie Mellon University" style="height: 100px; border-radius: 4px;">
+        <img loading="lazy" decoding="async" src="./static/images/cmu_logo.png" alt="Carnegie Mellon University" style="height: 100px; border-radius: 4px;">
       </a>
     </div>
     <div class="columns is-centered">

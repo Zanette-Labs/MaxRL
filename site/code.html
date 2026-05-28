@@ -46,7 +46,9 @@
         pre.line-numbers .line-numbers-rows > span {
             line-height: 1.6 !important;
         }
-        pre.line-numbers { padding: 20px !important; }
+        /* position: relative so the diff-highlight overlays anchor to the <pre>
+           itself; padding pinned so it doesn't depend on UA/theme defaults. */
+        pre.line-numbers { padding: 20px !important; position: relative; }
 
 
         /* Line numbers container */
@@ -176,55 +178,38 @@
                 const codeElement = document.querySelector('code.language-python');
                 if (!preElement || !codeElement) return;
                 
-                // Get line number spans
+                // Get line number spans (one per code line, laid out by the
+                // line-numbers plugin so each span overlays its code line).
                 const lineNumberSpans = preElement.querySelectorAll('.line-numbers-rows > span');
                 if (lineNumberSpans.length === 0) return;
-                
-                // Calculate line height (fall back to 1.6 x font-size if the
-                // computed value is "normal"/unavailable, so positions never drift)
-                const preStyle = getComputedStyle(preElement);
-                const fontSize = parseFloat(preStyle.fontSize) || 14;
-                const lineHeight = parseFloat(preStyle.lineHeight) || 1.6 * fontSize;
-                const paddingTop = parseFloat(preStyle.paddingTop) || 20;
-                
-                // Task: Find HTML span markers using saved original HTML
-                // Implementation: Use original HTML saved before Prism processing to find marked lines
-                
-                // Use the original HTML saved before Prism processing
+
+                // Use the original HTML saved before Prism processing to find
+                // which lines carry diff markers.
                 const originalHTML = window.originalCodeHTML || codeElement.innerHTML;
-                
-                // Split HTML by lines to find which lines contain markers
                 const htmlLines = originalHTML.split('\n');
-                
-                // Process each HTML line to find markers
+
+                // Position highlights from each line's REAL rendered box rather
+                // than from line-height math. getBoundingClientRect reflects what
+                // the browser actually painted, so alignment can't drift between
+                // platforms/fonts (the previous math broke under fonts whose line
+                // metrics differed from the computed line-height).
+                const preRect = preElement.getBoundingClientRect();
+
                 htmlLines.forEach(function(htmlLine, index) {
-                    // Check for delete marker
-                    if (htmlLine.includes('line-delete')) {
-                        if (lineNumberSpans[index]) {
-                            lineNumberSpans[index].classList.add('line-delete');
-                        }
-                        
-                        // Create background highlight
-                        const bg = document.createElement('div');
-                        bg.className = 'line-highlight-bg delete';
-                        bg.style.top = (paddingTop + index * lineHeight) + 'px';
-                        bg.style.height = lineHeight + 'px';
-                        preElement.appendChild(bg);
-                    }
-                    
-                    // Check for add marker
-                    if (htmlLine.includes('line-add')) {
-                        if (lineNumberSpans[index]) {
-                            lineNumberSpans[index].classList.add('line-add');
-                        }
-                        
-                        // Create background highlight
-                        const bg = document.createElement('div');
-                        bg.className = 'line-highlight-bg add';
-                        bg.style.top = (paddingTop + index * lineHeight) + 'px';
-                        bg.style.height = lineHeight + 'px';
-                        preElement.appendChild(bg);
-                    }
+                    const isDelete = htmlLine.includes('line-delete');
+                    const isAdd = htmlLine.includes('line-add');
+                    if (!isDelete && !isAdd) return;
+
+                    const span = lineNumberSpans[index];
+                    if (!span) return;
+                    span.classList.add(isDelete ? 'line-delete' : 'line-add');
+
+                    const spanRect = span.getBoundingClientRect();
+                    const bg = document.createElement('div');
+                    bg.className = 'line-highlight-bg ' + (isDelete ? 'delete' : 'add');
+                    bg.style.top = (spanRect.top - preRect.top) + 'px';
+                    bg.style.height = spanRect.height + 'px';
+                    preElement.appendChild(bg);
                 });
             }
             
